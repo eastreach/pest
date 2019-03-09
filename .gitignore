@@ -1,0 +1,16 @@
+.classpath
+.eclipse/
+.idea/
+.project
+.revision/
+.settings/
+.document/
+.DS_Store/
+document/*
+target/*
+logs/*
+build/
+out/
+*.iml
+!.gitignore
+lib/
