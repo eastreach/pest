@@ -9,6 +9,7 @@
 #### 测试部署.
 1. 接口地址: http://113.31.21.52
 1. 管理员账号: root+root.
+1. http://113.31.21.52/operator/login?account=root&password=root
 
 
 #### 数据库表结构设计.
