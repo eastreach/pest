@@ -76,6 +76,17 @@
 1. /pest/delete.
 1. /pest/selectPage.
 1. /pest/select.
+#### 文件上传接口.
+1. /upload.
+1. Headers.
+    Content-Type: application/x-www-form-urlencoded
+1. Body.
+    file: binFile.
+1. 响应结果
+    {
+        "state":"success",
+        "data":"http://192.168.3.130/a.jpg"
+    }
 
 
 

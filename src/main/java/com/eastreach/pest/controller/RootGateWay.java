@@ -112,5 +112,23 @@ public class RootGateWay {
         return tzdOperator;
     }
 
+    /**
+     * 获取请求参数
+     */
+    public String getParam(String param) {
+        String value = httpServletRequest.getParameter(param);
+        return value;
+    }
+
+    /**
+     * 操作员权限判断
+     */
+    public boolean auth(TZDOperator tzdOperator, String limitCode) {
+        if (tzdOperator.getIfRoot() == 1) {
+            return true;
+        }
+        return false;
+    }
+
 
 }

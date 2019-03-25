@@ -8,17 +8,17 @@ import java.util.Date;
  **/
 @Entity
 @Table
-public class TPublishInfo extends RootBean{
+public class TPublishInfo extends RootBean {
 
     private Integer id;
-    private Integer state;
+    private Integer state = 1;
 
-    private String code;
-    private String name;
-    private Date createDt;
-    private String createOper;
-    private String content;
-    private String memo;
+    private String code = "";
+    private String name = "";
+    private Date createDt = new Date();
+    private String createOper = "";
+    private String content = "";
+    private String memo = "";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

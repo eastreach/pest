@@ -10,10 +10,12 @@ import javax.persistence.*;
 public class TZDFeature extends RootBean {
 
     private Integer id;
-    private Integer state;
-    private String code;
-    private String name;
-    private String mem;
+    private Integer state = 1;
+    private String code = "";
+    private String name = "";
+    private String memo = "";
+    private String pic = "";
+    private String pics = "";
 
 
     @Id
@@ -50,11 +52,27 @@ public class TZDFeature extends RootBean {
         this.name = name;
     }
 
-    public String getMem() {
-        return mem;
+    public String getMemo() {
+        return memo;
     }
 
-    public void setMem(String mem) {
-        this.mem = mem;
+    public void setMemo(String memo) {
+        this.memo = memo;
+    }
+
+    public String getPic() {
+        return pic;
+    }
+
+    public void setPic(String pic) {
+        this.pic = pic;
+    }
+
+    public String getPics() {
+        return pics;
+    }
+
+    public void setPics(String pics) {
+        this.pics = pics;
     }
 }

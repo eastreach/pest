@@ -10,12 +10,12 @@ import javax.persistence.*;
 public class TRGrainPest extends RootBean {
 
     private Integer id;
-    private Integer state;
-    private String grainCode;
-    private String pestCode;
+    private Integer state = 1;
+    private String grainCode = "";
+    private String pestCode = "";
 
-    private String name;
-    private String memo;
+    private String name = "";
+    private String memo = "";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

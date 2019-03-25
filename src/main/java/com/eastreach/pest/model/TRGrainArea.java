@@ -10,11 +10,11 @@ import javax.persistence.*;
 public class TRGrainArea extends RootBean {
 
     private Integer id;
-    private Integer state;
+    private Integer state = 1;
 
-    private String grainCode;
-    private String areaCode;
-    private String memo;
+    private String grainCode = "";
+    private String areaCode = "";
+    private String memo = "";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

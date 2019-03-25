@@ -16,6 +16,7 @@ public class TZDGrain extends RootBean {
 
     private String pic="";
     private String pics="";
+    private String memo="";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -65,5 +66,13 @@ public class TZDGrain extends RootBean {
 
     public void setPics(String pics) {
         this.pics = pics;
+    }
+
+    public String getMemo() {
+        return memo;
+    }
+
+    public void setMemo(String memo) {
+        this.memo = memo;
     }
 }
