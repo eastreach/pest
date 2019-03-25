@@ -14,13 +14,87 @@
 
 #### 数据库表结构设计.
 1. TPublishInfo: 专家发布信息.
+ ```
+ private Integer id;
+ private Integer state = 1;
+ private String code = "";
+ private String name = "";
+ private Date createDt = new Date();
+ private String createOper = "";
+ private String content = "";
+ private String memo = "";
+ ```
 1. TRGrainArea: 农作物与储量区域关系.
+```
+private Integer id;
+private Integer state = 1;
+private String grainCode = "";
+private String areaCode = "";
+private String memo = "";
+```
 1. TRGrainPest: 农作物与害虫对应关系.
+```
+private Integer id;
+private Integer state = 1;
+private String grainCode = "";
+private String pestCode = "";
+private String name = "";
+private String memo = "";
+```
 1. TZDArea: 储量区域.
+```
+private Integer id;
+private Integer state = 1;
+private String code = "";
+private String name = "";
+private String memo = "";
+private String pic = "";
+private String pics = "";
+```
 1. TZDFeature: 气候字典表.
+```
+private Integer id;
+private Integer state = 1;
+private String code = "";
+private String name = "";
+private String memo = "";
+private String pic = "";
+private String pics = "";
+```
 1. TZDGrain: 农作物.
+```
+private Integer id;
+private Integer state=1;
+private String code="";
+private String name="";
+private String pic="";
+private String pics="";
+private String memo="";
+```
 1. TZDOperator: 操作员.
+```
+private Integer id;
+private Integer state = 0;
+private Integer ifRoot = 0;     //是否管理员
+private String account = "";
+private String password = "";
+private String role = "";
+private String name = "";
+private String telephone = "";
+private String place="";
+private String province="";
+private String city="";
+```
 1. TZDPest: 害虫表.
+```
+private Integer id;
+private Integer state = 1;
+private String code = "";
+private String name = "";
+private String memo = "";
+private String pic = "";
+private String pics = "";
+```
 
 
 #### 接口地址.
@@ -36,34 +110,72 @@
 1. /operator/findAll: 账号信息查询.
 ##### 专家信息发布接口.
 1. /publishInfo/add:
+    1. code: 编号
 1. /publishInfo/update:
+    1. code: 编号
 1. /publishInfo/delete:
+    1. code: 编号
 1. /publishInfo/selectPage:
+    1. pageSize: 分页大小.
+    1. currentPage: 当前页.
 1. /publishInfo/select:
+    1. ...过滤查询字段.
 ##### 农作物区域关系接口.
 1. /grainArea/add:
+    1. code:
+    1. name:
 1. /grainArea/update:
+    1. code.
 1. /grainArea/delete:
+    1. code.
 1. /grainArea/selectPage:
+    1. pageSize: 分页大小.
+    1. currentPage: 当前页.
+    1. ...可选过滤字段
 1. /grainArea/select:
+    1. ...可选过滤字段.
 ##### 农作物害虫关系接口.
 1. /grainPest/add:
+     1. code:
+     1. name:
 1. /grainPest/update:
+    1. code:
 1. /grainPest/delete:
+    1. code:
 1. /grainPest/selectPage:
+    1. pageSize: 分页大小.
+    1. currentPage: 当前页.
+    1. ...可选过滤字段
 1. /grainPest/select:
+    1. ...可选过滤字段
 ##### 区域字典接口.
 1. /area/add:
+    1. code.
+    1. name.
 1. /area/update:
+    1. code.
 1. /area/delete:
+    1. code.
 1. /area/selectPage:
+    1. pageSize: 分页大小.
+    1. currentPage: 当前页.
+    1. ...可选过滤字段
 1. /area/select:
+    1. ...可选过滤字段
 ##### 气候字典接口.
 1. /feature/add:
+    1. code.
+    1. name.
 1. /feature/update:
+    1. code.
 1. /feature/delete:
+    1. code
 1. /feature/selectPage:
+    1. pageSize: 分页大小.
+    1. currentPage: 当前页.
+    1. ...可选过滤字段
 1. /feature/select:
+    1. ...可选过滤字段
 ##### 农作物接口.
 1. /grain/add:
 1. /grain/update.
