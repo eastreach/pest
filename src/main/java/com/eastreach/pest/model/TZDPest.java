@@ -10,12 +10,12 @@ import javax.persistence.*;
 public class TZDPest extends RootBean {
 
     private Integer id;
-    private Integer state = 1;
-    private String code = "";
-    private String name = "";
-    private String memo = "";
-    private String pic = "";
-    private String pics = "";
+    private Integer state;
+    private String code;
+    private String name;
+    private String memo;
+    private String pic;
+    private String pics;
 
 
     @Id

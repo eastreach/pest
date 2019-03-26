@@ -5,16 +5,25 @@ import com.eastreach.pest.dao.*;
 import com.eastreach.pest.error.BusinessException;
 import com.eastreach.pest.error.EnumBusinessError;
 import com.eastreach.pest.model.TZDOperator;
+import com.eastreach.pest.model.TZDPest;
 import com.eastreach.pest.response.CommonReturnType;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -30,6 +39,10 @@ public class RootGateWay {
     public static final String stateKey = "state";
     public static final String errCodeKey = "errCode";
     public static final String errMsgKey = "errMsg";
+    public static final String accountKey = "account";
+    public static final String passwordKey = "password";
+    public static final String pageSizeKey = "pageSize";
+    public static final String currentPageKey = "currentPage";
 
     @Autowired
     HttpServletRequest httpServletRequest;
@@ -86,19 +99,32 @@ public class RootGateWay {
         return stringBuffer.toString();
     }
 
+    /**
+     * 非空参数校验
+     */
+    public void checkParam(List<String> paramList) throws BusinessException {
+        for (String param : paramList) {
+            if (httpServletRequest.getParameter(param) == null) {
+                throw new BusinessException(EnumBusinessError.PARAMETER_VALIDATION_ERROR, "参数不能为空-" + param);
+            }
+        }
+    }
 
     /**
-     * 权限验证
+     * 获取请求参数值
+     */
+    public String getParam(String param) {
+        String value = httpServletRequest.getParameter(param);
+        return value;
+    }
+
+    /**
+     * 公共权限验证
      */
     public TZDOperator auth() throws BusinessException {
+        checkParam(Lists.newArrayList(accountKey, passwordKey));
         String account = httpServletRequest.getParameter("account");
-        if (StringUtils.isEmpty(account)) {
-            throw new BusinessException(EnumBusinessError.PARAMETER_VALIDATION_ERROR, "参数错误-account");
-        }
         String password = httpServletRequest.getParameter("password");
-        if (StringUtils.isEmpty(password)) {
-            throw new BusinessException(EnumBusinessError.PARAMETER_VALIDATION_ERROR, "参数错误-password");
-        }
         TZDOperator tzdOperator = tzdOperatorDao.find(account);
         if (tzdOperator == null) {
             throw new BusinessException(EnumBusinessError.AUTH_ERROR, "操作员不存在");
@@ -113,21 +139,33 @@ public class RootGateWay {
     }
 
     /**
-     * 获取请求参数
-     */
-    public String getParam(String param) {
-        String value = httpServletRequest.getParameter(param);
-        return value;
-    }
-
-    /**
-     * 操作员权限判断
+     * 特殊
      */
     public boolean auth(TZDOperator tzdOperator, String limitCode) {
         if (tzdOperator.getIfRoot() == 1) {
             return true;
         }
         return false;
+    }
+
+    /**
+     * 获取动态where语句
+     */
+    Specification getWhereClause() {
+        return new Specification() {
+            @Override
+            public Predicate toPredicate(Root root, CriteriaQuery query, CriteriaBuilder cb) {
+                return null;
+            }
+        };
+    }
+
+    /**
+     * 获取分页查询信息
+     */
+    PageRequest getPageRequest() throws BusinessException {
+        checkParam(Lists.newArrayList(pageSizeKey, currentPageKey));
+        return new PageRequest(Integer.parseInt(getParam(currentPageKey)), Integer.parseInt(getParam(pageSizeKey)));
     }
 
 

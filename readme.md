@@ -118,6 +118,8 @@ private String pics = "";
 1. /publishInfo/selectPage:
     1. pageSize: 分页大小.
     1. currentPage: 当前页.
+    1. startDt: 过滤开始时间-包含.
+    1. endDt: 过滤结束时间-包含.
 1. /publishInfo/select:
     1. ...过滤查询字段.
 ##### 农作物区域关系接口.
@@ -203,4 +205,11 @@ private String pics = "";
 
 
 
+#### 错误代码
+1. 10001:参数不合法.
+1. 10002:系统未知错误.
+1. 20001:授权错误.
+1. 20003:签名错误.
+1. 30001:数据错误,重复数据.
+1. 30002:数据错误,不存在数据.
 

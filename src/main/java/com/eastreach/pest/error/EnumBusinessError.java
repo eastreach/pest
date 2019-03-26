@@ -14,9 +14,9 @@ public enum EnumBusinessError implements CommonError {
     AUTH_NOT_EXIST_ERROR(20002, "授权信息不存在"),
     AUTH_SIGN_ERROR(20003, "签名错误"),
 
-    //30000开头为会员相关错误
-    MEMBER_EXIST_ERROR(30001, "会员ID已经存在"),
-    MEMBER_NOT_EXIST_ERROR(30002, "会员信息不存在"),
+    //30000开头为数据相关错误
+    DATA_EXIST_ERROR(30001, "数据已经存在"),
+    DATA_NOT_EXIST_ERROR(30002, "数据不存在"),
     ;
 
     private int errCode;

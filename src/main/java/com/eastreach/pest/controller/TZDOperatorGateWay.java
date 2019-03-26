@@ -2,8 +2,10 @@ package com.eastreach.pest.controller;
 
 import com.eastreach.pest.error.BusinessException;
 import com.eastreach.pest.error.EnumBusinessError;
+import com.eastreach.pest.metadata.TZDLimit;
 import com.eastreach.pest.model.TZDOperator;
 import com.eastreach.pest.response.CommonReturnType;
+import com.google.common.collect.Lists;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,10 +20,15 @@ public class TZDOperatorGateWay extends RootGateWay {
 
 
     @RequestMapping("/register")
-    public CommonReturnType register(String account, String password, String name) throws BusinessException {
+    public CommonReturnType register() throws BusinessException {
+        //业务处理
+        checkParam(Lists.<String>newArrayList("account", "password", "name"));
+        String account = getParam("account");
+        String password = getParam("password");
+        String name = getParam("name");
         TZDOperator tzdOperator = tzdOperatorDao.find(account);
         if (tzdOperator != null) {
-            throw new BusinessException(EnumBusinessError.AUTH_ERROR, "账号已经存在");
+            throw new BusinessException(EnumBusinessError.DATA_EXIST_ERROR, "账号已经存在");
         }
         tzdOperator = new TZDOperator();
         tzdOperator.setAccount(account);
@@ -33,9 +40,9 @@ public class TZDOperatorGateWay extends RootGateWay {
 
 
     @RequestMapping("/login")
-    public CommonReturnType login(String account) throws BusinessException {
-        auth();
-        TZDOperator tzdOperator = tzdOperatorDao.find(account);
+    public CommonReturnType login() throws BusinessException {
+        TZDOperator tzdOperator = auth();
+        //业务处理
         return CommonReturnType.create(tzdOperator);
     }
 
@@ -47,7 +54,7 @@ public class TZDOperatorGateWay extends RootGateWay {
         if (tzdOperatorTarget == null) {
             throw new BusinessException(EnumBusinessError.AUTH_ERROR, "目标账号不存在");
         }
-        if (tzdOperator.getIfRoot()!=1){
+        if (tzdOperator.getIfRoot() != 1) {
             throw new BusinessException(EnumBusinessError.AUTH_ERROR, "需要管理员权限");
         }
         return CommonReturnType.create(tzdOperator);
@@ -56,7 +63,11 @@ public class TZDOperatorGateWay extends RootGateWay {
 
     @RequestMapping("/findAll")
     public CommonReturnType findAll() throws BusinessException {
-        auth();
+        TZDOperator tzdOperator = auth();
+        if (!auth(tzdOperator, TZDLimit.limit_code_root)) {
+            throw new BusinessException(EnumBusinessError.AUTH_ERROR, "需要管理员权限");
+        }
+
         List<TZDOperator> tzdOperatorList = tzdOperatorDao.findAll();
         return CommonReturnType.create(tzdOperatorList);
     }
