@@ -15,13 +15,17 @@
 ### 操作员API.
 
 1. /operator/register: 账号注册申请,不需要权限.
-
 | 字段名称 | 字段描述 | 类型 | 允许为空 | 长度 | 说明 |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | account | 账号 | string | N |  |  |
 | password | 密码 | string | N |  |  |
 | name | 姓名 | string | N |  |  |
+
 1. /operator/login: 账号登录.
+| 字段名称 | 字段描述 | 类型 | 允许为空 | 长度 | 说明 |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| account | 账号 | string | N |  |  |
+| password | 密码 | string | N |  |  |
 1. /operator/update: 账号信息修改.
 1. /operator/findAll: 查找所有账号.
 
