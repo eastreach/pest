@@ -10,17 +10,17 @@ import javax.persistence.*;
 public class TZDOperator extends RootBean{
 
     private Integer id;
-    private Integer state = 0;
-    private Integer ifRoot = 0;     //是否管理员
-    private String account = "";
-    private String password = "";
-    private String role = "";
+    private Integer state = 0;      //状态,-1禁用,0未审核,1可用,非1不可用.
+    private Integer ifRoot = 0;     //是否系统管理员,系统管理员有所有权限.
+    private String account = "";    //登录账号
+    private String password = "";   //登录密码
+    private String role = "";       //操作员角色,权限模型采用简化单个操作员设置,
 
-    private String name = "";
-    private String telephone = "";
-    private String place="";
-    private String province="";
-    private String city="";
+    private String name = "";           //姓名.
+    private String telephone = "";      //电话
+    private String place="";            //住址
+    private String province="";         //省份
+    private String city="";             //城市
 
 
     @Id

@@ -10,13 +10,13 @@ import javax.persistence.*;
 public class TZDArea extends RootBean {
 
     private Integer id;
-    private Integer state = 1;
-    private String code = "";
-    private String name = "";
+    private Integer state = 1;  //状态码, 1可用,非1禁用.
+    private String code = "";   //代码, 唯一标识
+    private String name = "";   //区域名称
 
-    private String memo = "";
-    private String pic = "";
-    private String pics = "";
+    private String memo = "";   //备注
+    private String pic = "";    //图片
+    private String pics = "";   //多图.
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

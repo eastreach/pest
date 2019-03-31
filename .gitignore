@@ -15,3 +15,4 @@ out/
 !.gitignore
 lib/
 public/**
+readme_local.md

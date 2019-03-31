@@ -11,11 +11,13 @@ public class TRGrainPest extends RootBean {
 
     private Integer id;
     private Integer state = 1;
-    private String grainCode = "";
-    private String pestCode = "";
+    private String grainCode = "";  //农作物代码
+    private String grainName = "";  //农作物名称
+    private String pestCode = "";   //害虫代码
+    private String pestName = "";   //害虫名称
 
     private String name = "";
-    private String memo = "";
+    private String memo = "";       //备注
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -65,5 +67,21 @@ public class TRGrainPest extends RootBean {
 
     public void setMemo(String memo) {
         this.memo = memo;
+    }
+
+    public String getGrainName() {
+        return grainName;
+    }
+
+    public void setGrainName(String grainName) {
+        this.grainName = grainName;
+    }
+
+    public String getPestName() {
+        return pestName;
+    }
+
+    public void setPestName(String pestName) {
+        this.pestName = pestName;
     }
 }

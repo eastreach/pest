@@ -2,6 +2,7 @@ package com.eastreach.pest.model;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.UUID;
 
 /**
  *
@@ -11,14 +12,14 @@ import java.util.Date;
 public class TPublishInfo extends RootBean {
 
     private Integer id;
-    private Integer state = 1;
+    private Integer state = 1;          //状态
 
-    private String code = "";
-    private String name = "";
-    private Date createDt = new Date();
-    private String createOper = "";
-    private String content = "";
-    private String memo = "";
+    private String code = UUID.randomUUID().toString();           //发布信息唯一流水号,后台系统生成.
+    private String name = "";           //发布信息名称title.
+    private Date createDt = new Date();  //发布时间
+    private String createOper = "";      //发布操作员工号
+    private String content = "";         //发布内容
+    private String memo = "";            //备注
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
