@@ -40,7 +40,8 @@
 | account | 账号 | string | N |  |  |
 | password | 密码 | string | N |  |  |
 
-### [区域API]{#area}
+### <span id="area">区域API</span>
+
 1. /area/add: 区域增加.
 
 | 字段名称 | 字段描述 | 类型 | 允许为空 | 长度 | 说明 |
