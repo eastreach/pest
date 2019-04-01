@@ -119,11 +119,11 @@ public class TZDAreaGateWay extends RootGateWay {
             @Override
             public Predicate toPredicate(Root<TZDArea> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
                 List<Predicate> predicate = Lists.newArrayList();
-                if (httpServletRequest.getParameter("code") != null) {
-                    predicate.add(cb.equal(root.get("code"), httpServletRequest.getParameter("code")));
+                if (getParam("code") != null) {
+                    predicate.add(cb.equal(root.get("code"), getParam("code")));
                 }
-                if (httpServletRequest.getParameter("name") != null) {
-                    predicate.add(cb.like(root.get("name").as(String.class), "%" + httpServletRequest.getParameter("name") + "%"));
+                if (getParam("nameLike") != null) {
+                    predicate.add(cb.like(root.get("name").as(String.class), "%" + getParam("nameLike") + "%"));
                 }
                 Predicate[] pre = new Predicate[predicate.size()];
                 return query.where(predicate.toArray(pre)).getRestriction();

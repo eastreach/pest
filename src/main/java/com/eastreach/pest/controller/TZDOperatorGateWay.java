@@ -46,17 +46,15 @@ public class TZDOperatorGateWay extends RootGateWay {
         return CommonReturnType.create(tzdOperator);
     }
 
+    /**
+     * todo json->object
+     */
     @RequestMapping("/update")
     public CommonReturnType update(String account, String accountTarget) throws BusinessException {
-        auth();
-        TZDOperator tzdOperator = tzdOperatorDao.find(account);
-        TZDOperator tzdOperatorTarget = tzdOperatorDao.find(accountTarget);
-        if (tzdOperatorTarget == null) {
-            throw new BusinessException(EnumBusinessError.AUTH_ERROR, "目标账号不存在");
-        }
-        if (tzdOperator.getIfRoot() != 1) {
-            throw new BusinessException(EnumBusinessError.AUTH_ERROR, "需要管理员权限");
-        }
+        TZDOperator tzdOperator = auth();
+
+        //业务处理
+        checkParam(Lists.<String>newArrayList("account", "password", "oldOperator","newOperator"));
         return CommonReturnType.create(tzdOperator);
     }
 

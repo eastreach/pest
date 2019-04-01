@@ -111,14 +111,14 @@ public class TRGrainPestGateWay extends RootGateWay {
             @Override
             public Predicate toPredicate(Root<TRGrainPest> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
                 List<Predicate> predicate = Lists.newArrayList();
-                if (httpServletRequest.getParameter("grainCode") != null) {
-                    predicate.add(cb.equal(root.get("grainCode"), httpServletRequest.getParameter("grainCode")));
+                if (getParam("grainCode") != null) {
+                    predicate.add(cb.equal(root.get("grainCode"), getParam("grainCode")));
                 }
-                if (httpServletRequest.getParameter("pestCode") != null) {
-                    predicate.add(cb.equal(root.get("pestCode"), httpServletRequest.getParameter("pestCode")));
+                if (getParam("pestCode") != null) {
+                    predicate.add(cb.equal(root.get("pestCode"), getParam("pestCode")));
                 }
-                if (httpServletRequest.getParameter("memo") != null) {
-                    predicate.add(cb.like(root.get("memo").as(String.class), "%" + httpServletRequest.getParameter("memo") + "%"));
+                if (getParam("memo") != null) {
+                    predicate.add(cb.like(root.get("memo").as(String.class), "%" + getParam("memo") + "%"));
                 }
                 Predicate[] pre = new Predicate[predicate.size()];
                 return query.where(predicate.toArray(pre)).getRestriction();

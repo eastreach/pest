@@ -110,17 +110,17 @@ public class TPublishInfoGateWay extends RootGateWay {
             @Override
             public Predicate toPredicate(Root<TPublishInfo> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
                 List<Predicate> predicate = Lists.newArrayList();
-                if (httpServletRequest.getParameter("code") != null) {
-                    predicate.add(cb.equal(root.get("code"), httpServletRequest.getParameter("code")));
+                if (getParam("code") != null) {
+                    predicate.add(cb.equal(root.get("code"), getParam("code")));
                 }
-                if (httpServletRequest.getParameter("name") != null) {
-                    predicate.add(cb.like(root.get("name").as(String.class), "%" + httpServletRequest.getParameter("name") + "%"));
+                if (getParam("name") != null) {
+                    predicate.add(cb.like(root.get("name").as(String.class), "%" + getParam("name") + "%"));
                 }
-                if (httpServletRequest.getParameter("startDt") != null) {
-                    predicate.add(cb.greaterThanOrEqualTo(root.get("createDt").as(String.class), httpServletRequest.getParameter("startDt")));
+                if (getParam("startDt") != null) {
+                    predicate.add(cb.greaterThanOrEqualTo(root.get("createDt").as(String.class), getParam("startDt")));
                 }
-                if (httpServletRequest.getParameter("endDt") != null) {
-                    predicate.add(cb.lessThanOrEqualTo(root.get("createDt").as(String.class), httpServletRequest.getParameter("endDt")));
+                if (getParam("endDt") != null) {
+                    predicate.add(cb.lessThanOrEqualTo(root.get("createDt").as(String.class), getParam("endDt")));
                 }
                 Predicate[] pre = new Predicate[predicate.size()];
                 return query.where(predicate.toArray(pre)).getRestriction();
