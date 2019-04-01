@@ -19,11 +19,14 @@ private String city="";             //城市
 private Integer id;
 private Integer state = 1;  //状态码, 1可用,非1禁用.
 private String code = "";   //代码, 唯一标识
-private String name = "";   //区域名称
+private String name = "";   //区域名称, 青藏高原储量区
 
 private String memo = "";   //备注
 private String pic = "";    //图片
 private String pics = "";   //多图.
+private String areaDesc = "";       //主要地区, 西藏...
+private String featureDesc = "";    //生态特点.
+private String grainDesc = "";      //主要粮食作物
 ```
 ### TZDFeature: 气候.
 ```
