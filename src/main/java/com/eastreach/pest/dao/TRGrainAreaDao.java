@@ -13,4 +13,6 @@ public interface TRGrainAreaDao extends JpaRepository<TRGrainArea, Integer>, Jpa
 
     @Query("select u from TRGrainArea u where u.grainCode=:grainCode and u.areaCode=:areaCode")
     TRGrainArea find(@Param("grainCode") String grainCode, @Param("areaCode") String areaCode);
+
+    TRGrainArea findByGrainCodeAndAreaCode(String grainCode, String areaCode);
 }

@@ -14,7 +14,7 @@
 
 ## API服务
 1. [操作员API](#operator)
-1. [区域API](#area)
+1. [区域API](api_area.md)
 1. [气候API](#feature)
 1. [农作物API](#grain)
 1. [害虫API](#pest)
@@ -67,6 +67,11 @@
     | areaDesc | 主要区域 | string | Y |  |  |
     | featureDesc | 生态特点 | string | Y |  |  |
     | grainDesc | 主要作物 | string | Y |  |  |
+1. /area/addBatch: 区域增加-批量.
+
+    | 字段名称 | 字段描述 | 类型 | 允许为空 | 长度 | 说明 |
+    | :--- | :--- | :--- | :--- | :--- | :--- |
+    | tzdAreaList | 区域对象列表 | array | N |  |  |
 1. /area/update: 区域修改.
 
     | 字段名称 | 字段描述 | 类型 | 允许为空 | 长度 | 说明 |
@@ -79,11 +84,21 @@
     | areaDesc | 主要区域 | string | Y |  |  |
     | featureDesc | 生态特点 | string | Y |  |  |
     | grainDesc | 主要作物 | string | Y |  |  |
+1. /area/updateBatch: 区域修改-批量.
+
+    | 字段名称 | 字段描述 | 类型 | 允许为空 | 长度 | 说明 |
+    | :--- | :--- | :--- | :--- | :--- | :--- |
+    | tzdAreaList | 区域对象列表 | array | N |  |  |
 1. /area/delete: 区域删除.
 
     | 字段名称 | 字段描述 | 类型 | 允许为空 | 长度 | 说明 |
     | :--- | :--- | :--- | :--- | :--- | :--- |
     | code | 代码 | string | N |  |  |
+1. /area/deleteBatch: 区域删除-批量.
+
+    | 字段名称 | 字段描述 | 类型 | 允许为空 | 长度 | 说明 |
+    | :--- | :--- | :--- | :--- | :--- | :--- |
+    | tzdAreaList | 区域对象列表 | array | N |  |  |
 1. /area/selectPage: 区域查询分页.
 
     | 字段名称 | 字段描述 | 类型 | 允许为空 | 长度 | 说明 |

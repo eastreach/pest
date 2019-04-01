@@ -17,6 +17,7 @@ public enum EnumBusinessError implements CommonError {
     //30000开头为数据相关错误
     DATA_EXIST_ERROR(30001, "数据已经存在"),
     DATA_NOT_EXIST_ERROR(30002, "数据不存在"),
+    DATA_CONNENT_ERROR(30003, "数据内容错误"),
     ;
 
     private int errCode;

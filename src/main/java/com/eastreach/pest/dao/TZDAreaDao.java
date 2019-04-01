@@ -13,4 +13,6 @@ public interface TZDAreaDao extends JpaRepository<TZDArea, Integer>,JpaSpecifica
 
     @Query("select u from TZDArea u where u.code=:code")
     TZDArea find(@Param("code") String code);
+
+    TZDArea findByCode(String code);
 }

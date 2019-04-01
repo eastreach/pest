@@ -13,4 +13,6 @@ public interface TRGrainPestDao extends JpaRepository<TRGrainPest, Integer>, Jpa
 
     @Query("select u from TRGrainPest u where u.grainCode=:grainCode and u.pestCode=:pestCode")
     TRGrainPest find(@Param("grainCode") String grainCode, @Param("pestCode") String pestCode);
+
+    TRGrainPest findByGrainCodeAndPestCode(String grainCode, String pestCode);
 }
