@@ -1,0 +1,35 @@
+package com.eastreach.pest;
+
+import com.eastreach.pest.util.HttpUtil;
+import com.google.common.collect.Maps;
+import org.testng.annotations.Test;
+
+import java.io.IOException;
+import java.util.Map;
+
+/**
+ *
+ **/
+public class TZDAreaGateWayTest  extends RootTest {
+
+
+    @Test
+    public void add() throws IOException {
+        Map<String,String> map = Maps.newConcurrentMap();
+        map.put("account",account_root);
+        map.put("password",password_root);
+        map.put("code","qzgy");
+        map.put("name","青藏高原储粮区");
+        map.put("memo","");
+        map.put("areaDesc","西藏,青海,四川部分地区");
+        map.put("featureDesc","高寒干燥");
+        map.put("grainDesc","青稞,春小麦,冬小麦");
+
+        String url = "/area/add";
+
+        String response = HttpUtil.post(hostUrl+url,map);
+        logger.info(url);
+        logger.info(response);
+
+    }
+}

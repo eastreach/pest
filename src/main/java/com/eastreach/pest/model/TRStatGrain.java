@@ -1,11 +1,14 @@
 package com.eastreach.pest.model;
 
+import javax.persistence.*;
 import java.util.Date;
 import java.util.UUID;
 
 /**
  * 农作物产量统计
  **/
+@Entity
+@Table
 public class TRStatGrain extends RootBean {
 
     private Integer id;
@@ -20,6 +23,8 @@ public class TRStatGrain extends RootBean {
     private String grainCode = "";    //农作物代码
     private Double grainValue;      //农作物产量
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Integer getId() {
         return id;
     }

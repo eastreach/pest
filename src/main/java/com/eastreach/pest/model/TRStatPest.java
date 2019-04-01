@@ -1,11 +1,14 @@
 package com.eastreach.pest.model;
 
+import javax.persistence.*;
 import java.util.Date;
 import java.util.UUID;
 
 /**
  * 害虫数量统计
  **/
+@Entity
+@Table
 public class TRStatPest extends RootBean {
 
     private Integer id;
@@ -21,6 +24,8 @@ public class TRStatPest extends RootBean {
     private Double pestValue;       //害虫数量
 
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Integer getId() {
         return id;
     }

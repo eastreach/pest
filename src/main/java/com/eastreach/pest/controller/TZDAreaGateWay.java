@@ -73,6 +73,49 @@ public class TZDAreaGateWay extends RootGateWay {
         return CommonReturnType.create(tzdArea);
     }
 
+    @RequestMapping("/addBatch")
+    public CommonReturnType addBatch() throws BusinessException {
+        TZDOperator tzdOperator = auth();
+
+        //业务处理
+        checkParam(Lists.<String>newArrayList("code", "name"));
+        String code = getParam("code");
+        String name = getParam("name");
+        TZDArea tzdArea = tzdAreaDao.find(code);
+        if (tzdArea != null) {
+            throw new BusinessException(EnumBusinessError.DATA_EXIST_ERROR, "代码已经存在");
+        }
+        tzdArea = new TZDArea();
+        tzdArea.setCode(code);
+        tzdArea.setName(name);
+        String memo = getParam("memo");
+        if (memo != null) {
+            tzdArea.setMemo(memo);
+        }
+        String pic = getParam("pic");
+        if (pic != null) {
+            tzdArea.setPic(pic);
+        }
+        String pics = getParam("pics");
+        if (pics != null) {
+            tzdArea.setPics(pics);
+        }
+        String areaDesc = getParam("areaDesc");
+        if (areaDesc != null) {
+            tzdArea.setAreaDesc(areaDesc);
+        }
+        String featureDesc = getParam("featureDesc");
+        if (featureDesc != null) {
+            tzdArea.setFeatureDesc(featureDesc);
+        }
+        String grainDesc = getParam("grainDesc");
+        if (grainDesc != null) {
+            tzdArea.setGrainDesc(grainDesc);
+        }
+        tzdAreaDao.save(tzdArea);
+        return CommonReturnType.create(tzdArea);
+    }
+
     @RequestMapping("/delete")
     public CommonReturnType delete() throws BusinessException {
         TZDOperator tzdOperator = auth();
