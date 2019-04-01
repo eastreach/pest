@@ -64,6 +64,9 @@
     | memo | 备注 | string | Y |  |  |
     | pic | 图片地址 | string | Y |  |  |
     | pics | 多图片地址 | string | Y |  |  |
+    | areaDesc | 主要区域 | string | Y |  |  |
+    | featureDesc | 生态特点 | string | Y |  |  |
+    | grainDesc | 主要作物 | string | Y |  |  |
 1. /area/update: 区域修改.
 
     | 字段名称 | 字段描述 | 类型 | 允许为空 | 长度 | 说明 |
@@ -73,6 +76,9 @@
     | memo | 备注 | string | Y |  |  |
     | pic | 图片地址 | string | Y |  |  |
     | pics | 多图片地址 | string | Y |  |  |
+    | areaDesc | 主要区域 | string | Y |  |  |
+    | featureDesc | 生态特点 | string | Y |  |  |
+    | grainDesc | 主要作物 | string | Y |  |  |
 1. /area/delete: 区域删除.
 
     | 字段名称 | 字段描述 | 类型 | 允许为空 | 长度 | 说明 |
@@ -86,12 +92,20 @@
     | currentPage | 当前页面 | int | N |  |索引从0开始  |
     | code | 代码 | string | Y |  |精确匹配  |
     | nameLike | 名称 | string | Y |  |模糊匹配  |
+    | memo | 备注 | string | Y |  |模糊匹配  |
+    | areaDescLike | 主要区域 | string | Y |  |模糊匹配  |
+    | featureDesc | 生态特点 | string | Y |  |模糊匹配  |
+    | grainDesc | 主要作物 | string | Y |  |模糊匹配  |
 1. /area/select: 区域查询.
 
     | 字段名称 | 字段描述 | 类型 | 允许为空 | 长度 | 说明 |
     | :--- | :--- | :--- | :--- | :--- | :--- |
     | code | 代码 | string | Y |  |精确匹配  |
     | nameLike | 名称 | string | Y |  |模糊匹配  |
+    | memo | 备注 | string | Y |  |模糊匹配  |
+    | areaDescLike | 主要区域 | string | Y |  |模糊匹配  |
+    | featureDesc | 生态特点 | string | Y |  |模糊匹配  |
+    | grainDesc | 主要作物 | string | Y |  |模糊匹配  |
 ### <span id="feature">气候API</span>
 1. /feature/add: 气候新增.
 

@@ -57,6 +57,18 @@ public class TZDAreaGateWay extends RootGateWay {
         if (pics != null) {
             tzdArea.setPics(pics);
         }
+        String areaDesc = getParam("areaDesc");
+        if (areaDesc != null) {
+            tzdArea.setAreaDesc(areaDesc);
+        }
+        String featureDesc = getParam("featureDesc");
+        if (featureDesc != null) {
+            tzdArea.setFeatureDesc(featureDesc);
+        }
+        String grainDesc = getParam("grainDesc");
+        if (grainDesc != null) {
+            tzdArea.setGrainDesc(grainDesc);
+        }
         tzdAreaDao.save(tzdArea);
         return CommonReturnType.create(tzdArea);
     }
@@ -106,6 +118,18 @@ public class TZDAreaGateWay extends RootGateWay {
         if (pics != null) {
             tzdArea.setPics(pics);
         }
+        String areaDesc = getParam("areaDesc");
+        if (areaDesc != null) {
+            tzdArea.setAreaDesc(areaDesc);
+        }
+        String featureDesc = getParam("featureDesc");
+        if (featureDesc != null) {
+            tzdArea.setFeatureDesc(featureDesc);
+        }
+        String grainDesc = getParam("grainDesc");
+        if (grainDesc != null) {
+            tzdArea.setGrainDesc(grainDesc);
+        }
         tzdAreaDao.save(tzdArea);
         return CommonReturnType.create(tzdArea);
     }
@@ -124,6 +148,18 @@ public class TZDAreaGateWay extends RootGateWay {
                 }
                 if (getParam("nameLike") != null) {
                     predicate.add(cb.like(root.get("name").as(String.class), "%" + getParam("nameLike") + "%"));
+                }
+                if (getParam("memo") != null) {
+                    predicate.add(cb.like(root.get("memo").as(String.class), "%" + getParam("memo") + "%"));
+                }
+                if (getParam("areaDescLike") != null) {
+                    predicate.add(cb.like(root.get("areaDesc").as(String.class), "%" + getParam("areaDescLike") + "%"));
+                }
+                if (getParam("featureDescLike") != null) {
+                    predicate.add(cb.like(root.get("featureDesc").as(String.class), "%" + getParam("featureDescLike") + "%"));
+                }
+                if (getParam("grainDescLike") != null) {
+                    predicate.add(cb.like(root.get("grainDesc").as(String.class), "%" + getParam("grainDescLike") + "%"));
                 }
                 Predicate[] pre = new Predicate[predicate.size()];
                 return query.where(predicate.toArray(pre)).getRestriction();
