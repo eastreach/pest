@@ -13,10 +13,10 @@
 1. 30002:数据错误,不存在数据.
 
 ## API服务
-1. [operator](#operator)
-1. [area](#area)
+1. [操作员API](#operator)
+1. [区域API](#area)
 
- [operator]{#operator}
+### [操作员API]{#operator}
 
 1. /operator/register: 账号注册申请,不需要权限.
 
@@ -40,7 +40,7 @@
 | account | 账号 | string | N |  |  |
 | password | 密码 | string | N |  |  |
 
-### [area]{#area}
+### [区域API]{#area}
 1. /area/add: 区域增加.
 
 | 字段名称 | 字段描述 | 类型 | 允许为空 | 长度 | 说明 |
