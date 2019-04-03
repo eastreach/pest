@@ -22,6 +22,13 @@ public class TRStatPest extends RootBean {
     private String areaCode = "";     //区域代码
     private String pestCode = "";     //害虫代码
     private Double pestValue;       //害虫数量
+    private Double longitude;            //经度
+    private Double latitude;             //纬度
+    private Double temperature;         //温度
+    private Double humidity;            //湿度
+    private String memo;
+    private String province;
+    private String city;
 
 
     @Id
@@ -96,5 +103,61 @@ public class TRStatPest extends RootBean {
 
     public void setPestValue(Double pestValue) {
         this.pestValue = pestValue;
+    }
+
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
+    }
+
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
+    }
+
+    public Double getTemperature() {
+        return temperature;
+    }
+
+    public void setTemperature(Double temperature) {
+        this.temperature = temperature;
+    }
+
+    public Double getHumidity() {
+        return humidity;
+    }
+
+    public void setHumidity(Double humidity) {
+        this.humidity = humidity;
+    }
+
+    public String getMemo() {
+        return memo;
+    }
+
+    public void setMemo(String memo) {
+        this.memo = memo;
+    }
+
+    public String getProvince() {
+        return province;
+    }
+
+    public void setProvince(String province) {
+        this.province = province;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
     }
 }

@@ -62,6 +62,10 @@ public class RootGateWay {
     TZDOperatorDao tzdOperatorDao;
     @Autowired
     TZDPestDao tzdPestDao;
+    @Autowired
+    TRStatGrainDao trStatGrainDao;
+    @Autowired
+    TRStatPestDao trStatPestDao;
 
 
     /**

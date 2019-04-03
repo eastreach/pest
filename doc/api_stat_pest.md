@@ -10,7 +10,14 @@
     | toDt | 生产结束时间 | datetime | N |  |  |
     | areaCode | 区域代码 | string | N |  |  |
     | pestCode |害虫代码 | string | N |  |  |
-    | grainValue |农作物产量 | double | N |  |  |
+    | pestValue |害虫数量 | double | N |  |  |
+    | longitude |经度 | double | N |  |  |
+    | latitude |维度 | double | N |  |  |
+    | temperature |维度 | double | N |  |  |
+    | humidity |湿度 | double | N |  |  |
+    | memo |备注 | double | N |  |  |
+    | province |省份 | double | N |  |  |
+    | city |城市 | double | N |  |  |
 1. /statPest/update: 害虫数量统计修改.
 
     | 字段名称 | 字段描述 | 类型 | 允许为空 | 长度 | 说明 |

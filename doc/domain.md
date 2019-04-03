@@ -121,4 +121,11 @@ private Date toDt;              //统计结束时间
 private String areaCode = "";     //区域代码
 private String pestCode = "";     //害虫代码
 private Double pestValue;       //害虫数量
+private Double longitude;            //经度
+private Double latitude;             //纬度
+private Double temperature;         //温度
+private Double humidity;            //湿度
+private String memo;
+private String province;
+private String city;
 ```
