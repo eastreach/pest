@@ -5,10 +5,7 @@ import com.alibaba.fastjson.TypeReference;
 import com.eastreach.pest.error.BusinessException;
 import com.eastreach.pest.error.EnumBusinessError;
 import com.eastreach.pest.metadata.TZDLimit;
-import com.eastreach.pest.model.TRGrainArea;
-import com.eastreach.pest.model.TRStatPest;
-import com.eastreach.pest.model.TZDOperator;
-import com.eastreach.pest.model.TZDPest;
+import com.eastreach.pest.model.*;
 import com.eastreach.pest.response.CommonReturnType;
 import com.google.common.collect.Lists;
 import org.joda.time.DateTime;
@@ -46,6 +43,9 @@ public class TRStatPestGateWay extends RootGateWay {
                 if (getParam("areaCode") != null) {
                     predicate.add(cb.equal(root.get("areaCode"), getParam("areaCode")));
                 }
+                if (getParam("grainCode") != null) {
+                    predicate.add(cb.equal(root.get("grainCode"), getParam("grainCode")));
+                }
                 if (getParam("pestCode") != null) {
                     predicate.add(cb.equal(root.get("pestCode"), getParam("pestCode")));
                 }
@@ -79,13 +79,29 @@ public class TRStatPestGateWay extends RootGateWay {
         TZDOperator tzdOperator = auth();
 
         //业务处理
-        checkParam(Lists.newArrayList("year", "month", "areaCode", "pestCode", "pestValue"));
+        checkParam(Lists.newArrayList("year", "month", "areaCode", "grainCode", "pestCode", "pestValue"));
         TRStatPest trStatPest = new TRStatPest();
         trStatPest.setYear(Integer.parseInt(getParam("year")));
         trStatPest.setMonth(Integer.parseInt(getParam("month")));
         trStatPest.setDt(DateTime.now().withYear(trStatPest.getYear()).withMonthOfYear(trStatPest.getMonth()).withTimeAtStartOfDay().toDate());
-        trStatPest.setAreaCode(getParam("areaCode"));
-        trStatPest.setPestCode(getParam("pestCode"));
+        TZDArea tzdArea = tzdAreaDao.findByCode(getParam("areaCode"));
+        if (tzdArea == null) {
+            throw new BusinessException(EnumBusinessError.DATA_NOT_EXIST_ERROR, "区域不存在-" + getParam("areaCode"));
+        } else {
+            trStatPest.setAreaCode(tzdArea.getCode());
+        }
+        TZDGrain tzdGrain = tzdGrainDao.find(getParam("grainCode"));
+        if (tzdGrain == null) {
+            throw new BusinessException(EnumBusinessError.DATA_NOT_EXIST_ERROR, "作物不存在-" + getParam("grainCode"));
+        } else {
+            trStatPest.setGrainCode(tzdGrain.getCode());
+        }
+        TZDPest tzdPest = tzdPestDao.find(getParam("pestCode"));
+        if (tzdPest == null) {
+            throw new BusinessException(EnumBusinessError.DATA_NOT_EXIST_ERROR, "害虫不存在-" + getParam("pestCode"));
+        } else {
+            trStatPest.setPestCode(tzdPest.getCode());
+        }
         trStatPest.setPestValue(Double.parseDouble(getParam("pestValue")));
         if (!StringUtils.isEmpty(getParam("longitude"))) {
             trStatPest.setLongitude(Double.parseDouble(getParam("longitude")));
@@ -202,8 +218,8 @@ public class TRStatPestGateWay extends RootGateWay {
         TZDOperator tzdOperator = auth();
 
         //业务处理
-        List<TRGrainArea> trGrainAreaList = trStatPestDao.findAll(getWhereClause());
-        return CommonReturnType.create(trGrainAreaList);
+        List<TRStatPest> trStatPestList = trStatPestDao.findAll(getWhereClause());
+        return CommonReturnType.create(trStatPestList);
     }
 
     @RequestMapping("/selectPage")
@@ -211,7 +227,7 @@ public class TRStatPestGateWay extends RootGateWay {
         TZDOperator tzdOperator = auth();
 
         //业务处理
-        Page<TRGrainArea> trGrainAreaPage = trStatPestDao.findAll(getWhereClause(), getPageRequest());
+        Page<TRStatPest> trGrainAreaPage = trStatPestDao.findAll(getWhereClause(), getPageRequest());
         return CommonReturnType.create(trGrainAreaPage);
     }
 

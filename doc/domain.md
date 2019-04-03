@@ -121,6 +121,7 @@ private Date toDt;              //统计结束时间
 private Integer year;             //年份
 private Integer month;            //月份
 private String areaCode = "";     //区域代码
+private String grainCode = "";     //作物代码
 private String pestCode = "";     //害虫代码
 private Double pestValue;       //害虫数量
 private Double longitude;            //经度

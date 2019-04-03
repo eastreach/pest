@@ -5,29 +5,24 @@
 
     | 字段名称 | 字段描述 | 类型 | 允许为空 | 长度 | 说明 |
     | :--- | :--- | :--- | :--- | :--- | :--- |
-    | dt | 生产日期 | datetime | N |  | 可按年,月统计 |
-    | fromDt | 生产开始时间 | datetime | N |  |  |
-    | toDt | 生产结束时间 | datetime | N |  |  |
     | year | 年份  | int | N |  |  |
     | month | 月份 | int | N |  |  |
     | areaCode | 区域代码 | string | N |  |  |
+    | grainCode | 作物代码 | string | N |  |  |
     | pestCode |害虫代码 | string | N |  |  |
     | pestValue |害虫数量 | double | N |  |  |
-    | longitude |经度 | double | N |  |  |
-    | latitude |维度 | double | N |  |  |
-    | temperature |维度 | double | N |  |  |
-    | humidity |湿度 | double | N |  |  |
-    | memo |备注 | double | N |  |  |
-    | province |省份 | double | N |  |  |
-    | city |城市 | double | N |  |  |
+    | longitude |经度 | double | Y |  |  |
+    | latitude |维度 | double | Y |  |  |
+    | temperature |维度 | double | Y |  |  |
+    | humidity |湿度 | double | Y |  |  |
+    | memo |备注 | double | Y |  |  |
+    | province |省份 | double | Y |  |  |
+    | city |城市 | double | Y |  |  |
 1. /statPest/update: 害虫数量统计修改.
 
     | 字段名称 | 字段描述 | 类型 | 允许为空 | 长度 | 说明 |
     | :--- | :--- | :--- | :--- | :--- | :--- |
     | code | 代码 | string | N |  |  |
-    | dt | 生产日期 | datetime | Y |  | 可按年,月统计 |
-    | fromDt | 生产开始时间 | datetime | Y |  |  |
-    | toDt | 生产结束时间 | datetime | Y |  |  |
     | areaCode | 区域代码 | string | Y |  |  |
     | pestCode |害虫代码 | string | Y |  |  |
     | grainValue |农作物产量 | double | Y |  |  |

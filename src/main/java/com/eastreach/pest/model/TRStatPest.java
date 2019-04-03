@@ -22,6 +22,7 @@ public class TRStatPest extends RootBean {
     private Integer year;             //年份
     private Integer month;            //月份
     private String areaCode = "";     //区域代码
+    private String grainCode = "";     //作物代码
     private String pestCode = "";     //害虫代码
     private Double pestValue;       //害虫数量
     private Double longitude;            //经度
@@ -177,5 +178,13 @@ public class TRStatPest extends RootBean {
 
     public void setMonth(Integer month) {
         this.month = month;
+    }
+
+    public String getGrainCode() {
+        return grainCode;
+    }
+
+    public void setGrainCode(String grainCode) {
+        this.grainCode = grainCode;
     }
 }
