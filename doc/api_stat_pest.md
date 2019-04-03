@@ -8,6 +8,8 @@
     | dt | 生产日期 | datetime | N |  | 可按年,月统计 |
     | fromDt | 生产开始时间 | datetime | N |  |  |
     | toDt | 生产结束时间 | datetime | N |  |  |
+    | year | 年份  | int | N |  |  |
+    | month | 月份 | int | N |  |  |
     | areaCode | 区域代码 | string | N |  |  |
     | pestCode |害虫代码 | string | N |  |  |
     | pestValue |害虫数量 | double | N |  |  |

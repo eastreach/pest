@@ -118,6 +118,8 @@ private Date dt;                //统计时间
 private Date fromDt;            //统计开始时间
 private Date toDt;              //统计结束时间
 
+private Integer year;             //年份
+private Integer month;            //月份
 private String areaCode = "";     //区域代码
 private String pestCode = "";     //害虫代码
 private Double pestValue;       //害虫数量

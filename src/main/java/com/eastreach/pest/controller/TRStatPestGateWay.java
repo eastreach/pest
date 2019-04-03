@@ -52,6 +52,12 @@ public class TRStatPestGateWay extends RootGateWay {
                 if (getParam("province") != null) {
                     predicate.add(cb.equal(root.get("province"), getParam("province")));
                 }
+                if (getParam("year") != null) {
+                    predicate.add(cb.equal(root.get("year"), getParam("year")));
+                }
+                if (getParam("month") != null) {
+                    predicate.add(cb.equal(root.get("month"), getParam("month")));
+                }
                 if (getParam("city") != null) {
                     predicate.add(cb.equal(root.get("city"), getParam("city")));
                 }
@@ -73,16 +79,26 @@ public class TRStatPestGateWay extends RootGateWay {
         TZDOperator tzdOperator = auth();
 
         //业务处理
-        checkParam(Lists.newArrayList("dt", "areaCode", "pestCode", "pestValue", "longitude", "latitude", "temperature", "humidity"));
+        checkParam(Lists.newArrayList("year", "month", "areaCode", "pestCode", "pestValue"));
         TRStatPest trStatPest = new TRStatPest();
-        trStatPest.setDt(DateTime.parse(getParam("dt")).toDate());
+        trStatPest.setYear(Integer.parseInt(getParam("year")));
+        trStatPest.setMonth(Integer.parseInt(getParam("month")));
+        trStatPest.setDt(DateTime.now().withYear(trStatPest.getYear()).withMonthOfYear(trStatPest.getMonth()).withTimeAtStartOfDay().toDate());
         trStatPest.setAreaCode(getParam("areaCode"));
         trStatPest.setPestCode(getParam("pestCode"));
         trStatPest.setPestValue(Double.parseDouble(getParam("pestValue")));
-        trStatPest.setLongitude(Double.parseDouble(getParam("longitude")));
-        trStatPest.setLatitude(Double.parseDouble(getParam("latitude")));
-        trStatPest.setTemperature(Double.parseDouble(getParam("temperature")));
-        trStatPest.setHumidity(Double.parseDouble(getParam("humidity")));
+        if (!StringUtils.isEmpty(getParam("longitude"))) {
+            trStatPest.setLongitude(Double.parseDouble(getParam("longitude")));
+        }
+        if (!StringUtils.isEmpty(getParam("latitude"))) {
+            trStatPest.setLatitude(Double.parseDouble(getParam("latitude")));
+        }
+        if (!StringUtils.isEmpty(getParam("temperature"))) {
+            trStatPest.setTemperature(Double.parseDouble(getParam("temperature")));
+        }
+        if (!StringUtils.isEmpty(getParam("humidity"))) {
+            trStatPest.setHumidity(Double.parseDouble(getParam("humidity")));
+        }
         if (!StringUtils.isEmpty(getParam("memo"))) {
             trStatPest.setMemo("memo");
         }
@@ -106,9 +122,6 @@ public class TRStatPestGateWay extends RootGateWay {
         TRStatPest trStatPest = trStatPestDao.findByCode(getParam("code"));
         if (trStatPest == null) {
             throw new BusinessException(EnumBusinessError.DATA_NOT_EXIST_ERROR, "代码不存在");
-        }
-        if (!StringUtils.isEmpty(getParam("dt"))) {
-            trStatPest.setDt(DateTime.parse(getParam("dt")).toDate());
         }
         if (!StringUtils.isEmpty(getParam("areaCode"))) {
             trStatPest.setAreaCode(getParam("areaCode"));

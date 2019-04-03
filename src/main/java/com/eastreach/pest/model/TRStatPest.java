@@ -19,6 +19,8 @@ public class TRStatPest extends RootBean {
     private Date fromDt;            //统计开始时间
     private Date toDt;              //统计结束时间
 
+    private Integer year;             //年份
+    private Integer month;            //月份
     private String areaCode = "";     //区域代码
     private String pestCode = "";     //害虫代码
     private Double pestValue;       //害虫数量
@@ -27,8 +29,8 @@ public class TRStatPest extends RootBean {
     private Double temperature;         //温度
     private Double humidity;            //湿度
     private String memo;
-    private String province;
-    private String city;
+    private String province;           //省份
+    private String city;                //城市
 
 
     @Id
@@ -159,5 +161,21 @@ public class TRStatPest extends RootBean {
 
     public void setCity(String city) {
         this.city = city;
+    }
+
+    public Integer getYear() {
+        return year;
+    }
+
+    public void setYear(Integer year) {
+        this.year = year;
+    }
+
+    public Integer getMonth() {
+        return month;
+    }
+
+    public void setMonth(Integer month) {
+        this.month = month;
     }
 }
