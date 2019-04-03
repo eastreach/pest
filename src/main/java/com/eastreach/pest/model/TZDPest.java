@@ -10,12 +10,14 @@ import javax.persistence.*;
 public class TZDPest extends RootBean {
 
     private Integer id;
-    private Integer state;
-    private String code;
-    private String name;
-    private String memo;
-    private String pic;
-    private String pics;
+    private Integer state = 1;
+    private String code = "";       //害虫代码
+    private String name = "";       //害虫名称
+    private String memo = "";
+    private String pic = "";
+    private String pics = "";
+    private String areas = "";      //害虫分布区域,逗号分割
+    private String grains = "";     //害虫关联作物
 
 
     @Id
@@ -74,5 +76,21 @@ public class TZDPest extends RootBean {
 
     public void setPics(String pics) {
         this.pics = pics;
+    }
+
+    public String getAreas() {
+        return areas;
+    }
+
+    public void setAreas(String areas) {
+        this.areas = areas;
+    }
+
+    public String getGrains() {
+        return grains;
+    }
+
+    public void setGrains(String grains) {
+        this.grains = grains;
     }
 }

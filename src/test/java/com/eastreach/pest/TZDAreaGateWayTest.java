@@ -14,24 +14,24 @@ import java.util.Map;
 /**
  *
  **/
-public class TZDAreaGateWayTest  extends RootTest {
+public class TZDAreaGateWayTest extends RootTest {
 
 
     @Test
     public void add() throws IOException {
-        Map<String,String> map = Maps.newConcurrentMap();
-        map.put("account",account_root);
-        map.put("password",password_root);
-        map.put("code","qzgy");
-        map.put("name","青藏高原储粮区");
-        map.put("memo","");
-        map.put("areaDesc","西藏,青海,四川部分地区");
-        map.put("featureDesc","高寒干燥");
-        map.put("grainDesc","青稞,春小麦,冬小麦");
+        Map<String, String> map = Maps.newConcurrentMap();
+        map.put("account", account_root);
+        map.put("password", password_root);
+        map.put("code", "qzgy");
+        map.put("name", "青藏高原储粮区");
+        map.put("memo", "");
+        map.put("areaDesc", "西藏,青海,四川部分地区");
+        map.put("featureDesc", "高寒干燥");
+        map.put("grainDesc", "青稞,春小麦,冬小麦");
 
         String url = "/area/add";
 
-        String response = HttpUtil.post(hostUrl+url,map);
+        String response = HttpUtil.post(hostUrl + url, map);
         logger.info(url);
         logger.info(response);
 
@@ -39,9 +39,9 @@ public class TZDAreaGateWayTest  extends RootTest {
 
     @Test
     public void addBatch() throws IOException {
-        Map<String,String> map = Maps.newConcurrentMap();
-        map.put("account",account_root);
-        map.put("password",password_root);
+        Map<String, String> map = Maps.newConcurrentMap();
+        map.put("account", account_root);
+        map.put("password", password_root);
 
         TZDArea tzdArea = new TZDArea();
         tzdArea.setCode("01");
@@ -53,7 +53,21 @@ public class TZDAreaGateWayTest  extends RootTest {
 
         String url = "/area/addBatch";
 
-        String response = HttpUtil.post(hostUrl+url,map);
+        String response = HttpUtil.post(hostUrl + url, map);
+        logger.info(url);
+        logger.info(response);
+
+    }
+
+
+    @Test
+    public void select() throws IOException {
+        Map<String, String> map = Maps.newConcurrentMap();
+        map.put("account", account_root);
+        map.put("password", password_root);
+        String url = "/area/select";
+
+        String response = HttpUtil.post(hostUrl + url, map);
         logger.info(url);
         logger.info(response);
 

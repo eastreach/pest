@@ -35,7 +35,7 @@ public class TZDPestGateWayTest extends RootTest {
         map.put("account","root");
         map.put("password","root");
 //        map.put("code","code");
-        map.put("name","am");
+//        map.put("name","am");
 
         String url = "/pest/select";
 

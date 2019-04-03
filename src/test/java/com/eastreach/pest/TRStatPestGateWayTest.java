@@ -20,6 +20,7 @@ public class TRStatPestGateWayTest extends RootTest {
         map.put("year","2018");
         map.put("month","1");
         map.put("areaCode","qzgy");
+        map.put("grainCode","冬小麦");
         map.put("pestCode","麦蛾");
         map.put("pestValue","10");
 

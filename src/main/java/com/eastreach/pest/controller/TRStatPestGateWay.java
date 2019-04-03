@@ -83,7 +83,7 @@ public class TRStatPestGateWay extends RootGateWay {
         TRStatPest trStatPest = new TRStatPest();
         trStatPest.setYear(Integer.parseInt(getParam("year")));
         trStatPest.setMonth(Integer.parseInt(getParam("month")));
-        trStatPest.setDt(DateTime.now().withYear(trStatPest.getYear()).withMonthOfYear(trStatPest.getMonth()).withTimeAtStartOfDay().toDate());
+        trStatPest.setDt(DateTime.now().withYear(trStatPest.getYear()).withMonthOfYear(trStatPest.getMonth()).withDayOfMonth(1).withTimeAtStartOfDay().toDate());
         TZDArea tzdArea = tzdAreaDao.findByCode(getParam("areaCode"));
         if (tzdArea == null) {
             throw new BusinessException(EnumBusinessError.DATA_NOT_EXIST_ERROR, "区域不存在-" + getParam("areaCode"));
