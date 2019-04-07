@@ -88,6 +88,7 @@ public class TZDOperatorGateWay extends RootGateWay {
         tzdOperator.setPassword(password);
         tzdOperator.setName(name);
         tzdOperator.setState(Integer.parseInt(tzdParam.getValue()));
+        tzdOperatorDao.save(tzdOperator);
         //返回结果
         CommonReturnType commonReturnType = CommonReturnType.create(tzdOperator);
         log(tzdOperator, commonReturnType);

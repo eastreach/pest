@@ -19,6 +19,8 @@ public class TRStatGrain extends RootBean {
     private Date fromDt;            //统计开始时间
     private Date toDt;              //统计结束时间
 
+    private Integer year;             //年份
+    private Integer month;            //月份
     private String areaCode = "";     //区域代码
     private String grainCode = "";    //农作物代码
     private Double grainValue;      //农作物产量
@@ -95,5 +97,21 @@ public class TRStatGrain extends RootBean {
 
     public void setGrainValue(Double grainValue) {
         this.grainValue = grainValue;
+    }
+
+    public Integer getYear() {
+        return year;
+    }
+
+    public void setYear(Integer year) {
+        this.year = year;
+    }
+
+    public Integer getMonth() {
+        return month;
+    }
+
+    public void setMonth(Integer month) {
+        this.month = month;
     }
 }

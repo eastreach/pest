@@ -59,16 +59,11 @@ public class TPublishInfoGateWay extends RootGateWay {
         TZDOperator tzdOperator = auth();
 
         //业务处理
-        checkParam(Lists.<String>newArrayList("code", "name"));
-        String code = getParam("code");
+        checkParam(Lists.newArrayList("name", "content"));
         String name = getParam("name");
-        TPublishInfo tPublishInfo = tPublishInfoDao.find(code);
-        if (tPublishInfo != null) {
-            throw new BusinessException(EnumBusinessError.DATA_EXIST_ERROR, "代码已经存在");
-        }
-        tPublishInfo = new TPublishInfo();
-        tPublishInfo.setCode(code);
+        TPublishInfo tPublishInfo = new TPublishInfo();
         tPublishInfo.setName(name);
+        tPublishInfo.setCreateOper(tzdOperator.getAccount());
         String memo = getParam("memo");
         if (memo != null) {
             tPublishInfo.setMemo(memo);
@@ -90,7 +85,7 @@ public class TPublishInfoGateWay extends RootGateWay {
         TZDOperator tzdOperator = auth();
 
         //业务处理
-        checkParam(Lists.<String>newArrayList("code"));
+        checkParam(Lists.newArrayList("code"));
         String code = getParam("code");
         TPublishInfo tPublishInfo = tPublishInfoDao.find(code);
         if (tPublishInfo == null) {
@@ -109,7 +104,7 @@ public class TPublishInfoGateWay extends RootGateWay {
         TZDOperator tzdOperator = auth();
 
         //业务处理
-        checkParam(Lists.<String>newArrayList("code"));
+        checkParam(Lists.newArrayList("code"));
         String code = getParam("code");
         TPublishInfo tPublishInfo = tPublishInfoDao.find(code);
         if (tPublishInfo == null) {
@@ -126,6 +121,10 @@ public class TPublishInfoGateWay extends RootGateWay {
         String content = getParam("content");
         if (content != null) {
             tPublishInfo.setContent(content);
+        }
+        String createOper = getParam("createOper");
+        if (!createOper.equals("")) {
+            tPublishInfo.setCreateOper(createOper);
         }
         tPublishInfoDao.save(tPublishInfo);
         //返回结果

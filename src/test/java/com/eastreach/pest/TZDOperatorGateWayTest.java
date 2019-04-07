@@ -18,9 +18,9 @@ public class TZDOperatorGateWayTest extends RootTest{
     @Test
     public void register() throws IOException {
         Map<String,String> map = Maps.newConcurrentMap();
-        map.put("account","root");
-        map.put("password","root");
-        map.put("name","root");
+        map.put("account","test");
+        map.put("password","test");
+        map.put("name","test");
 
         String url = "/operator/register";
 

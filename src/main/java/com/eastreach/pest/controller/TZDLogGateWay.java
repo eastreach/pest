@@ -54,6 +54,12 @@ public class TZDLogGateWay extends RootGateWay {
                 if (getParam("urlLike") != null) {
                     predicate.add(cb.like(root.get("url").as(String.class), "%" + getParam("url") + "%"));
                 }
+                if (getParam("startDt") != null) {
+                    predicate.add(cb.greaterThanOrEqualTo(root.get("dt").as(String.class), getParam("startDt")));
+                }
+                if (getParam("endDt") != null) {
+                    predicate.add(cb.lessThanOrEqualTo(root.get("dt").as(String.class), getParam("endDt")));
+                }
                 Predicate[] pre = new Predicate[predicate.size()];
                 return query.where(predicate.toArray(pre)).getRestriction();
             }
