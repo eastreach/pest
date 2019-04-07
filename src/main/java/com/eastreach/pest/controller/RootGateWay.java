@@ -1,11 +1,10 @@
 package com.eastreach.pest.controller;
 
-import com.alibaba.druid.util.StringUtils;
+import com.alibaba.fastjson.JSON;
 import com.eastreach.pest.dao.*;
 import com.eastreach.pest.error.BusinessException;
 import com.eastreach.pest.error.EnumBusinessError;
-import com.eastreach.pest.model.TZDOperator;
-import com.eastreach.pest.model.TZDPest;
+import com.eastreach.pest.model.*;
 import com.eastreach.pest.response.CommonReturnType;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -47,6 +46,16 @@ public class RootGateWay {
     @Autowired
     HttpServletRequest httpServletRequest;
     @Autowired
+    TZDUrlDao tzdUrlDao;
+    @Autowired
+    TZDLogDao tzdLogDao;
+    @Autowired
+    TZDParamDao tzdParamDao;
+    @Autowired
+    TZDOperatorDao tzdOperatorDao;
+    @Autowired
+    TZDOperatorLimitDao tzdOperatorLimitDao;
+    @Autowired
     TPublishInfoDao tPublishInfoDao;
     @Autowired
     TRGrainAreaDao trGrainAreaDao;
@@ -58,8 +67,6 @@ public class RootGateWay {
     TZDFeatureDao tzdFeatureDao;
     @Autowired
     TZDGrainDao tzdGrainDao;
-    @Autowired
-    TZDOperatorDao tzdOperatorDao;
     @Autowired
     TZDPestDao tzdPestDao;
     @Autowired
@@ -123,6 +130,56 @@ public class RootGateWay {
     }
 
     /**
+     * 资源权限初始化
+     */
+    public void initLimit(Integer ifRoot, Integer limitType) {
+        String url = httpServletRequest.getRequestURI();
+        TZDUrl tzdUrl = tzdUrlDao.findByUrl(url);
+        if (tzdUrl == null) {
+            tzdUrl = new TZDUrl();
+            tzdUrl.setUrl(url);
+            tzdUrl.setIfRoot(ifRoot);
+            tzdUrl.setLimitType(limitType);
+            tzdUrlDao.save(tzdUrl);
+        }
+    }
+
+    /**
+     * 系统参数初始化
+     */
+    public TZDParam initParam(TZDParam tzdParam) {
+        tzdParam.setId(null);
+        TZDParam tzdParam1 = tzdParamDao.findByCode(tzdParam.getCode());
+        if (tzdParam1 != null) {
+            return tzdParam1;
+        }
+        tzdParamDao.save(tzdParam);
+        return tzdParam;
+    }
+
+    /**
+     * 日志记录
+     */
+    public void log(TZDOperator tzdOperator, CommonReturnType commonReturnType) {
+        TZDUrl tzdUrl = tzdUrlDao.findByUrl(httpServletRequest.getRequestURI());
+        if (tzdUrl == null || tzdUrl.getState() != 1 || tzdUrl.getLogLevel() != 1) {
+            return;
+        }
+        TZDLog tzdLog = new TZDLog();
+        try {
+            tzdLog.setAccount(tzdOperator.getAccount());
+            tzdLog.setUrl(httpServletRequest.getRequestURI());
+            tzdLog.setState(commonReturnType.getState());
+            tzdLog.setResponse(commonReturnType.toString());
+            tzdLogDao.save(tzdLog);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+            logger.error(JSON.toJSONString(tzdLog));
+        }
+    }
+
+    /**
      * 公共权限验证
      */
     public TZDOperator auth() throws BusinessException {
@@ -139,17 +196,33 @@ public class RootGateWay {
         if (!tzdOperator.getPassword().equals(password)) {
             throw new BusinessException(EnumBusinessError.AUTH_ERROR, "操作员密码错误");
         }
-        return tzdOperator;
-    }
-
-    /**
-     * 特殊
-     */
-    public boolean auth(TZDOperator tzdOperator, String limitCode) {
+        //系统管理员不校验权限
         if (tzdOperator.getIfRoot() == 1) {
-            return true;
+            return tzdOperator;
         }
-        return false;
+        //资源不设置权限
+        TZDUrl tzdUrl = tzdUrlDao.findByUrl(httpServletRequest.getRequestURI());
+        if (tzdUrl == null || tzdUrl.getState() != 1) {
+            return tzdOperator;
+        }
+        if (tzdUrl.getIfRoot() == 1) {
+            throw new BusinessException(EnumBusinessError.AUTH_ERROR, "需要系统管理员权限");
+        }
+        //操作员权限判断
+        TZDOperatorLimit tzdOperatorLimit = tzdOperatorLimitDao.findFirstByAccountAndUrl(tzdOperator.getAccount(), tzdUrl.getUrl());
+        //黑名单限权
+        if (tzdUrl.getLimitType() == 0) {
+            if (tzdOperatorLimit != null && tzdOperatorLimit.getState() == 1 && tzdOperatorLimit.getIfLimit() == -1) {
+                throw new BusinessException(EnumBusinessError.AUTH_ERROR, "黑名单已限权-" + tzdUrl.getUrl());
+            }
+        }
+        //白名单授权
+        if (tzdUrl.getLimitType() == 1) {
+            if (tzdOperatorLimit == null || tzdOperatorLimit.getState() != 1 || tzdOperatorLimit.getIfLimit() != 1) {
+                throw new BusinessException(EnumBusinessError.AUTH_ERROR, "白名单未授权-" + tzdUrl.getUrl());
+            }
+        }
+        return tzdOperator;
     }
 
     /**

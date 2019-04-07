@@ -2,6 +2,7 @@ package com.eastreach.pest.controller;
 
 import com.eastreach.pest.error.BusinessException;
 import com.eastreach.pest.error.EnumBusinessError;
+import com.eastreach.pest.metadata.TZDLimitType;
 import com.eastreach.pest.model.TZDArea;
 import com.eastreach.pest.model.TZDOperator;
 import com.eastreach.pest.response.CommonReturnType;
@@ -18,6 +19,7 @@ public class TRStatGrainGateWay extends RootGateWay {
 
     @RequestMapping("/add")
     public CommonReturnType add() throws BusinessException {
+        initLimit(TZDLimitType.limit_ifRoot_no, TZDLimitType.limit_type_0);
         TZDOperator tzdOperator = auth();
 
         //业务处理
@@ -44,6 +46,9 @@ public class TRStatGrainGateWay extends RootGateWay {
             tzdArea.setPics(pics);
         }
         tzdAreaDao.save(tzdArea);
-        return CommonReturnType.create(tzdArea);
+        //返回结果
+        CommonReturnType commonReturnType = CommonReturnType.create(tzdArea);
+        log(tzdOperator, commonReturnType);
+        return commonReturnType;
     }
 }

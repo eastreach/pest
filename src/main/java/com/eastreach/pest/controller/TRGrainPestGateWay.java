@@ -4,14 +4,12 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.eastreach.pest.error.BusinessException;
 import com.eastreach.pest.error.EnumBusinessError;
-import com.eastreach.pest.metadata.TZDLimit;
+import com.eastreach.pest.metadata.TZDLimitType;
 import com.eastreach.pest.model.*;
 import com.eastreach.pest.response.CommonReturnType;
 import com.eastreach.pest.util.Utils;
 import com.google.common.collect.Lists;
-import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -58,6 +56,7 @@ public class TRGrainPestGateWay extends RootGateWay {
 
     @RequestMapping("/add")
     public CommonReturnType add() throws BusinessException {
+        initLimit(TZDLimitType.limit_ifRoot_no, TZDLimitType.limit_type_0);
         TZDOperator tzdOperator = auth();
 
         //业务处理
@@ -80,12 +79,16 @@ public class TRGrainPestGateWay extends RootGateWay {
             trGrainPest.setMemo(memo);
         }
         trGrainPestDao.save(trGrainPest);
-        return CommonReturnType.create(trGrainPest);
+        //返回结果
+        CommonReturnType commonReturnType = CommonReturnType.create(trGrainPest);
+        log(tzdOperator, commonReturnType);
+        return commonReturnType;
     }
 
     @Transactional
     @RequestMapping("/addBatch")
     public CommonReturnType addBatch() throws Exception {
+        initLimit(TZDLimitType.limit_ifRoot_no, TZDLimitType.limit_type_0);
         TZDOperator tzdOperator = auth();
 
         //业务处理
@@ -106,16 +109,16 @@ public class TRGrainPestGateWay extends RootGateWay {
             }
             trGrainPestDao.delete(trGrainPest);
         }
-        return CommonReturnType.create(trGrainPestList);
+        //返回结果
+        CommonReturnType commonReturnType = CommonReturnType.create(trGrainPestList);
+        log(tzdOperator, commonReturnType);
+        return commonReturnType;
     }
 
     @RequestMapping("/delete")
     public CommonReturnType delete() throws BusinessException {
+        initLimit(TZDLimitType.limit_ifRoot_no, TZDLimitType.limit_type_0);
         TZDOperator tzdOperator = auth();
-
-        if (!auth(tzdOperator, TZDLimit.limit_code_root)) {
-            throw new BusinessException(EnumBusinessError.AUTH_ERROR, "需要管理员权限");
-        }
 
         //业务处理
         checkParam(Lists.<String>newArrayList("grainCode", "pestCode"));
@@ -126,12 +129,16 @@ public class TRGrainPestGateWay extends RootGateWay {
             throw new BusinessException(EnumBusinessError.DATA_NOT_EXIST_ERROR, "代码不存在");
         }
         trGrainPestDao.delete(trGrainPest);
-        return CommonReturnType.create(trGrainPest);
+        //返回结果
+        CommonReturnType commonReturnType = CommonReturnType.create(trGrainPest);
+        log(tzdOperator, commonReturnType);
+        return commonReturnType;
     }
 
     @Transactional
     @RequestMapping("/deleteBatch")
     public CommonReturnType deleteBatch() throws Exception {
+        initLimit(TZDLimitType.limit_ifRoot_no, TZDLimitType.limit_type_0);
         TZDOperator tzdOperator = auth();
 
         //业务处理
@@ -151,11 +158,15 @@ public class TRGrainPestGateWay extends RootGateWay {
                 trGrainPestDao.delete(trGrainPest1);
             }
         }
-        return CommonReturnType.create(trGrainPestList);
+        //返回结果
+        CommonReturnType commonReturnType = CommonReturnType.create(trGrainPestList);
+        log(tzdOperator, commonReturnType);
+        return commonReturnType;
     }
 
     @RequestMapping("/update")
     public CommonReturnType update() throws BusinessException {
+        initLimit(TZDLimitType.limit_ifRoot_no, TZDLimitType.limit_type_0);
         TZDOperator tzdOperator = auth();
 
         //业务处理
@@ -176,12 +187,16 @@ public class TRGrainPestGateWay extends RootGateWay {
         }
 
         trGrainPestDao.save(trGrainPest);
-        return CommonReturnType.create(trGrainPest);
+        //返回结果
+        CommonReturnType commonReturnType = CommonReturnType.create(trGrainPest);
+        log(tzdOperator, commonReturnType);
+        return commonReturnType;
     }
 
     @Transactional
     @RequestMapping("/updateBatch")
     public CommonReturnType updateBatch() throws Exception {
+        initLimit(TZDLimitType.limit_ifRoot_no, TZDLimitType.limit_type_0);
         TZDOperator tzdOperator = auth();
 
         //业务处理
@@ -202,24 +217,35 @@ public class TRGrainPestGateWay extends RootGateWay {
                 trGrainPestDao.save(trGrainPest1);
             }
         }
-        return CommonReturnType.create(trGrainPestList);
+        //返回结果
+        CommonReturnType commonReturnType = CommonReturnType.create(trGrainPestList);
+        log(tzdOperator, commonReturnType);
+        return commonReturnType;
     }
 
     @RequestMapping("/select")
     public CommonReturnType select() throws BusinessException {
+        initLimit(TZDLimitType.limit_ifRoot_no, TZDLimitType.limit_type_0);
         TZDOperator tzdOperator = auth();
 
         //业务处理
         List<TRGrainPest> trGrainPestList = trGrainPestDao.findAll(getWhereClause());
-        return CommonReturnType.create(trGrainPestList);
+        //返回结果
+        CommonReturnType commonReturnType = CommonReturnType.create(trGrainPestList);
+        log(tzdOperator, commonReturnType);
+        return commonReturnType;
     }
 
     @RequestMapping("/selectPage")
     public CommonReturnType selectPage() throws BusinessException {
+        initLimit(TZDLimitType.limit_ifRoot_no, TZDLimitType.limit_type_0);
         TZDOperator tzdOperator = auth();
 
         //业务处理
         Page<TRGrainPest> trGrainPestPage = trGrainPestDao.findAll(getWhereClause(), getPageRequest());
-        return CommonReturnType.create(trGrainPestPage);
+        //返回结果
+        CommonReturnType commonReturnType = CommonReturnType.create(trGrainPestPage);
+        log(tzdOperator, commonReturnType);
+        return commonReturnType;
     }
 }

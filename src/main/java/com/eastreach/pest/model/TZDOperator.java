@@ -3,14 +3,19 @@ package com.eastreach.pest.model;
 import javax.persistence.*;
 
 /**
- *
+ * 操作员管理
+ * 权限模型
+ * 自主访问控制: DAC-discretionary access control.
+ * 强制访问控制: MAC-mandatory access control.
+ * 基于角色访问控制: RBAC-role based access control.
+ * 基于属性访问控制: ABAC- attribute based access control.
  **/
 @Entity
 @Table
 public class TZDOperator extends RootBean{
 
     private Integer id;
-    private Integer state = 0;      //状态,-1禁用,0未审核,1可用,非1不可用.
+    private Integer state = 1;      //状态,-1禁用,0未审核,1可用,非1不可用.
     private Integer ifRoot = 0;     //是否系统管理员,系统管理员有所有权限.
     private String account = "";    //登录账号
     private String password = "";   //登录密码

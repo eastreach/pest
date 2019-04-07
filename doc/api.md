@@ -22,7 +22,7 @@
 
 
 ## API服务
-1. [操作员API](#operator)
+1. [系统管理API](api_system.md)
 1. [区域API](api_area.md)
 1. [气候API](api_feature.md)
 1. [农作物API](api_grain.md)
@@ -32,45 +32,4 @@
 1. [专家信息发布API](api_publish.md)
 1. [农作物产量统计API](api_stat_grain.md)
 1. [害虫数量统计API](api_stat_pest.md)
-1. [文件上传API](#upload)
-
-### <span id="operator">操作员API</span>
-1. /operator/register: 账号注册申请,不需要权限.
-
-    | 字段名称 | 字段描述 | 类型 | 允许为空 | 长度 | 说明 |
-    | :--- | :--- | :--- | :--- | :--- | :--- |
-    | account | 账号 | string | N |  |  |
-    | password | 密码 | string | N |  |  |
-    | name | 姓名 | string | N |  |  |
-1. /operator/login: 账号登录.
-
-    | 字段名称 | 字段描述 | 类型 | 允许为空 | 长度 | 说明 |
-    | :--- | :--- | :--- | :--- | :--- | :--- |
-    | account | 账号 | string | N |  |  |
-    | password | 密码 | string | N |  |  |
-1. /operator/update: 账号信息修改,管理员权限.
-
-    | 字段名称 | 字段描述 | 类型 | 允许为空 | 长度 | 说明 |
-    | :--- | :--- | :--- | :--- | :--- | :--- |
-    | account | 账号 | string | N |  |  |
-    | password | 密码 | string | N |  |  |
-    | oldOperator | 原操作员对象 | object | N |  |  |
-    | newOperator | 新操作员对象 | object | N |  |  |
-1. /operator/findAll: 查找所有账号,管理员权限.
-
-    | 字段名称 | 字段描述 | 类型 | 允许为空 | 长度 | 说明 |
-    | :--- | :--- | :--- | :--- | :--- | :--- |
-    | account | 账号 | string | N |  |  |
-    | password | 密码 | string | N |  |  |
-
-### <span id="upload">文件上传API</span>
-1. /upload.
-1. Headers.
-    Content-Type: application/x-www-form-urlencoded
-1. Body.
-    file: binFile.
-1. 响应结果
-    {
-        "state":"success",
-        "data":"http://192.168.3.130/a.jpg"
-    }
+1. [文件上传API](api_upload.md)

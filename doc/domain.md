@@ -1,4 +1,34 @@
 ## 对象模型.
+### TZDParam: 系统运行参数.
+```
+private Integer id;
+private Integer state = 1;      //状态,-1禁用,0未审核,1可用,非1不可用.
+private String code = "";       //参数代码
+private String value = "";       //参数值
+private String memo = "";       //备注说明
+```
+### TZDLog: 系统运行日志.
+```
+private Integer id;
+private String code = UUID.randomUUID().toString();     //流水号
+private Date dt = new Date();
+private String account = "";    //操作员账号
+private String url = "";    //资源访问地址
+private String state = "";      //调用结果
+private Integer errCode = 0;    //状态码
+private String request = "";    //请求内容
+private String response = "";   //返回内容
+```
+### TZDUrl: 系统资源编排.
+```
+private Integer id;
+private Integer state = 1;      //状态,-1禁用,0未审核,1可用,非1不可用.
+private String url = "";    //资源地址
+private String memo = "";       //备注
+private Integer ifRoot = 0;     //是否需要系统管理员权限, 0不需要, 1需要只有管理员可以操作
+private Integer limitType = 0;    //权限模式, 0黑名单限权, 1白名单授权
+private Integer logLevel = 0;   //日志模式, 0不记录日志, 1记录日志
+```
 ### TZDOperator: 操作员.
 ```
 private Integer id;
@@ -13,6 +43,16 @@ private String telephone = "";      //电话
 private String place="";            //住址
 private String province="";         //省份
 private String city="";             //城市
+```
+### TZDOperatorLimit: 操作员权限配置.
+```
+private Integer id;
+private Integer state = 1;      //状态,-1禁用,0未审核,1可用,非1不可用.
+private String account = "";        //操作员账号
+private String url = "";            //权限代码
+private Integer ifLimit = 1;        //是否有权限, 1授权, -1限权
+private Integer limitLevel = 0;    //权限等级, 0系统, 1用户
+private String memo = "";          //备注
 ```
 ### TZDArea: 区域.
 ```
