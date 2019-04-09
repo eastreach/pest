@@ -133,6 +133,8 @@ private Date createDt = new Date();  //发布时间
 private String createOper = "";      //发布操作员工号
 private String content = "";         //发布内容
 private String memo = "";            //备注
+private String pic;
+private String pics;
 ```
 ### TRStatGrain: 农作物产量统计.
 ```
@@ -147,6 +149,8 @@ private Date toDt;              //统计结束时间
 private String areaCode = "";     //区域代码
 private String grainCode = "";    //农作物代码
 private Double grainValue;      //农作物产量
+private String pic;
+private String pics;
 ```
 ### TRStatPest: 害虫数量统计.
 ```
@@ -171,4 +175,6 @@ private Double humidity;            //湿度
 private String memo;
 private String province;
 private String city;
+private String pic;
+private String pics;
 ```

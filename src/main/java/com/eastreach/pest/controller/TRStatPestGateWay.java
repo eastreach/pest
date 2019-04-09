@@ -117,13 +117,19 @@ public class TRStatPestGateWay extends RootGateWay {
             trStatPest.setHumidity(Double.parseDouble(getParam("humidity")));
         }
         if (!StringUtils.isEmpty(getParam("memo"))) {
-            trStatPest.setMemo("memo");
+            trStatPest.setMemo(getParam("memo"));
         }
         if (!StringUtils.isEmpty(getParam("province"))) {
-            trStatPest.setProvince("province");
+            trStatPest.setProvince(getParam("province"));
         }
         if (!StringUtils.isEmpty(getParam("city"))) {
-            trStatPest.setCity("city");
+            trStatPest.setCity(getParam("city"));
+        }
+        if (!StringUtils.isEmpty(getParam("pic"))) {
+            trStatPest.setPic(getParam("pic"));
+        }
+        if (!StringUtils.isEmpty(getParam("pics"))) {
+            trStatPest.setPics(getParam("pics"));
         }
         trStatPestDao.save(trStatPest);
         //返回结果
@@ -166,13 +172,19 @@ public class TRStatPestGateWay extends RootGateWay {
             trStatPest.setHumidity(Double.parseDouble(getParam("humidity")));
         }
         if (!StringUtils.isEmpty(getParam("memo"))) {
-            trStatPest.setMemo("memo");
+            trStatPest.setMemo(getParam("memo"));
         }
         if (!StringUtils.isEmpty(getParam("province"))) {
-            trStatPest.setProvince("province");
+            trStatPest.setProvince(getParam("province"));
         }
         if (!StringUtils.isEmpty(getParam("city"))) {
-            trStatPest.setCity("city");
+            trStatPest.setCity(getParam("city"));
+        }
+        if (!StringUtils.isEmpty(getParam("pic"))) {
+            trStatPest.setPic(getParam("pic"));
+        }
+        if (!StringUtils.isEmpty(getParam("pics"))) {
+            trStatPest.setPics(getParam("pics"));
         }
         trStatPestDao.save(trStatPest);
         //返回结果

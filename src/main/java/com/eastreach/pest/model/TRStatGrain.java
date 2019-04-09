@@ -24,6 +24,8 @@ public class TRStatGrain extends RootBean {
     private String areaCode = "";     //区域代码
     private String grainCode = "";    //农作物代码
     private Double grainValue;      //农作物产量
+    private String pic;
+    private String pics;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -113,5 +115,21 @@ public class TRStatGrain extends RootBean {
 
     public void setMonth(Integer month) {
         this.month = month;
+    }
+
+    public String getPic() {
+        return pic;
+    }
+
+    public void setPic(String pic) {
+        this.pic = pic;
+    }
+
+    public String getPics() {
+        return pics;
+    }
+
+    public void setPics(String pics) {
+        this.pics = pics;
     }
 }

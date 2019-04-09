@@ -18,6 +18,8 @@
     | memo |备注 | double | Y |  |  |
     | province |省份 | double | Y |  |  |
     | city |城市 | double | Y |  |  |
+    | pic |照片 | string | Y |  |  |
+    | pics |多张照片 | string | Y |  |  |
 1. /statPest/update: 害虫数量统计修改.
 
     | 字段名称 | 字段描述 | 类型 | 允许为空 | 长度 | 说明 |

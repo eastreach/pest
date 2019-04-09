@@ -20,6 +20,8 @@ public class TPublishInfo extends RootBean {
     private String createOper = "";      //发布操作员工号
     private String content = "";         //发布内容
     private String memo = "";            //备注
+    private String pic;
+    private String pics;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -85,5 +87,21 @@ public class TPublishInfo extends RootBean {
 
     public void setMemo(String memo) {
         this.memo = memo;
+    }
+
+    public String getPic() {
+        return pic;
+    }
+
+    public void setPic(String pic) {
+        this.pic = pic;
+    }
+
+    public String getPics() {
+        return pics;
+    }
+
+    public void setPics(String pics) {
+        this.pics = pics;
     }
 }

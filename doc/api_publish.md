@@ -8,6 +8,8 @@
     | name | 名称 | string | N |  |  |
     | content | 内容 | string | N |  |  |
     | memo | 备注 | string | Y |  |  |
+    | pic |照片 | string | Y |  |  |
+    | pics |多张照片 | string | Y |  |  |
 1. /publishInfo/update: 专家发布信息修改.
 
     | 字段名称 | 字段描述 | 类型 | 允许为空 | 长度 | 说明 |

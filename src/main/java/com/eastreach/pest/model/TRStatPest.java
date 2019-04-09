@@ -32,6 +32,8 @@ public class TRStatPest extends RootBean {
     private String memo;
     private String province;           //省份
     private String city;                //城市
+    private String pic;
+    private String pics;
 
 
     @Id
@@ -186,5 +188,21 @@ public class TRStatPest extends RootBean {
 
     public void setGrainCode(String grainCode) {
         this.grainCode = grainCode;
+    }
+
+    public String getPic() {
+        return pic;
+    }
+
+    public void setPic(String pic) {
+        this.pic = pic;
+    }
+
+    public String getPics() {
+        return pics;
+    }
+
+    public void setPics(String pics) {
+        this.pics = pics;
     }
 }

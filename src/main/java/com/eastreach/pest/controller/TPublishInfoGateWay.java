@@ -9,6 +9,7 @@ import com.eastreach.pest.response.CommonReturnType;
 import com.google.common.collect.Lists;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -72,6 +73,12 @@ public class TPublishInfoGateWay extends RootGateWay {
         if (content != null) {
             tPublishInfo.setContent(content);
         }
+        if (!StringUtils.isEmpty(getParam("pic"))) {
+            tPublishInfo.setPic(getParam("pic"));
+        }
+        if (!StringUtils.isEmpty(getParam("pics"))) {
+            tPublishInfo.setPics(getParam("pics"));
+        }
         tPublishInfoDao.save(tPublishInfo);
         //返回结果
         CommonReturnType commonReturnType = CommonReturnType.create(tPublishInfo);
@@ -125,6 +132,12 @@ public class TPublishInfoGateWay extends RootGateWay {
         String createOper = getParam("createOper");
         if (!createOper.equals("")) {
             tPublishInfo.setCreateOper(createOper);
+        }
+        if (!StringUtils.isEmpty(getParam("pic"))) {
+            tPublishInfo.setPic(getParam("pic"));
+        }
+        if (!StringUtils.isEmpty(getParam("pics"))) {
+            tPublishInfo.setPics(getParam("pics"));
         }
         tPublishInfoDao.save(tPublishInfo);
         //返回结果
