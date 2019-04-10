@@ -5,11 +5,14 @@ import com.alibaba.fastjson.TypeReference;
 import com.eastreach.pest.error.BusinessException;
 import com.eastreach.pest.error.EnumBusinessError;
 import com.eastreach.pest.metadata.TZDLimitType;
+import com.eastreach.pest.model.TRStatPest;
 import com.eastreach.pest.model.TZDOperator;
 import com.eastreach.pest.model.TZDUrl;
 import com.eastreach.pest.response.CommonReturnType;
+import com.eastreach.pest.util.MapFilter;
 import com.eastreach.pest.util.Utils;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,38 +34,38 @@ import java.util.List;
 @RequestMapping("/url")
 public class TZDUrlGateWay extends RootGateWay {
 
-    /**
-     * 动态生成where语句
-     */
-    @Override
-    Specification getWhereClause() {
-        return new Specification<TZDUrl>() {
-            @Override
-            public Predicate toPredicate(Root<TZDUrl> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
-                List<Predicate> predicate = Lists.newArrayList();
-                if (getParam("url") != null) {
-                    predicate.add(cb.equal(root.get("url"), getParam("url")));
-                }
-                if (getParam("ifRoot") != null) {
-                    predicate.add(cb.equal(root.get("ifRoot"), getParam("ifRoot")));
-                }
-                if (getParam("limitType") != null) {
-                    predicate.add(cb.equal(root.get("limitType"), getParam("limitType")));
-                }
-                if (getParam("logLevel") != null) {
-                    predicate.add(cb.equal(root.get("logLevel"), getParam("logLevel")));
-                }
-                if (getParam("urlLike") != null) {
-                    predicate.add(cb.like(root.get("url").as(String.class), "%" + getParam("url") + "%"));
-                }
-                if (getParam("memo") != null) {
-                    predicate.add(cb.like(root.get("memo").as(String.class), "%" + getParam("memo") + "%"));
-                }
-                Predicate[] pre = new Predicate[predicate.size()];
-                return query.where(predicate.toArray(pre)).getRestriction();
-            }
-        };
-    }
+//    /**
+//     * 动态生成where语句
+//     */
+//    @Override
+//    Specification getWhereClause() {
+//        return new Specification<TZDUrl>() {
+//            @Override
+//            public Predicate toPredicate(Root<TZDUrl> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+//                List<Predicate> predicate = Lists.newArrayList();
+//                if (getParam("url") != null) {
+//                    predicate.add(cb.equal(root.get("url"), getParam("url")));
+//                }
+//                if (getParam("ifRoot") != null) {
+//                    predicate.add(cb.equal(root.get("ifRoot"), getParam("ifRoot")));
+//                }
+//                if (getParam("limitType") != null) {
+//                    predicate.add(cb.equal(root.get("limitType"), getParam("limitType")));
+//                }
+//                if (getParam("logLevel") != null) {
+//                    predicate.add(cb.equal(root.get("logLevel"), getParam("logLevel")));
+//                }
+//                if (getParam("urlLike") != null) {
+//                    predicate.add(cb.like(root.get("url").as(String.class), "%" + getParam("url") + "%"));
+//                }
+//                if (getParam("memo") != null) {
+//                    predicate.add(cb.like(root.get("memo").as(String.class), "%" + getParam("memo") + "%"));
+//                }
+//                Predicate[] pre = new Predicate[predicate.size()];
+//                return query.where(predicate.toArray(pre)).getRestriction();
+//            }
+//        };
+//    }
 
 
     @RequestMapping("/add")
@@ -240,7 +243,8 @@ public class TZDUrlGateWay extends RootGateWay {
         TZDOperator tzdOperator = auth();
 
         //业务处理
-        List<TZDUrl> tzdUrlList = tzdUrlDao.findAll(getWhereClause());
+        MapFilter mapFilter = MapFilter.newInstance(httpServletRequest,TZDUrl.class, Sets.<String>newHashSet("id"));
+        List<TZDUrl> tzdUrlList = tzdUrlDao.findAll(mapFilter.getWhereClause());
 
         CommonReturnType commonReturnType = CommonReturnType.create(tzdUrlList);
         log(tzdOperator, commonReturnType);
@@ -253,7 +257,8 @@ public class TZDUrlGateWay extends RootGateWay {
         TZDOperator tzdOperator = auth();
 
         //业务处理
-        Page<TZDUrl> tzdUrlPage = tzdUrlDao.findAll(getWhereClause(), getPageRequest());
+        MapFilter mapFilter = MapFilter.newInstance(httpServletRequest,TZDUrl.class, Sets.<String>newHashSet("id"));
+        Page<TZDUrl> tzdUrlPage = tzdUrlDao.findAll(mapFilter.getWhereClause(), getPageRequest());
 
         CommonReturnType commonReturnType = CommonReturnType.create(tzdUrlPage);
         log(tzdOperator, commonReturnType);

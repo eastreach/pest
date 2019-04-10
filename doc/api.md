@@ -20,6 +20,25 @@
 1. 专家发布信息.
 1. 害虫数据统计查询分析.
 
+## 对象过滤查询模型.
+1. 查询对象类接口统一采用MapFilter进行过滤.
+1. MapFilter以过滤算子形式依次进行数据过滤.
+1. 请求参数以对象字段+过滤算子后缀进行识别.
+1. 当对象字段不加后缀默认以Equal算子进行过滤.
+1. 对象字段在请求参数中有其他作用时,用加Equal后缀方式进行标识.
+1. 关键字字段不提供过滤算子支持.
+```
+//过滤算子字段后缀
+public static final String suffixEqual = "Equal";           //==
+public static final String suffixIn = "In";                 //in
+public static final String suffixLike = "Like";             //like
+public static final String suffixGreat = "Great";           //>
+public static final String suffixGreatEqual = "GreatEqual"; //>=
+public static final String suffixLess = "Less";             //<
+public static final String suffixLessEqual = "LessEqual";   //<=
+```
+
+
 
 ## API服务
 1. [系统管理API](api_system.md)

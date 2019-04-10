@@ -7,7 +7,9 @@ import com.eastreach.pest.error.EnumBusinessError;
 import com.eastreach.pest.metadata.TZDLimitType;
 import com.eastreach.pest.model.*;
 import com.eastreach.pest.response.CommonReturnType;
+import com.eastreach.pest.util.MapFilter;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import org.joda.time.DateTime;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.domain.Specification;
@@ -31,47 +33,47 @@ import java.util.List;
 public class TRStatPestGateWay extends RootGateWay {
 
 
-    /**
-     * 动态生成where语句
-     */
-    @Override
-    Specification getWhereClause() {
-        return new Specification<TRStatPest>() {
-            @Override
-            public Predicate toPredicate(Root<TRStatPest> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
-                List<Predicate> predicate = Lists.newArrayList();
-                if (getParam("areaCode") != null) {
-                    predicate.add(cb.equal(root.get("areaCode"), getParam("areaCode")));
-                }
-                if (getParam("grainCode") != null) {
-                    predicate.add(cb.equal(root.get("grainCode"), getParam("grainCode")));
-                }
-                if (getParam("pestCode") != null) {
-                    predicate.add(cb.equal(root.get("pestCode"), getParam("pestCode")));
-                }
-                if (getParam("province") != null) {
-                    predicate.add(cb.equal(root.get("province"), getParam("province")));
-                }
-                if (getParam("year") != null) {
-                    predicate.add(cb.equal(root.get("year"), getParam("year")));
-                }
-                if (getParam("month") != null) {
-                    predicate.add(cb.equal(root.get("month"), getParam("month")));
-                }
-                if (getParam("city") != null) {
-                    predicate.add(cb.equal(root.get("city"), getParam("city")));
-                }
-                if (getParam("startDt") != null) {
-                    predicate.add(cb.greaterThanOrEqualTo(root.get("dt").as(String.class), getParam("startDt")));
-                }
-                if (getParam("endDt") != null) {
-                    predicate.add(cb.lessThanOrEqualTo(root.get("dt").as(String.class), getParam("endDt")));
-                }
-                Predicate[] pre = new Predicate[predicate.size()];
-                return query.where(predicate.toArray(pre)).getRestriction();
-            }
-        };
-    }
+//    /**
+//     * 动态生成where语句
+//     */
+//    @Override
+//    Specification getWhereClause() {
+//        return new Specification<TRStatPest>() {
+//            @Override
+//            public Predicate toPredicate(Root<TRStatPest> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+//                List<Predicate> predicate = Lists.newArrayList();
+//                if (getParam("areaCode") != null) {
+//                    predicate.add(cb.equal(root.get("areaCode"), getParam("areaCode")));
+//                }
+//                if (getParam("grainCode") != null) {
+//                    predicate.add(cb.equal(root.get("grainCode"), getParam("grainCode")));
+//                }
+//                if (getParam("pestCode") != null) {
+//                    predicate.add(cb.equal(root.get("pestCode"), getParam("pestCode")));
+//                }
+//                if (getParam("province") != null) {
+//                    predicate.add(cb.equal(root.get("province"), getParam("province")));
+//                }
+//                if (getParam("year") != null) {
+//                    predicate.add(cb.equal(root.get("year"), getParam("year")));
+//                }
+//                if (getParam("month") != null) {
+//                    predicate.add(cb.equal(root.get("month"), getParam("month")));
+//                }
+//                if (getParam("city") != null) {
+//                    predicate.add(cb.equal(root.get("city"), getParam("city")));
+//                }
+//                if (getParam("startDt") != null) {
+//                    predicate.add(cb.greaterThanOrEqualTo(root.get("dt").as(String.class), getParam("startDt")));
+//                }
+//                if (getParam("endDt") != null) {
+//                    predicate.add(cb.lessThanOrEqualTo(root.get("dt").as(String.class), getParam("endDt")));
+//                }
+//                Predicate[] pre = new Predicate[predicate.size()];
+//                return query.where(predicate.toArray(pre)).getRestriction();
+//            }
+//        };
+//    }
 
 
     @RequestMapping("/add")
@@ -244,7 +246,8 @@ public class TRStatPestGateWay extends RootGateWay {
         TZDOperator tzdOperator = auth();
 
         //业务处理
-        List<TRStatPest> trStatPestList = trStatPestDao.findAll(getWhereClause());
+        MapFilter mapFilter = MapFilter.newInstance(httpServletRequest,TRStatPest.class, Sets.<String>newHashSet("id"));
+        List<TRStatPest> trStatPestList = trStatPestDao.findAll(mapFilter.getWhereClause());
         //返回结果
         CommonReturnType commonReturnType = CommonReturnType.create(trStatPestList);
         log(tzdOperator, commonReturnType);
@@ -257,7 +260,8 @@ public class TRStatPestGateWay extends RootGateWay {
         TZDOperator tzdOperator = auth();
 
         //业务处理
-        Page<TRStatPest> trGrainAreaPage = trStatPestDao.findAll(getWhereClause(), getPageRequest());
+        MapFilter mapFilter = MapFilter.newInstance(httpServletRequest,TRStatPest.class, Sets.<String>newHashSet("id"));
+        Page<TRStatPest> trGrainAreaPage = trStatPestDao.findAll(mapFilter.getWhereClause(), getPageRequest());
         //返回结果
         CommonReturnType commonReturnType = CommonReturnType.create(trGrainAreaPage);
         log(tzdOperator, commonReturnType);

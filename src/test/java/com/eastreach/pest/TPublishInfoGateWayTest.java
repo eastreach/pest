@@ -29,4 +29,9 @@ public class TPublishInfoGateWayTest extends RootTest {
         logger.info(response);
 
     }
+
+    @Test
+    public void test(){
+        logger.info(Double.parseDouble("1")+"");
+    }
 }

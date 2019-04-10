@@ -5,11 +5,14 @@ import com.alibaba.fastjson.TypeReference;
 import com.eastreach.pest.error.BusinessException;
 import com.eastreach.pest.error.EnumBusinessError;
 import com.eastreach.pest.metadata.TZDLimitType;
+import com.eastreach.pest.model.TRStatPest;
 import com.eastreach.pest.model.TZDArea;
 import com.eastreach.pest.model.TZDOperator;
 import com.eastreach.pest.response.CommonReturnType;
+import com.eastreach.pest.util.MapFilter;
 import com.eastreach.pest.util.Utils;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,38 +34,38 @@ import java.util.List;
 @RequestMapping("/area")
 public class TZDAreaGateWay extends RootGateWay {
 
-    /**
-     * 动态生成where语句
-     */
-    @Override
-    Specification getWhereClause() {
-        return new Specification<TZDArea>() {
-            @Override
-            public Predicate toPredicate(Root<TZDArea> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
-                List<Predicate> predicate = Lists.newArrayList();
-                if (getParam("code") != null) {
-                    predicate.add(cb.equal(root.get("code"), getParam("code")));
-                }
-                if (getParam("nameLike") != null) {
-                    predicate.add(cb.like(root.get("name").as(String.class), "%" + getParam("nameLike") + "%"));
-                }
-                if (getParam("memo") != null) {
-                    predicate.add(cb.like(root.get("memo").as(String.class), "%" + getParam("memo") + "%"));
-                }
-                if (getParam("areaDescLike") != null) {
-                    predicate.add(cb.like(root.get("areaDesc").as(String.class), "%" + getParam("areaDescLike") + "%"));
-                }
-                if (getParam("featureDescLike") != null) {
-                    predicate.add(cb.like(root.get("featureDesc").as(String.class), "%" + getParam("featureDescLike") + "%"));
-                }
-                if (getParam("grainDescLike") != null) {
-                    predicate.add(cb.like(root.get("grainDesc").as(String.class), "%" + getParam("grainDescLike") + "%"));
-                }
-                Predicate[] pre = new Predicate[predicate.size()];
-                return query.where(predicate.toArray(pre)).getRestriction();
-            }
-        };
-    }
+//    /**
+//     * 动态生成where语句
+//     */
+//    @Override
+//    Specification getWhereClause() {
+//        return new Specification<TZDArea>() {
+//            @Override
+//            public Predicate toPredicate(Root<TZDArea> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+//                List<Predicate> predicate = Lists.newArrayList();
+//                if (getParam("code") != null) {
+//                    predicate.add(cb.equal(root.get("code"), getParam("code")));
+//                }
+//                if (getParam("nameLike") != null) {
+//                    predicate.add(cb.like(root.get("name").as(String.class), "%" + getParam("nameLike") + "%"));
+//                }
+//                if (getParam("memo") != null) {
+//                    predicate.add(cb.like(root.get("memo").as(String.class), "%" + getParam("memo") + "%"));
+//                }
+//                if (getParam("areaDescLike") != null) {
+//                    predicate.add(cb.like(root.get("areaDesc").as(String.class), "%" + getParam("areaDescLike") + "%"));
+//                }
+//                if (getParam("featureDescLike") != null) {
+//                    predicate.add(cb.like(root.get("featureDesc").as(String.class), "%" + getParam("featureDescLike") + "%"));
+//                }
+//                if (getParam("grainDescLike") != null) {
+//                    predicate.add(cb.like(root.get("grainDesc").as(String.class), "%" + getParam("grainDescLike") + "%"));
+//                }
+//                Predicate[] pre = new Predicate[predicate.size()];
+//                return query.where(predicate.toArray(pre)).getRestriction();
+//            }
+//        };
+//    }
 
 
     @RequestMapping("/add")
@@ -273,7 +276,8 @@ public class TZDAreaGateWay extends RootGateWay {
         TZDOperator tzdOperator = auth();
 
         //业务处理
-        List<TZDArea> tzdAreaList = tzdAreaDao.findAll(getWhereClause());
+        MapFilter mapFilter = MapFilter.newInstance(httpServletRequest,TZDArea.class, Sets.<String>newHashSet("id"));
+        List<TZDArea> tzdAreaList = tzdAreaDao.findAll(mapFilter.getWhereClause());
         //返回结果
         CommonReturnType commonReturnType = CommonReturnType.create(tzdAreaList);
         log(tzdOperator, commonReturnType);
@@ -286,7 +290,8 @@ public class TZDAreaGateWay extends RootGateWay {
         TZDOperator tzdOperator = auth();
 
         //业务处理
-        Page<TZDArea> tzdAreaPage = tzdAreaDao.findAll(getWhereClause(), getPageRequest());
+        MapFilter mapFilter = MapFilter.newInstance(httpServletRequest,TZDArea.class, Sets.<String>newHashSet("id"));
+        Page<TZDArea> tzdAreaPage = tzdAreaDao.findAll(mapFilter.getWhereClause(), getPageRequest());
         //返回结果
         CommonReturnType commonReturnType = CommonReturnType.create(tzdAreaPage);
         log(tzdOperator, commonReturnType);

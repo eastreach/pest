@@ -91,7 +91,7 @@ public class RootGateWay {
         } else {
             logger.error(ex.getMessage());
             responseData.put(errCodeKey, EnumBusinessError.UNKNOWN_ERROR.getErrCode());
-            responseData.put(errMsgKey, EnumBusinessError.UNKNOWN_ERROR.getErrMsg());
+            responseData.put(errMsgKey, ex.getMessage());
         }
         return CommonReturnType.create(responseData, failKey);
     }
@@ -225,17 +225,17 @@ public class RootGateWay {
         return tzdOperator;
     }
 
-    /**
-     * 获取动态where语句
-     */
-    Specification getWhereClause() {
-        return new Specification() {
-            @Override
-            public Predicate toPredicate(Root root, CriteriaQuery query, CriteriaBuilder cb) {
-                return null;
-            }
-        };
-    }
+//    /**
+//     * 获取动态where语句
+//     */
+//    Specification getWhereClause() {
+//        return new Specification() {
+//            @Override
+//            public Predicate toPredicate(Root root, CriteriaQuery query, CriteriaBuilder cb) {
+//                return null;
+//            }
+//        };
+//    }
 
     /**
      * 获取分页查询信息

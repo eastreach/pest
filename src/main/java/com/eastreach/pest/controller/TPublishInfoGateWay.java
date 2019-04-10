@@ -6,7 +6,9 @@ import com.eastreach.pest.metadata.TZDLimitType;
 import com.eastreach.pest.model.TPublishInfo;
 import com.eastreach.pest.model.TZDOperator;
 import com.eastreach.pest.response.CommonReturnType;
+import com.eastreach.pest.util.MapFilter;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.StringUtils;
@@ -26,32 +28,32 @@ import java.util.List;
 @RequestMapping("/publishInfo")
 public class TPublishInfoGateWay extends RootGateWay {
 
-    /**
-     * 动态生成where语句
-     */
-    @Override
-    Specification getWhereClause() {
-        return new Specification<TPublishInfo>() {
-            @Override
-            public Predicate toPredicate(Root<TPublishInfo> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
-                List<Predicate> predicate = Lists.newArrayList();
-                if (getParam("code") != null) {
-                    predicate.add(cb.equal(root.get("code"), getParam("code")));
-                }
-                if (getParam("name") != null) {
-                    predicate.add(cb.like(root.get("name").as(String.class), "%" + getParam("name") + "%"));
-                }
-                if (getParam("startDt") != null) {
-                    predicate.add(cb.greaterThanOrEqualTo(root.get("createDt").as(String.class), getParam("startDt")));
-                }
-                if (getParam("endDt") != null) {
-                    predicate.add(cb.lessThanOrEqualTo(root.get("createDt").as(String.class), getParam("endDt")));
-                }
-                Predicate[] pre = new Predicate[predicate.size()];
-                return query.where(predicate.toArray(pre)).getRestriction();
-            }
-        };
-    }
+//    /**
+//     * 动态生成where语句
+//     */
+//    @Override
+//    Specification getWhereClause() {
+//        return new Specification<TPublishInfo>() {
+//            @Override
+//            public Predicate toPredicate(Root<TPublishInfo> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+//                List<Predicate> predicate = Lists.newArrayList();
+//                if (getParam("code") != null) {
+//                    predicate.add(cb.equal(root.get("code"), getParam("code")));
+//                }
+//                if (getParam("name") != null) {
+//                    predicate.add(cb.like(root.get("name").as(String.class), "%" + getParam("name") + "%"));
+//                }
+//                if (getParam("startDt") != null) {
+//                    predicate.add(cb.greaterThanOrEqualTo(root.get("createDt").as(String.class), getParam("startDt")));
+//                }
+//                if (getParam("endDt") != null) {
+//                    predicate.add(cb.lessThanOrEqualTo(root.get("createDt").as(String.class), getParam("endDt")));
+//                }
+//                Predicate[] pre = new Predicate[predicate.size()];
+//                return query.where(predicate.toArray(pre)).getRestriction();
+//            }
+//        };
+//    }
 
 
     @RequestMapping("/add")
@@ -152,7 +154,8 @@ public class TPublishInfoGateWay extends RootGateWay {
         TZDOperator tzdOperator = auth();
 
         //业务处理
-        List<TPublishInfo> tPublishInfoList = tPublishInfoDao.findAll(getWhereClause());
+        MapFilter mapFilter = MapFilter.newInstance(httpServletRequest,TPublishInfo.class, Sets.<String>newHashSet("id"));
+        List<TPublishInfo> tPublishInfoList = tPublishInfoDao.findAll(mapFilter.getWhereClause());
         //返回结果
         CommonReturnType commonReturnType = CommonReturnType.create(tPublishInfoList);
         log(tzdOperator, commonReturnType);
@@ -165,7 +168,8 @@ public class TPublishInfoGateWay extends RootGateWay {
         TZDOperator tzdOperator = auth();
 
         //业务处理
-        Page<TPublishInfo> tPublishInfoPage = tPublishInfoDao.findAll(getWhereClause(), getPageRequest());
+        MapFilter mapFilter = MapFilter.newInstance(httpServletRequest,TPublishInfo.class, Sets.<String>newHashSet("id"));
+        Page<TPublishInfo> tPublishInfoPage = tPublishInfoDao.findAll(mapFilter.getWhereClause(), getPageRequest());
         //返回结果
         CommonReturnType commonReturnType = CommonReturnType.create(tPublishInfoPage);
         log(tzdOperator, commonReturnType);

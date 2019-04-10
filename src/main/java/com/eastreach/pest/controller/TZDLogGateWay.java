@@ -5,10 +5,13 @@ import com.alibaba.fastjson.TypeReference;
 import com.eastreach.pest.error.BusinessException;
 import com.eastreach.pest.error.EnumBusinessError;
 import com.eastreach.pest.metadata.TZDLimitType;
+import com.eastreach.pest.model.TRStatPest;
 import com.eastreach.pest.model.TZDLog;
 import com.eastreach.pest.model.TZDOperator;
 import com.eastreach.pest.response.CommonReturnType;
+import com.eastreach.pest.util.MapFilter;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,41 +33,41 @@ import java.util.List;
 @RequestMapping("/log")
 public class TZDLogGateWay extends RootGateWay {
 
-    /**
-     * 动态生成where语句
-     */
-    @Override
-    Specification getWhereClause() {
-        return new Specification<TZDLog>() {
-            @Override
-            public Predicate toPredicate(Root<TZDLog> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
-                List<Predicate> predicate = Lists.newArrayList();
-                if (getParam("url") != null) {
-                    predicate.add(cb.equal(root.get("url"), getParam("url")));
-                }
-                if (getParam("account") != null) {
-                    predicate.add(cb.equal(root.get("account"), getParam("account")));
-                }
-                if (getParam("state") != null) {
-                    predicate.add(cb.equal(root.get("state"), getParam("state")));
-                }
-                if (getParam("errCode") != null) {
-                    predicate.add(cb.equal(root.get("errCode"), getParam("errCode")));
-                }
-                if (getParam("urlLike") != null) {
-                    predicate.add(cb.like(root.get("url").as(String.class), "%" + getParam("url") + "%"));
-                }
-                if (getParam("startDt") != null) {
-                    predicate.add(cb.greaterThanOrEqualTo(root.get("dt").as(String.class), getParam("startDt")));
-                }
-                if (getParam("endDt") != null) {
-                    predicate.add(cb.lessThanOrEqualTo(root.get("dt").as(String.class), getParam("endDt")));
-                }
-                Predicate[] pre = new Predicate[predicate.size()];
-                return query.where(predicate.toArray(pre)).getRestriction();
-            }
-        };
-    }
+//    /**
+//     * 动态生成where语句
+//     */
+//    @Override
+//    Specification getWhereClause() {
+//        return new Specification<TZDLog>() {
+//            @Override
+//            public Predicate toPredicate(Root<TZDLog> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+//                List<Predicate> predicate = Lists.newArrayList();
+//                if (getParam("url") != null) {
+//                    predicate.add(cb.equal(root.get("url"), getParam("url")));
+//                }
+//                if (getParam("account") != null) {
+//                    predicate.add(cb.equal(root.get("account"), getParam("account")));
+//                }
+//                if (getParam("state") != null) {
+//                    predicate.add(cb.equal(root.get("state"), getParam("state")));
+//                }
+//                if (getParam("errCode") != null) {
+//                    predicate.add(cb.equal(root.get("errCode"), getParam("errCode")));
+//                }
+//                if (getParam("urlLike") != null) {
+//                    predicate.add(cb.like(root.get("url").as(String.class), "%" + getParam("url") + "%"));
+//                }
+//                if (getParam("startDt") != null) {
+//                    predicate.add(cb.greaterThanOrEqualTo(root.get("dt").as(String.class), getParam("startDt")));
+//                }
+//                if (getParam("endDt") != null) {
+//                    predicate.add(cb.lessThanOrEqualTo(root.get("dt").as(String.class), getParam("endDt")));
+//                }
+//                Predicate[] pre = new Predicate[predicate.size()];
+//                return query.where(predicate.toArray(pre)).getRestriction();
+//            }
+//        };
+//    }
 
     @Transactional
     @RequestMapping("/deleteBatch")
@@ -99,7 +102,8 @@ public class TZDLogGateWay extends RootGateWay {
         TZDOperator tzdOperator = auth();
 
         //业务处理
-        List<TZDLog> tzdLogList = tzdLogDao.findAll(getWhereClause());
+        MapFilter mapFilter = MapFilter.newInstance(httpServletRequest,TZDLog.class, Sets.<String>newHashSet("id"));
+        List<TZDLog> tzdLogList = tzdLogDao.findAll(mapFilter.getWhereClause());
         return CommonReturnType.create(tzdLogList);
     }
 
@@ -109,7 +113,8 @@ public class TZDLogGateWay extends RootGateWay {
         TZDOperator tzdOperator = auth();
 
         //业务处理
-        Page<TZDLog> tzdLogPage = tzdLogDao.findAll(getWhereClause(), getPageRequest());
+        MapFilter mapFilter = MapFilter.newInstance(httpServletRequest,TZDLog.class, Sets.<String>newHashSet("id"));
+        Page<TZDLog> tzdLogPage = tzdLogDao.findAll(mapFilter.getWhereClause(), getPageRequest());
         return CommonReturnType.create(tzdLogPage);
     }
 

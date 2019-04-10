@@ -5,11 +5,14 @@ import com.alibaba.fastjson.TypeReference;
 import com.eastreach.pest.error.BusinessException;
 import com.eastreach.pest.error.EnumBusinessError;
 import com.eastreach.pest.metadata.TZDLimitType;
+import com.eastreach.pest.model.TRStatPest;
 import com.eastreach.pest.model.TZDOperator;
 import com.eastreach.pest.model.TZDOperatorLimit;
 import com.eastreach.pest.response.CommonReturnType;
+import com.eastreach.pest.util.MapFilter;
 import com.eastreach.pest.util.Utils;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -193,7 +196,8 @@ public class TZDOperatorLimitGateWay extends RootGateWay {
         TZDOperator tzdOperator = auth();
 
         //业务处理
-        List<TZDOperatorLimit> tzdOperatorLimitList = tzdOperatorLimitDao.findAll(getWhereClause());
+        MapFilter mapFilter = MapFilter.newInstance(httpServletRequest,TZDOperatorLimit.class, Sets.<String>newHashSet("id","account","password"));
+        List<TZDOperatorLimit> tzdOperatorLimitList = tzdOperatorLimitDao.findAll(mapFilter.getWhereClause());
 
         //返回结果
         CommonReturnType commonReturnType = CommonReturnType.create(tzdOperatorLimitList);
@@ -207,7 +211,8 @@ public class TZDOperatorLimitGateWay extends RootGateWay {
         TZDOperator tzdOperator = auth();
 
         //业务处理
-        Page<TZDOperatorLimit> tzdOperatorLimitPage = tzdOperatorLimitDao.findAll(getWhereClause(), getPageRequest());
+        MapFilter mapFilter = MapFilter.newInstance(httpServletRequest,TZDOperatorLimit.class, Sets.<String>newHashSet("id","account","password"));
+        Page<TZDOperatorLimit> tzdOperatorLimitPage = tzdOperatorLimitDao.findAll(mapFilter.getWhereClause(), getPageRequest());
         //返回结果
         CommonReturnType commonReturnType = CommonReturnType.create(tzdOperatorLimitPage);
         log(tzdOperator, commonReturnType);
