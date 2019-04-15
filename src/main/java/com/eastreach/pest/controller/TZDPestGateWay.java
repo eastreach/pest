@@ -24,6 +24,8 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.beans.IntrospectionException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,33 +36,9 @@ import java.util.List;
 @RequestMapping("/pest")
 public class TZDPestGateWay extends RootGateWay {
 
-//    /**
-//     * 动态生成where语句
-//     */
-//    @Override
-//    Specification getWhereClause() {
-//        return new Specification<TZDPest>() {
-//            @Override
-//            public Predicate toPredicate(Root<TZDPest> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
-//                List<Predicate> predicate = Lists.newArrayList();
-//                if (getParam("code") != null) {
-//                    predicate.add(cb.equal(root.get("code"), getParam("code")));
-//                }
-//                if (getParam("name") != null) {
-//                    predicate.add(cb.equal(root.get("name"), getParam("name")));
-//                }
-//                if (getParam("nameLike") != null) {
-//                    predicate.add(cb.like(root.get("name").as(String.class), "%" + getParam("nameLike") + "%"));
-//                }
-//                Predicate[] pre = new Predicate[predicate.size()];
-//                return query.where(predicate.toArray(pre)).getRestriction();
-//            }
-//        };
-//    }
-
 
     @RequestMapping("/add")
-    public CommonReturnType add() throws BusinessException {
+    public CommonReturnType add() throws BusinessException, IllegalAccessException, IntrospectionException, InvocationTargetException {
         initLimit(TZDLimitType.limit_ifRoot_no, TZDLimitType.limit_type_0);
         TZDOperator tzdOperator = auth();
 
@@ -73,20 +51,7 @@ public class TZDPestGateWay extends RootGateWay {
             throw new BusinessException(EnumBusinessError.DATA_EXIST_ERROR, "代码已经存在");
         }
         tzdPest = new TZDPest();
-        tzdPest.setCode(code);
-        tzdPest.setName(name);
-        String memo = getParam("memo");
-        if (memo != null) {
-            tzdPest.setMemo(memo);
-        }
-        String pic = getParam("pic");
-        if (pic != null) {
-            tzdPest.setPic(pic);
-        }
-        String pics = getParam("pics");
-        if (pics != null) {
-            tzdPest.setPics(pics);
-        }
+        setDomainProperty(tzdPest,Sets.<String>newHashSet("id","state"));
         tzdPestDao.save(tzdPest);
 
         //返回结果
@@ -178,7 +143,7 @@ public class TZDPestGateWay extends RootGateWay {
     }
 
     @RequestMapping("/update")
-    public CommonReturnType update() throws BusinessException {
+    public CommonReturnType update() throws BusinessException, IllegalAccessException, IntrospectionException, InvocationTargetException {
         initLimit(TZDLimitType.limit_ifRoot_no, TZDLimitType.limit_type_0);
         TZDOperator tzdOperator = auth();
 
@@ -189,22 +154,7 @@ public class TZDPestGateWay extends RootGateWay {
         if (tzdPest == null) {
             throw new BusinessException(EnumBusinessError.DATA_NOT_EXIST_ERROR, "代码不存在");
         }
-        String name = getParam("name");
-        if (name != null) {
-            tzdPest.setName(name);
-        }
-        String memo = getParam("memo");
-        if (memo != null) {
-            tzdPest.setMemo(memo);
-        }
-        String pic = getParam("pic");
-        if (pic != null) {
-            tzdPest.setPic(pic);
-        }
-        String pics = getParam("pics");
-        if (pics != null) {
-            tzdPest.setPics(pics);
-        }
+        setDomainProperty(tzdPest,Sets.<String>newHashSet("id","state"));
         tzdPestDao.save(tzdPest);
 
         //返回结果

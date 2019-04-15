@@ -23,6 +23,8 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.beans.IntrospectionException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,44 +35,11 @@ import java.util.List;
 @RequestMapping("/operator")
 public class TZDOperatorGateWay extends RootGateWay {
 
-//    /**
-//     * 动态生成where语句
-//     */
-//    @Override
-//    Specification getWhereClause() {
-//        return new Specification<TZDOperator>() {
-//            @Override
-//            public Predicate toPredicate(Root<TZDOperator> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
-//                List<Predicate> predicate = Lists.newArrayList();
-//                if (getParam("state") != null) {
-//                    predicate.add(cb.equal(root.get("state"), getParam("state")));
-//                }
-//                if (getParam("ifRoot") != null) {
-//                    predicate.add(cb.equal(root.get("ifRoot"), getParam("ifRoot")));
-//                }
-//                if (getParam("account") != null) {
-//                    predicate.add(cb.equal(root.get("account"), getParam("account")));
-//                }
-//                if (getParam("telephone") != null) {
-//                    predicate.add(cb.equal(root.get("telephone"), getParam("telephone")));
-//                }
-//                if (getParam("name") != null) {
-//                    predicate.add(cb.equal(root.get("name"), getParam("name")));
-//                }
-//                if (getParam("nameLike") != null) {
-//                    predicate.add(cb.like(root.get("name").as(String.class), "%" + getParam("nameLike") + "%"));
-//                }
-//                Predicate[] pre = new Predicate[predicate.size()];
-//                return query.where(predicate.toArray(pre)).getRestriction();
-//            }
-//        };
-//    }
-
     /**
      * 账号注册
      */
     @RequestMapping("/register")
-    public CommonReturnType register() throws BusinessException {
+    public CommonReturnType register() throws BusinessException, IllegalAccessException, IntrospectionException, InvocationTargetException {
         initLimit(TZDLimitType.limit_ifRoot_no, TZDLimitType.limit_type_0);
         TZDParam tzdParam = initParam(new TZDParam(TZDParamType.operator_register_state, "1", "新注册账号默认状态"));
         //业务处理
@@ -83,9 +52,7 @@ public class TZDOperatorGateWay extends RootGateWay {
             throw new BusinessException(EnumBusinessError.DATA_EXIST_ERROR, "账号已经存在");
         }
         tzdOperator = new TZDOperator();
-        tzdOperator.setAccount(account);
-        tzdOperator.setPassword(password);
-        tzdOperator.setName(name);
+        setDomainProperty(tzdOperator,Sets.<String>newHashSet("id","state","ifRoot"));
         tzdOperator.setState(Integer.parseInt(tzdParam.getValue()));
         tzdOperatorDao.save(tzdOperator);
         //返回结果
@@ -117,33 +84,13 @@ public class TZDOperatorGateWay extends RootGateWay {
     public CommonReturnType updateSelf() throws Exception {
         initLimit(TZDLimitType.limit_ifRoot_no, TZDLimitType.limit_type_0);
         TZDOperator tzdOperator = auth();
+        setDomainProperty(tzdOperator,Sets.<String>newHashSet("id","state","ifRoot","password"));
 
         //业务处理
         String newPassword = getParam("newPassword");
-        if (newPassword != null) {
+        if (StringUtils.isEmpty(newPassword)) {
             tzdOperator.setPassword(newPassword);
         }
-        String name = getParam("name");
-        if (name != null) {
-            tzdOperator.setName(name);
-        }
-        String telephone = getParam("telephone");
-        if (telephone != null) {
-            tzdOperator.setTelephone(telephone);
-        }
-        String place = getParam("place");
-        if (place != null) {
-            tzdOperator.setPlace(place);
-        }
-        String province = getParam("province");
-        if (province != null) {
-            tzdOperator.setProvince(province);
-        }
-        String city = getParam("city");
-        if (city != null) {
-            tzdOperator.setCity(city);
-        }
-
         //返回结果
         CommonReturnType commonReturnType = CommonReturnType.create(tzdOperator);
         log(tzdOperator, commonReturnType);

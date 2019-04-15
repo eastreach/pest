@@ -12,18 +12,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 import javax.servlet.http.HttpServletRequest;
+import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
 import java.io.BufferedReader;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * 微服务网关
@@ -193,7 +195,7 @@ public class RootGateWay {
         if (tzdOperator.getState() != 1) {
             throw new BusinessException(EnumBusinessError.AUTH_ERROR, "操作员状态错误");
         }
-        if (!tzdOperator.getPassword().equals(password)) {
+        if (!tzdOperator.getPassword().equalsIgnoreCase(password)) {
             throw new BusinessException(EnumBusinessError.AUTH_ERROR, "操作员密码错误");
         }
         //系统管理员不校验权限
@@ -225,24 +227,28 @@ public class RootGateWay {
         return tzdOperator;
     }
 
-//    /**
-//     * 获取动态where语句
-//     */
-//    Specification getWhereClause() {
-//        return new Specification() {
-//            @Override
-//            public Predicate toPredicate(Root root, CriteriaQuery query, CriteriaBuilder cb) {
-//                return null;
-//            }
-//        };
-//    }
-
     /**
      * 获取分页查询信息
      */
     PageRequest getPageRequest() throws BusinessException {
         checkParam(Lists.newArrayList(pageSizeKey, currentPageKey));
         return new PageRequest(Integer.parseInt(getParam(currentPageKey)), Integer.parseInt(getParam(pageSizeKey)));
+    }
+
+    /**
+     * 自动更新领域对象的属性
+     * @param destination 领域对象
+     * @param excludes    排除字段
+     */
+    public void setDomainProperty(Object destination, Set<String> excludes) throws IntrospectionException, InvocationTargetException, IllegalAccessException {
+        BeanInfo destinationBean = Introspector.getBeanInfo(destination.getClass(), Object.class);
+        PropertyDescriptor[] destinationProperties = destinationBean.getPropertyDescriptors();
+        for (int j = 0; j < destinationProperties.length; j++) {
+            String fieldName = destinationProperties[j].getName();
+            if (!StringUtils.isEmpty(getParam(fieldName)) && !excludes.contains(fieldName)) {
+                destinationProperties[j].getWriteMethod().invoke(destination, getParam(fieldName));
+            }
+        }
     }
 
 

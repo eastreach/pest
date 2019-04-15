@@ -24,6 +24,8 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.beans.IntrospectionException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,42 +36,8 @@ import java.util.List;
 @RequestMapping("/area")
 public class TZDAreaGateWay extends RootGateWay {
 
-//    /**
-//     * 动态生成where语句
-//     */
-//    @Override
-//    Specification getWhereClause() {
-//        return new Specification<TZDArea>() {
-//            @Override
-//            public Predicate toPredicate(Root<TZDArea> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
-//                List<Predicate> predicate = Lists.newArrayList();
-//                if (getParam("code") != null) {
-//                    predicate.add(cb.equal(root.get("code"), getParam("code")));
-//                }
-//                if (getParam("nameLike") != null) {
-//                    predicate.add(cb.like(root.get("name").as(String.class), "%" + getParam("nameLike") + "%"));
-//                }
-//                if (getParam("memo") != null) {
-//                    predicate.add(cb.like(root.get("memo").as(String.class), "%" + getParam("memo") + "%"));
-//                }
-//                if (getParam("areaDescLike") != null) {
-//                    predicate.add(cb.like(root.get("areaDesc").as(String.class), "%" + getParam("areaDescLike") + "%"));
-//                }
-//                if (getParam("featureDescLike") != null) {
-//                    predicate.add(cb.like(root.get("featureDesc").as(String.class), "%" + getParam("featureDescLike") + "%"));
-//                }
-//                if (getParam("grainDescLike") != null) {
-//                    predicate.add(cb.like(root.get("grainDesc").as(String.class), "%" + getParam("grainDescLike") + "%"));
-//                }
-//                Predicate[] pre = new Predicate[predicate.size()];
-//                return query.where(predicate.toArray(pre)).getRestriction();
-//            }
-//        };
-//    }
-
-
     @RequestMapping("/add")
-    public CommonReturnType add() throws BusinessException {
+    public CommonReturnType add() throws BusinessException, IllegalAccessException, IntrospectionException, InvocationTargetException {
         initLimit(TZDLimitType.limit_ifRoot_no, TZDLimitType.limit_type_0);
         TZDOperator tzdOperator = auth();
 
@@ -82,32 +50,7 @@ public class TZDAreaGateWay extends RootGateWay {
             throw new BusinessException(EnumBusinessError.DATA_EXIST_ERROR, "代码已经存在");
         }
         tzdArea = new TZDArea();
-        tzdArea.setCode(code);
-        tzdArea.setName(name);
-        String memo = getParam("memo");
-        if (memo != null) {
-            tzdArea.setMemo(memo);
-        }
-        String pic = getParam("pic");
-        if (pic != null) {
-            tzdArea.setPic(pic);
-        }
-        String pics = getParam("pics");
-        if (pics != null) {
-            tzdArea.setPics(pics);
-        }
-        String areaDesc = getParam("areaDesc");
-        if (areaDesc != null) {
-            tzdArea.setAreaDesc(areaDesc);
-        }
-        String featureDesc = getParam("featureDesc");
-        if (featureDesc != null) {
-            tzdArea.setFeatureDesc(featureDesc);
-        }
-        String grainDesc = getParam("grainDesc");
-        if (grainDesc != null) {
-            tzdArea.setGrainDesc(grainDesc);
-        }
+        setDomainProperty(tzdArea,Sets.<String>newHashSet("id","state"));
         tzdAreaDao.save(tzdArea);
         //返回结果
         CommonReturnType commonReturnType = CommonReturnType.create(tzdArea);
@@ -194,7 +137,7 @@ public class TZDAreaGateWay extends RootGateWay {
     }
 
     @RequestMapping("/update")
-    public CommonReturnType update() throws BusinessException {
+    public CommonReturnType update() throws BusinessException, IllegalAccessException, IntrospectionException, InvocationTargetException {
         initLimit(TZDLimitType.limit_ifRoot_no, TZDLimitType.limit_type_0);
         TZDOperator tzdOperator = auth();
 
@@ -205,34 +148,7 @@ public class TZDAreaGateWay extends RootGateWay {
         if (tzdArea == null) {
             throw new BusinessException(EnumBusinessError.DATA_NOT_EXIST_ERROR, "代码不存在");
         }
-        String name = getParam("name");
-        if (name != null) {
-            tzdArea.setName(name);
-        }
-        String memo = getParam("memo");
-        if (memo != null) {
-            tzdArea.setMemo(memo);
-        }
-        String pic = getParam("pic");
-        if (pic != null) {
-            tzdArea.setPic(pic);
-        }
-        String pics = getParam("pics");
-        if (pics != null) {
-            tzdArea.setPics(pics);
-        }
-        String areaDesc = getParam("areaDesc");
-        if (areaDesc != null) {
-            tzdArea.setAreaDesc(areaDesc);
-        }
-        String featureDesc = getParam("featureDesc");
-        if (featureDesc != null) {
-            tzdArea.setFeatureDesc(featureDesc);
-        }
-        String grainDesc = getParam("grainDesc");
-        if (grainDesc != null) {
-            tzdArea.setGrainDesc(grainDesc);
-        }
+        setDomainProperty(tzdArea,Sets.<String>newHashSet("id","state"));
         tzdAreaDao.save(tzdArea);
         //返回结果
         CommonReturnType commonReturnType = CommonReturnType.create(tzdArea);

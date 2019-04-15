@@ -20,12 +20,14 @@ public class TZDOperator extends RootBean{
     private String account = "";    //登录账号
     private String password = "";   //登录密码
     private String role = "";       //操作员角色,权限模型采用简化单个操作员设置,
+    private String roleName = "";   //角色名称
 
     private String name = "";           //姓名.
     private String telephone = "";      //电话
     private String place="";            //住址
     private String province="";         //省份
     private String city="";             //城市
+    private String areaCode = "";       //区域代码
 
 
     @Id
@@ -116,5 +118,21 @@ public class TZDOperator extends RootBean{
 
     public void setCity(String city) {
         this.city = city;
+    }
+
+    public String getRoleName() {
+        return roleName;
+    }
+
+    public void setRoleName(String roleName) {
+        this.roleName = roleName;
+    }
+
+    public String getAreaCode() {
+        return areaCode;
+    }
+
+    public void setAreaCode(String areaCode) {
+        this.areaCode = areaCode;
     }
 }
