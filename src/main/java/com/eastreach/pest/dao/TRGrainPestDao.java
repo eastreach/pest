@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 /**
  *
  **/
-public interface TRGrainPestDao extends JpaRepository<TRGrainPest, Integer>, JpaSpecificationExecutor<TRGrainPest> {
+public interface TRGrainPestDao extends RootDao<TRGrainPest, Integer>, JpaSpecificationExecutor<TRGrainPest> {
 
     @Query("select u from TRGrainPest u where u.grainCode=:grainCode and u.pestCode=:pestCode")
     TRGrainPest find(@Param("grainCode") String grainCode, @Param("pestCode") String pestCode);

@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 /**
  *
  **/
-public interface TPublishInfoDao extends JpaRepository<TPublishInfo, Integer>,JpaSpecificationExecutor<TPublishInfo> {
+public interface TPublishInfoDao extends RootDao<TPublishInfo, Integer>,JpaSpecificationExecutor<TPublishInfo> {
 
     @Query("select u from TPublishInfo u where u.code=:code")
     TPublishInfo find(@Param("code") String code);

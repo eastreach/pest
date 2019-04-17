@@ -13,6 +13,7 @@ import com.eastreach.pest.util.MapFilter;
 import com.eastreach.pest.util.Utils;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import net.sf.json.JSONObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,20 +38,21 @@ import java.util.List;
 public class TZDGrainGateWay extends RootGateWay {
 
     @RequestMapping("/add")
-    public CommonReturnType add() throws BusinessException, IllegalAccessException, IntrospectionException, InvocationTargetException {
+    public CommonReturnType add() throws Exception {
         initLimit(TZDLimitType.limit_ifRoot_no, TZDLimitType.limit_type_0);
-        TZDOperator tzdOperator = auth();
+        JSONObject requestJson = getRequestJson();
+        TZDOperator tzdOperator = auth(requestJson);
 
         //业务处理
-        checkParam(Lists.<String>newArrayList("code", "name"));
-        String code = getParam("code");
-        String name = getParam("name");
+        checkParam(requestJson,Lists.<String>newArrayList("code", "name"));
+        String code = requestJson.optString("code");
+        String name = requestJson.optString("name");
         TZDGrain tzdGrain = tzdGrainDao.find(code);
         if (tzdGrain != null) {
             throw new BusinessException(EnumBusinessError.DATA_EXIST_ERROR, "代码已经存在");
         }
         tzdGrain = new TZDGrain();
-        setDomainProperty(tzdGrain,Sets.<String>newHashSet("id","state"));
+        setDomainProperty(requestJson,tzdGrain,Sets.<String>newHashSet("id","state"));
         tzdGrainDao.save(tzdGrain);
 
         //返回结果
@@ -61,13 +63,14 @@ public class TZDGrainGateWay extends RootGateWay {
 
     @Transactional
     @RequestMapping("/addBatch")
-    public CommonReturnType addBatch() throws BusinessException {
+    public CommonReturnType addBatch() throws Exception {
         initLimit(TZDLimitType.limit_ifRoot_no, TZDLimitType.limit_type_0);
-        TZDOperator tzdOperator = auth();
+        JSONObject requestJson = getRequestJson();
+        TZDOperator tzdOperator = auth(requestJson);
 
         //业务处理
-        checkParam(Lists.newArrayList("tzdGrainList"));
-        List<TZDGrain> tzdGrainList = JSON.parseObject(getParam("tzdGrainList"), new TypeReference<ArrayList<TZDGrain>>() {
+        checkParam(requestJson,Lists.newArrayList("tzdGrainList"));
+        List<TZDGrain> tzdGrainList = JSON.parseObject(requestJson.optString("tzdGrainList"), new TypeReference<ArrayList<TZDGrain>>() {
         });
         for (TZDGrain tzdGrain : tzdGrainList) {
             tzdGrain.setId(null);
@@ -90,13 +93,14 @@ public class TZDGrainGateWay extends RootGateWay {
     }
 
     @RequestMapping("/delete")
-    public CommonReturnType delete() throws BusinessException {
+    public CommonReturnType delete() throws Exception {
         initLimit(TZDLimitType.limit_ifRoot_no, TZDLimitType.limit_type_0);
-        TZDOperator tzdOperator = auth();
+        JSONObject requestJson = getRequestJson();
+        TZDOperator tzdOperator = auth(requestJson);
 
         //业务处理
-        checkParam(Lists.<String>newArrayList("code"));
-        String code = getParam("code");
+        checkParam(requestJson,Lists.<String>newArrayList("code"));
+        String code = requestJson.optString("code");
         TZDGrain tzdGrain = tzdGrainDao.find(code);
         if (tzdGrain == null) {
             throw new BusinessException(EnumBusinessError.DATA_NOT_EXIST_ERROR, "代码不存在");
@@ -111,13 +115,14 @@ public class TZDGrainGateWay extends RootGateWay {
 
     @Transactional
     @RequestMapping("/deleteBatch")
-    public CommonReturnType deleteBatch() throws BusinessException {
+    public CommonReturnType deleteBatch() throws Exception {
         initLimit(TZDLimitType.limit_ifRoot_no, TZDLimitType.limit_type_0);
-        TZDOperator tzdOperator = auth();
+        JSONObject requestJson = getRequestJson();
+        TZDOperator tzdOperator = auth(requestJson);
 
         //业务处理
-        checkParam(Lists.newArrayList("tzdGrainList"));
-        List<TZDGrain> tzdGrainList = JSON.parseObject(getParam("tzdGrainList"), new TypeReference<ArrayList<TZDGrain>>() {
+        checkParam(requestJson,Lists.newArrayList("tzdGrainList"));
+        List<TZDGrain> tzdGrainList = JSON.parseObject(requestJson.optString("tzdGrainList"), new TypeReference<ArrayList<TZDGrain>>() {
         });
         for (TZDGrain tzdGrain : tzdGrainList) {
             tzdGrain.setId(null);
@@ -140,18 +145,19 @@ public class TZDGrainGateWay extends RootGateWay {
     }
 
     @RequestMapping("/update")
-    public CommonReturnType update() throws BusinessException, IllegalAccessException, IntrospectionException, InvocationTargetException {
+    public CommonReturnType update() throws Exception {
         initLimit(TZDLimitType.limit_ifRoot_no, TZDLimitType.limit_type_0);
-        TZDOperator tzdOperator = auth();
+        JSONObject requestJson = getRequestJson();
+        TZDOperator tzdOperator = auth(requestJson);
 
         //业务处理
-        checkParam(Lists.<String>newArrayList("code"));
-        String code = getParam("code");
+        checkParam(requestJson,Lists.<String>newArrayList("code"));
+        String code = requestJson.optString("code");
         TZDGrain tzdGrain = tzdGrainDao.find(code);
         if (tzdGrain == null) {
             throw new BusinessException(EnumBusinessError.DATA_NOT_EXIST_ERROR, "代码不存在");
         }
-        setDomainProperty(tzdGrain,Sets.<String>newHashSet("id","state"));
+        setDomainProperty(requestJson,tzdGrain,Sets.<String>newHashSet("id","state"));
         tzdGrainDao.save(tzdGrain);
         //返回结果
         CommonReturnType commonReturnType = CommonReturnType.create(tzdGrain);
@@ -163,11 +169,12 @@ public class TZDGrainGateWay extends RootGateWay {
     @RequestMapping("/updateBatch")
     public CommonReturnType updateBatch() throws Exception {
         initLimit(TZDLimitType.limit_ifRoot_no, TZDLimitType.limit_type_0);
-        TZDOperator tzdOperator = auth();
+        JSONObject requestJson = getRequestJson();
+        TZDOperator tzdOperator = auth(requestJson);
 
         //业务处理
-        checkParam(Lists.newArrayList("tzdGrainList"));
-        List<TZDGrain> tzdGrainList = JSON.parseObject(getParam("tzdGrainList"), new TypeReference<ArrayList<TZDGrain>>() {
+        checkParam(requestJson,Lists.newArrayList("tzdGrainList"));
+        List<TZDGrain> tzdGrainList = JSON.parseObject(requestJson.optString("tzdGrainList"), new TypeReference<ArrayList<TZDGrain>>() {
         });
         for (TZDGrain tzdGrain : tzdGrainList) {
             tzdGrain.setId(null);
@@ -191,12 +198,13 @@ public class TZDGrainGateWay extends RootGateWay {
 
 
     @RequestMapping("/select")
-    public CommonReturnType select() throws BusinessException {
+    public CommonReturnType select() throws Exception {
         initLimit(TZDLimitType.limit_ifRoot_no, TZDLimitType.limit_type_0);
-        TZDOperator tzdOperator = auth();
+        JSONObject requestJson = getRequestJson();
+        TZDOperator tzdOperator = auth(requestJson);
 
         //业务处理
-        MapFilter mapFilter = MapFilter.newInstance(httpServletRequest,TZDGrain.class, Sets.<String>newHashSet("id"));
+        MapFilter mapFilter = MapFilter.newInstance(requestJson,TZDGrain.class, Sets.<String>newHashSet("id"));
         List<TZDGrain> tzdGrainList = tzdGrainDao.findAll(mapFilter.getWhereClause());
         //返回结果
         CommonReturnType commonReturnType = CommonReturnType.create(tzdGrainList);
@@ -205,13 +213,14 @@ public class TZDGrainGateWay extends RootGateWay {
     }
 
     @RequestMapping("/selectPage")
-    public CommonReturnType selectPage() throws BusinessException {
+    public CommonReturnType selectPage() throws Exception {
         initLimit(TZDLimitType.limit_ifRoot_no, TZDLimitType.limit_type_0);
-        TZDOperator tzdOperator = auth();
+        JSONObject requestJson = getRequestJson();
+        TZDOperator tzdOperator = auth(requestJson);
 
         //业务处理
-        MapFilter mapFilter = MapFilter.newInstance(httpServletRequest,TZDGrain.class, Sets.<String>newHashSet("id"));
-        Page<TZDGrain> tzdGrainPage = tzdGrainDao.findAll(mapFilter.getWhereClause(), getPageRequest());
+        MapFilter mapFilter = MapFilter.newInstance(requestJson,TZDGrain.class, Sets.<String>newHashSet("id"));
+        Page<TZDGrain> tzdGrainPage = tzdGrainDao.findAll(mapFilter.getWhereClause(), getPageRequest(requestJson));
         //返回结果
         CommonReturnType commonReturnType = CommonReturnType.create(tzdGrainPage);
         log(tzdOperator, commonReturnType);

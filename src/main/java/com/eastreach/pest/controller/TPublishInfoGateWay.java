@@ -9,6 +9,7 @@ import com.eastreach.pest.response.CommonReturnType;
 import com.eastreach.pest.util.MapFilter;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import net.sf.json.JSONObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.StringUtils;
@@ -19,6 +20,9 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.beans.IntrospectionException;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 /**
@@ -28,59 +32,17 @@ import java.util.List;
 @RequestMapping("/publishInfo")
 public class TPublishInfoGateWay extends RootGateWay {
 
-//    /**
-//     * 动态生成where语句
-//     */
-//    @Override
-//    Specification getWhereClause() {
-//        return new Specification<TPublishInfo>() {
-//            @Override
-//            public Predicate toPredicate(Root<TPublishInfo> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
-//                List<Predicate> predicate = Lists.newArrayList();
-//                if (getParam("code") != null) {
-//                    predicate.add(cb.equal(root.get("code"), getParam("code")));
-//                }
-//                if (getParam("name") != null) {
-//                    predicate.add(cb.like(root.get("name").as(String.class), "%" + getParam("name") + "%"));
-//                }
-//                if (getParam("startDt") != null) {
-//                    predicate.add(cb.greaterThanOrEqualTo(root.get("createDt").as(String.class), getParam("startDt")));
-//                }
-//                if (getParam("endDt") != null) {
-//                    predicate.add(cb.lessThanOrEqualTo(root.get("createDt").as(String.class), getParam("endDt")));
-//                }
-//                Predicate[] pre = new Predicate[predicate.size()];
-//                return query.where(predicate.toArray(pre)).getRestriction();
-//            }
-//        };
-//    }
-
 
     @RequestMapping("/add")
-    public CommonReturnType add() throws BusinessException {
+    public CommonReturnType add() throws Exception {
         initLimit(TZDLimitType.limit_ifRoot_no, TZDLimitType.limit_type_0);
-        TZDOperator tzdOperator = auth();
+        JSONObject requestJson = getRequestJson();
+        TZDOperator tzdOperator = auth(requestJson);
 
         //业务处理
-        checkParam(Lists.newArrayList("name", "content"));
-        String name = getParam("name");
+        checkParam(requestJson,Lists.newArrayList("name", "content"));
         TPublishInfo tPublishInfo = new TPublishInfo();
-        tPublishInfo.setName(name);
-        tPublishInfo.setCreateOper(tzdOperator.getAccount());
-        String memo = getParam("memo");
-        if (memo != null) {
-            tPublishInfo.setMemo(memo);
-        }
-        String content = getParam("content");
-        if (content != null) {
-            tPublishInfo.setContent(content);
-        }
-        if (!StringUtils.isEmpty(getParam("pic"))) {
-            tPublishInfo.setPic(getParam("pic"));
-        }
-        if (!StringUtils.isEmpty(getParam("pics"))) {
-            tPublishInfo.setPics(getParam("pics"));
-        }
+        setDomainProperty(requestJson,tPublishInfo,Sets.<String>newHashSet("id"));
         tPublishInfoDao.save(tPublishInfo);
         //返回结果
         CommonReturnType commonReturnType = CommonReturnType.create(tPublishInfo);
@@ -89,13 +51,14 @@ public class TPublishInfoGateWay extends RootGateWay {
     }
 
     @RequestMapping("/delete")
-    public CommonReturnType delete() throws BusinessException {
+    public CommonReturnType delete() throws Exception {
         initLimit(TZDLimitType.limit_ifRoot_no, TZDLimitType.limit_type_0);
-        TZDOperator tzdOperator = auth();
+        JSONObject requestJson = getRequestJson();
+        TZDOperator tzdOperator = auth(requestJson);
 
         //业务处理
-        checkParam(Lists.newArrayList("code"));
-        String code = getParam("code");
+        checkParam(requestJson,Lists.newArrayList("code"));
+        String code = requestJson.optString("code");
         TPublishInfo tPublishInfo = tPublishInfoDao.find(code);
         if (tPublishInfo == null) {
             throw new BusinessException(EnumBusinessError.DATA_NOT_EXIST_ERROR, "代码不存在");
@@ -108,39 +71,19 @@ public class TPublishInfoGateWay extends RootGateWay {
     }
 
     @RequestMapping("/update")
-    public CommonReturnType update() throws BusinessException {
+    public CommonReturnType update() throws Exception {
         initLimit(TZDLimitType.limit_ifRoot_no, TZDLimitType.limit_type_0);
-        TZDOperator tzdOperator = auth();
+        JSONObject requestJson = getRequestJson();
+        TZDOperator tzdOperator = auth(requestJson);
 
         //业务处理
-        checkParam(Lists.newArrayList("code"));
-        String code = getParam("code");
+        checkParam(requestJson,Lists.newArrayList("code"));
+        String code = requestJson.optString("code");
         TPublishInfo tPublishInfo = tPublishInfoDao.find(code);
         if (tPublishInfo == null) {
             throw new BusinessException(EnumBusinessError.DATA_NOT_EXIST_ERROR, "代码不存在");
         }
-        String name = getParam("name");
-        if (name != null) {
-            tPublishInfo.setName(name);
-        }
-        String memo = getParam("memo");
-        if (memo != null) {
-            tPublishInfo.setMemo(memo);
-        }
-        String content = getParam("content");
-        if (content != null) {
-            tPublishInfo.setContent(content);
-        }
-        String createOper = getParam("createOper");
-        if (!createOper.equals("")) {
-            tPublishInfo.setCreateOper(createOper);
-        }
-        if (!StringUtils.isEmpty(getParam("pic"))) {
-            tPublishInfo.setPic(getParam("pic"));
-        }
-        if (!StringUtils.isEmpty(getParam("pics"))) {
-            tPublishInfo.setPics(getParam("pics"));
-        }
+        setDomainProperty(requestJson,tPublishInfo,Sets.<String>newHashSet("id"));
         tPublishInfoDao.save(tPublishInfo);
         //返回结果
         CommonReturnType commonReturnType = CommonReturnType.create(tPublishInfo);
@@ -149,12 +92,13 @@ public class TPublishInfoGateWay extends RootGateWay {
     }
 
     @RequestMapping("/select")
-    public CommonReturnType select() throws BusinessException {
+    public CommonReturnType select() throws Exception {
         initLimit(TZDLimitType.limit_ifRoot_no, TZDLimitType.limit_type_0);
-        TZDOperator tzdOperator = auth();
+        JSONObject requestJson = getRequestJson();
+        TZDOperator tzdOperator = auth(requestJson);
 
         //业务处理
-        MapFilter mapFilter = MapFilter.newInstance(httpServletRequest,TPublishInfo.class, Sets.<String>newHashSet("id"));
+        MapFilter mapFilter = MapFilter.newInstance(requestJson,TPublishInfo.class, Sets.<String>newHashSet("id"));
         List<TPublishInfo> tPublishInfoList = tPublishInfoDao.findAll(mapFilter.getWhereClause());
         //返回结果
         CommonReturnType commonReturnType = CommonReturnType.create(tPublishInfoList);
@@ -163,13 +107,14 @@ public class TPublishInfoGateWay extends RootGateWay {
     }
 
     @RequestMapping("/selectPage")
-    public CommonReturnType selectPage() throws BusinessException {
+    public CommonReturnType selectPage() throws Exception {
         initLimit(TZDLimitType.limit_ifRoot_no, TZDLimitType.limit_type_0);
-        TZDOperator tzdOperator = auth();
+        JSONObject requestJson = getRequestJson();
+        TZDOperator tzdOperator = auth(requestJson);
 
         //业务处理
-        MapFilter mapFilter = MapFilter.newInstance(httpServletRequest,TPublishInfo.class, Sets.<String>newHashSet("id"));
-        Page<TPublishInfo> tPublishInfoPage = tPublishInfoDao.findAll(mapFilter.getWhereClause(), getPageRequest());
+        MapFilter mapFilter = MapFilter.newInstance(requestJson,TPublishInfo.class, Sets.<String>newHashSet("id"));
+        Page<TPublishInfo> tPublishInfoPage = tPublishInfoDao.findAll(mapFilter.getWhereClause(), getPageRequest(requestJson));
         //返回结果
         CommonReturnType commonReturnType = CommonReturnType.create(tPublishInfoPage);
         log(tzdOperator, commonReturnType);

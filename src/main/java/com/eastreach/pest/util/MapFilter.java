@@ -1,9 +1,12 @@
 package com.eastreach.pest.util;
 
+
+import com.eastreach.pest.annotation.MapFilterIgnore;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import net.sf.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.jpa.domain.Specification;
@@ -209,6 +212,50 @@ public class MapFilter {
         return this;
     }
 
+    public <T> MapFilter addFilter(JSONObject requestJson, Class<T> clazz, Set<String> ignoreSet) {
+        Field[] fields = clazz.getDeclaredFields();
+        for (Field field : fields) {
+            if (field.getAnnotation(MapFilterIgnore.class)!=null){
+                continue;
+            }
+            String key = field.getName();
+            //==
+            if (!ignoreSet.contains(key)) {
+                mapEqual(key, requestJson.optString(key));
+            }
+            //==
+            if (!ignoreSet.contains(key + suffixEqual)) {
+                mapEqual(key, requestJson.optString(key + suffixEqual));
+            }
+            //in
+            if (!ignoreSet.contains(key + suffixIn)) {
+                mapIn(key, requestJson.optString(key + suffixIn));                     //in
+            }
+            //like
+            if (!ignoreSet.contains(key + suffixLike)) {
+                mapLike(key, requestJson.optString(key + suffixLike));                 //like
+            }
+            //>
+            if (!ignoreSet.contains(key + suffixGreat)) {
+                mapGreat(key, requestJson.optString(key + suffixGreat));               //>
+            }
+            //>=
+            if (!ignoreSet.contains(key + suffixGreatEqual)) {
+                mapGreatEqual(key, requestJson.optString(key + suffixGreatEqual));     //>=
+            }
+            //<
+            if (!ignoreSet.contains(key + suffixLess)) {
+                mapLess(key, requestJson.optString(key + suffixLess));                 //<
+            }
+            //<=
+            if (!ignoreSet.contains(key + suffixLessEqual)) {
+                mapLessEqual(key, requestJson.optString(key + suffixLessEqual));       //<=
+            }
+        }
+        return this;
+    }
+
+
     /**
      * 返回空的对象过滤模型
      */
@@ -217,49 +264,53 @@ public class MapFilter {
     }
 
     /**
-     * 根据HttpServletRequest和访问的领域模型生成默认的过滤对象.
+     * 根据Json对象生成过滤对象
      *
-     * @param request   请求对象
-     * @param clazz     领域模型元信息.
-     * @param ignoreSet 忽略请求中的字段
+     * @param requestJson 请求json对象封装
+     * @param clazz       领域模型元信息.
+     * @param ignoreSet   忽略请求中的字段
      * @return
      */
-    public static <T> MapFilter newInstance(HttpServletRequest request, Class<T> clazz, Set<String> ignoreSet) {
+    public static <T> MapFilter newInstance(JSONObject requestJson, Class<T> clazz, Set<String> ignoreSet) {
+        //过滤默认关键字
         MapFilter mapFilter = newInstance();
         Field[] fields = clazz.getDeclaredFields();
         for (Field field : fields) {
+            if (field.getAnnotation(MapFilterIgnore.class)!=null){
+                continue;
+            }
             String key = field.getName();
             //==
             if (!ignoreSet.contains(key)) {
-                mapFilter.mapEqual(key, request.getParameter(key));
+                mapFilter.mapEqual(key, requestJson.optString(key));
             }
             //==
             if (!ignoreSet.contains(key + suffixEqual)) {
-                mapFilter.mapEqual(key, request.getParameter(key + suffixEqual));
+                mapFilter.mapEqual(key, requestJson.optString(key + suffixEqual));
             }
             //in
             if (!ignoreSet.contains(key + suffixIn)) {
-                mapFilter.mapIn(key, request.getParameter(key + suffixIn));                     //in
+                mapFilter.mapIn(key, requestJson.optString(key + suffixIn));                     //in
             }
             //like
             if (!ignoreSet.contains(key + suffixLike)) {
-                mapFilter.mapLike(key, request.getParameter(key + suffixLike));                 //like
+                mapFilter.mapLike(key, requestJson.optString(key + suffixLike));                 //like
             }
             //>
             if (!ignoreSet.contains(key + suffixGreat)) {
-                mapFilter.mapGreat(key, request.getParameter(key + suffixGreat));               //>
+                mapFilter.mapGreat(key, requestJson.optString(key + suffixGreat));               //>
             }
             //>=
             if (!ignoreSet.contains(key + suffixGreatEqual)) {
-                mapFilter.mapGreatEqual(key, request.getParameter(key + suffixGreatEqual));     //>=
+                mapFilter.mapGreatEqual(key, requestJson.optString(key + suffixGreatEqual));     //>=
             }
             //<
             if (!ignoreSet.contains(key + suffixLess)) {
-                mapFilter.mapLess(key, request.getParameter(key + suffixLess));                 //<
+                mapFilter.mapLess(key, requestJson.optString(key + suffixLess));                 //<
             }
             //<=
             if (!ignoreSet.contains(key + suffixLessEqual)) {
-                mapFilter.mapLessEqual(key, request.getParameter(key + suffixLessEqual));       //<=
+                mapFilter.mapLessEqual(key, requestJson.optString(key + suffixLessEqual));       //<=
             }
         }
         return mapFilter;

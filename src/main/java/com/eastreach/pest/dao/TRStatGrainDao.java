@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 /**
  *
  **/
-public interface TRStatGrainDao extends JpaRepository<TRStatGrain, Integer>, JpaSpecificationExecutor<TRStatGrain> {
+public interface TRStatGrainDao extends RootDao<TRStatGrain, Integer>, JpaSpecificationExecutor<TRStatGrain> {
 
     TRStatGrain findByCode(String code);
 }

@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 /**
  *
  **/
-public interface TZDParamDao extends JpaRepository<TZDParam, Integer>, JpaSpecificationExecutor<TZDParam> {
+public interface TZDParamDao extends RootDao<TZDParam, Integer>, JpaSpecificationExecutor<TZDParam> {
 
     TZDParam findByCode(String code);
 }

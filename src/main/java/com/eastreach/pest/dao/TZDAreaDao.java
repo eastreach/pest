@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 /**
  *
  **/
-public interface TZDAreaDao extends JpaRepository<TZDArea, Integer>, JpaSpecificationExecutor<TZDArea> {
+public interface TZDAreaDao extends RootDao<TZDArea, Integer>, JpaSpecificationExecutor<TZDArea> {
 
     @Query("select u from TZDArea u where u.code=:code")
     TZDArea find(@Param("code") String code);

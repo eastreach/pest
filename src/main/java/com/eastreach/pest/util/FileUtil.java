@@ -1,7 +1,6 @@
 package com.eastreach.pest.util;
 
-import java.io.File;
-import java.io.FileOutputStream;
+import java.io.*;
 
 /**
  *
@@ -19,5 +18,34 @@ public class FileUtil {
         out.write(file);
         out.flush();
         out.close();
+    }
+
+    /**
+     * 读取本地文本文件
+     */
+    public static String ReadFile(String Path) {
+        BufferedReader reader = null;
+        String result = "";
+        try {
+            FileInputStream fileInputStream = new FileInputStream(Path);
+            InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream, "UTF-8");
+            reader = new BufferedReader(inputStreamReader);
+            String tempString = null;
+            while ((tempString = reader.readLine()) != null) {
+                result += tempString;
+            }
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return result;
     }
 }

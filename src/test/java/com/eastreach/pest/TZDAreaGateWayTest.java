@@ -5,6 +5,7 @@ import com.beust.jcommander.internal.Lists;
 import com.eastreach.pest.model.TZDArea;
 import com.eastreach.pest.util.HttpUtil;
 import com.google.common.collect.Maps;
+import org.dom4j.DocumentException;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
@@ -18,7 +19,7 @@ public class TZDAreaGateWayTest extends RootTest {
 
 
     @Test
-    public void add() throws IOException {
+    public void add() throws IOException, DocumentException {
         Map<String, String> map = Maps.newConcurrentMap();
         map.put("account", account_root);
         map.put("password", password_root);
@@ -31,14 +32,14 @@ public class TZDAreaGateWayTest extends RootTest {
 
         String url = "/area/add";
 
-        String response = HttpUtil.post(hostUrl + url, map);
+        String response = HttpUtil.postKV(hostUrl + url, map);
         logger.info(url);
         logger.info(response);
 
     }
 
     @Test
-    public void addBatch() throws IOException {
+    public void addBatch() throws IOException, DocumentException {
         Map<String, String> map = Maps.newConcurrentMap();
         map.put("account", account_root);
         map.put("password", password_root);
@@ -53,7 +54,7 @@ public class TZDAreaGateWayTest extends RootTest {
 
         String url = "/area/addBatch";
 
-        String response = HttpUtil.post(hostUrl + url, map);
+        String response = HttpUtil.postKV(hostUrl + url, map);
         logger.info(url);
         logger.info(response);
 
@@ -61,13 +62,13 @@ public class TZDAreaGateWayTest extends RootTest {
 
 
     @Test
-    public void select() throws IOException {
+    public void select() throws IOException, DocumentException {
         Map<String, String> map = Maps.newConcurrentMap();
         map.put("account", account_root);
         map.put("password", password_root);
         String url = "/area/select";
 
-        String response = HttpUtil.post(hostUrl + url, map);
+        String response = HttpUtil.postKV(hostUrl + url, map);
         logger.info(url);
         logger.info(response);
 

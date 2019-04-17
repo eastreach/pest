@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 /**
  *
  **/
-public interface TRGrainAreaDao extends JpaRepository<TRGrainArea, Integer>, JpaSpecificationExecutor<TRGrainArea> {
+public interface TRGrainAreaDao extends RootDao<TRGrainArea, Integer>, JpaSpecificationExecutor<TRGrainArea> {
 
     @Query("select u from TRGrainArea u where u.grainCode=:grainCode and u.areaCode=:areaCode")
     TRGrainArea find(@Param("grainCode") String grainCode, @Param("areaCode") String areaCode);

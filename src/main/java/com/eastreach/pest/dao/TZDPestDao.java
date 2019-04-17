@@ -9,8 +9,7 @@ import org.springframework.data.repository.query.Param;
 /**
  *
  **/
-public interface TZDPestDao extends JpaRepository<TZDPest, Integer> , JpaSpecificationExecutor<TZDPest> {
+public interface TZDPestDao extends RootDao<TZDPest, Integer> , JpaSpecificationExecutor<TZDPest> {
 
-    @Query("select u from TZDPest u where u.code=:code")
-    TZDPest find(@Param("code") String code);
+    TZDPest findFirstByCode(String code);
 }

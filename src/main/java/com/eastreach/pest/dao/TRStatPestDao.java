@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 /**
  *
  **/
-public interface TRStatPestDao extends JpaRepository<TRStatPest, Integer>, JpaSpecificationExecutor<TRStatPest> {
+public interface TRStatPestDao extends RootDao<TRStatPest, Integer>, JpaSpecificationExecutor<TRStatPest> {
 
     TRStatPest findByCode(String code);
 }

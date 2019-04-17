@@ -13,6 +13,7 @@ import com.eastreach.pest.util.MapFilter;
 import com.eastreach.pest.util.Utils;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import net.sf.json.JSONObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,53 +35,21 @@ import java.util.List;
 @RequestMapping("/param")
 public class TZDParamGateWay extends RootGateWay {
 
-//    /**
-//     * 动态生成where语句
-//     */
-//    @Override
-//    Specification getWhereClause() {
-//        return new Specification<TZDParam>() {
-//            @Override
-//            public Predicate toPredicate(Root<TZDParam> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
-//                List<Predicate> predicate = Lists.newArrayList();
-//                if (getParam("code") != null) {
-//                    predicate.add(cb.equal(root.get("code"), getParam("code")));
-//                }
-//                if (getParam("value") != null) {
-//                    predicate.add(cb.equal(root.get("value"), getParam("value")));
-//                }
-//                if (getParam("memo") != null) {
-//                    predicate.add(cb.like(root.get("memo").as(String.class), "%" + getParam("memo") + "%"));
-//                }
-//                Predicate[] pre = new Predicate[predicate.size()];
-//                return query.where(predicate.toArray(pre)).getRestriction();
-//            }
-//        };
-//    }
-
-
     @RequestMapping("/add")
-    public CommonReturnType add() throws BusinessException {
+    public CommonReturnType add() throws Exception {
         initLimit(TZDLimitType.limit_ifRoot_yes, TZDLimitType.limit_type_0);
-        TZDOperator tzdOperator = auth();
+        JSONObject requestJson = getRequestJson();
+        TZDOperator tzdOperator = auth(requestJson);
 
         //业务处理
-        checkParam(Lists.newArrayList("code"));
-        String code = getParam("code");
+        checkParam(requestJson,Lists.newArrayList("code"));
+        String code = requestJson.optString("code");
         TZDParam tzdParam = tzdParamDao.findByCode(code);
         if (tzdParam != null) {
             throw new BusinessException(EnumBusinessError.DATA_EXIST_ERROR, "代码已经存在");
         }
         tzdParam = new TZDParam();
-        tzdParam.setCode(code);
-        String value = getParam("value");
-        if (value != null) {
-            tzdParam.setMemo(value);
-        }
-        String memo = getParam("memo");
-        if (memo != null) {
-            tzdParam.setMemo(memo);
-        }
+        setDomainProperty(requestJson,tzdParam,Sets.<String>newHashSet());
         tzdParamDao.save(tzdParam);
 
         CommonReturnType commonReturnType = CommonReturnType.create(tzdParam);
@@ -92,11 +61,12 @@ public class TZDParamGateWay extends RootGateWay {
     @RequestMapping("/addBatch")
     public CommonReturnType addBatch() throws Exception {
         initLimit(TZDLimitType.limit_ifRoot_yes, TZDLimitType.limit_type_0);
-        TZDOperator tzdOperator = auth();
+        JSONObject requestJson = getRequestJson();
+        TZDOperator tzdOperator = auth(requestJson);
 
         //业务处理
-        checkParam(Lists.newArrayList("tzdParamList"));
-        List<TZDParam> tzdParamList = JSON.parseObject(getParam("tzdParamList"), new TypeReference<ArrayList<TZDParam>>() {
+        checkParam(requestJson,Lists.newArrayList("tzdParamList"));
+        List<TZDParam> tzdParamList = JSON.parseObject(requestJson.optString("tzdParamList"), new TypeReference<ArrayList<TZDParam>>() {
         });
         for (TZDParam tzdParam : tzdParamList) {
             tzdParam.setId(null);
@@ -115,13 +85,14 @@ public class TZDParamGateWay extends RootGateWay {
     }
 
     @RequestMapping("/delete")
-    public CommonReturnType delete() throws BusinessException {
+    public CommonReturnType delete() throws Exception {
         initLimit(TZDLimitType.limit_ifRoot_yes, TZDLimitType.limit_type_0);
-        TZDOperator tzdOperator = auth();
+        JSONObject requestJson = getRequestJson();
+        TZDOperator tzdOperator = auth(requestJson);
 
         //业务处理
-        checkParam(Lists.newArrayList("code"));
-        String code = getParam("code");
+         checkParam(requestJson,Lists.newArrayList("code"));
+        String code = requestJson.optString("code");
         TZDParam tzdParam = tzdParamDao.findByCode(code);
         if (tzdParam == null) {
             throw new BusinessException(EnumBusinessError.DATA_EXIST_ERROR, "代码不存在");
@@ -137,11 +108,12 @@ public class TZDParamGateWay extends RootGateWay {
     @RequestMapping("/deleteBatch")
     public CommonReturnType deleteBatch() throws Exception {
         initLimit(TZDLimitType.limit_ifRoot_yes, TZDLimitType.limit_type_0);
-        TZDOperator tzdOperator = auth();
+        JSONObject requestJson = getRequestJson();
+        TZDOperator tzdOperator = auth(requestJson);
 
         //业务处理
-        checkParam(Lists.newArrayList("tzdParamList"));
-        List<TZDParam> tzdParamList = JSON.parseObject(getParam("tzdParamList"), new TypeReference<ArrayList<TZDParam>>() {
+        checkParam(requestJson,Lists.newArrayList("tzdParamList"));
+        List<TZDParam> tzdParamList = JSON.parseObject(requestJson.optString("tzdParamList"), new TypeReference<ArrayList<TZDParam>>() {
         });
         for (TZDParam tzdParam : tzdParamList) {
             tzdParam.setId(null);
@@ -162,25 +134,19 @@ public class TZDParamGateWay extends RootGateWay {
     }
 
     @RequestMapping("/update")
-    public CommonReturnType update() throws BusinessException {
+    public CommonReturnType update() throws Exception {
         initLimit(TZDLimitType.limit_ifRoot_yes, TZDLimitType.limit_type_0);
-        TZDOperator tzdOperator = auth();
+        JSONObject requestJson = getRequestJson();
+        TZDOperator tzdOperator = auth(requestJson);
 
         //业务处理
-        checkParam(Lists.newArrayList("code"));
-        String code = getParam("code");
+        checkParam(requestJson,Lists.newArrayList("code"));
+        String code = requestJson.optString("code");
         TZDParam tzdParam = tzdParamDao.findByCode(code);
         if (tzdParam == null) {
             throw new BusinessException(EnumBusinessError.DATA_EXIST_ERROR, "代码不存在");
         }
-        String value = getParam("value");
-        if (value != null) {
-            tzdParam.setMemo(value);
-        }
-        String memo = getParam("memo");
-        if (memo != null) {
-            tzdParam.setMemo(memo);
-        }
+        setDomainProperty(requestJson,tzdParam,Sets.<String>newHashSet());
         tzdParamDao.save(tzdParam);
 
         CommonReturnType commonReturnType = CommonReturnType.create(tzdParam);
@@ -192,11 +158,12 @@ public class TZDParamGateWay extends RootGateWay {
     @RequestMapping("/updateBatch")
     public CommonReturnType updateBatch() throws Exception {
         initLimit(TZDLimitType.limit_ifRoot_yes, TZDLimitType.limit_type_0);
-        TZDOperator tzdOperator = auth();
+        JSONObject requestJson = getRequestJson();
+        TZDOperator tzdOperator = auth(requestJson);
 
         //业务处理
-        checkParam(Lists.newArrayList("tzdParamList"));
-        List<TZDParam> tzdParamList = JSON.parseObject(getParam("tzdParamList"), new TypeReference<ArrayList<TZDParam>>() {
+        checkParam(requestJson,Lists.newArrayList("tzdParamList"));
+        List<TZDParam> tzdParamList = JSON.parseObject(requestJson.optString("tzdParamList"), new TypeReference<ArrayList<TZDParam>>() {
         });
         for (TZDParam tzdParam : tzdParamList) {
             tzdParam.setId(null);
@@ -216,12 +183,13 @@ public class TZDParamGateWay extends RootGateWay {
     }
 
     @RequestMapping("/select")
-    public CommonReturnType select() throws BusinessException {
+    public CommonReturnType select() throws Exception {
         initLimit(TZDLimitType.limit_ifRoot_no, TZDLimitType.limit_type_0);
-        TZDOperator tzdOperator = auth();
+        JSONObject requestJson = getRequestJson();
+        TZDOperator tzdOperator = auth(requestJson);
 
         //业务处理
-        MapFilter mapFilter = MapFilter.newInstance(httpServletRequest,TZDParam.class, Sets.<String>newHashSet("id"));
+        MapFilter mapFilter = MapFilter.newInstance(requestJson,TZDParam.class, Sets.<String>newHashSet("id"));
         List<TZDParam> tzdParamList = tzdParamDao.findAll(mapFilter.getWhereClause());
 
         CommonReturnType commonReturnType = CommonReturnType.create(tzdParamList);
@@ -230,13 +198,14 @@ public class TZDParamGateWay extends RootGateWay {
     }
 
     @RequestMapping("/selectPage")
-    public CommonReturnType selectPage() throws BusinessException {
+    public CommonReturnType selectPage() throws Exception {
         initLimit(TZDLimitType.limit_ifRoot_no, TZDLimitType.limit_type_0);
-        TZDOperator tzdOperator = auth();
+        JSONObject requestJson = getRequestJson();
+        TZDOperator tzdOperator = auth(requestJson);
 
         //业务处理
-        MapFilter mapFilter = MapFilter.newInstance(httpServletRequest,TZDParam.class, Sets.<String>newHashSet("id"));
-        Page<TZDParam> tzdParamPage = tzdParamDao.findAll(mapFilter.getWhereClause(), getPageRequest());
+        MapFilter mapFilter = MapFilter.newInstance(requestJson,TZDParam.class, Sets.<String>newHashSet("id"));
+        Page<TZDParam> tzdParamPage = tzdParamDao.findAll(mapFilter.getWhereClause(), getPageRequest(requestJson));
 
         CommonReturnType commonReturnType = CommonReturnType.create(tzdParamPage);
         log(tzdOperator, commonReturnType);

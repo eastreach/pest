@@ -10,6 +10,7 @@ import com.eastreach.pest.response.CommonReturnType;
 import com.eastreach.pest.util.MapFilter;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import net.sf.json.JSONObject;
 import org.joda.time.DateTime;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.domain.Specification;
@@ -32,64 +33,30 @@ import java.util.List;
 @RequestMapping("/statGrain")
 public class TRStatGrainGateWay extends RootGateWay {
 
-//    /**
-//     * 动态生成where语句
-//     */
-//    @Override
-//    Specification getWhereClause() {
-//        return new Specification<TRStatGrain>() {
-//            @Override
-//            public Predicate toPredicate(Root<TRStatGrain> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
-//                List<Predicate> predicate = Lists.newArrayList();
-//                if (getParam("areaCode") != null) {
-//                    predicate.add(cb.equal(root.get("areaCode"), getParam("areaCode")));
-//                }
-//                if (getParam("grainCode") != null) {
-//                    predicate.add(cb.equal(root.get("grainCode"), getParam("grainCode")));
-//                }
-//                if (getParam("year") != null) {
-//                    predicate.add(cb.equal(root.get("year"), getParam("year")));
-//                }
-//                if (getParam("month") != null) {
-//                    predicate.add(cb.equal(root.get("month"), getParam("month")));
-//                }
-//                if (getParam("startDt") != null) {
-//                    predicate.add(cb.greaterThanOrEqualTo(root.get("dt").as(String.class), getParam("startDt")));
-//                }
-//                if (getParam("endDt") != null) {
-//                    predicate.add(cb.lessThanOrEqualTo(root.get("dt").as(String.class), getParam("endDt")));
-//                }
-//                Predicate[] pre = new Predicate[predicate.size()];
-//                return query.where(predicate.toArray(pre)).getRestriction();
-//            }
-//        };
-//    }
-
-
     @RequestMapping("/add")
-    public CommonReturnType add() throws BusinessException {
+    public CommonReturnType add() throws Exception {
         initLimit(TZDLimitType.limit_ifRoot_no, TZDLimitType.limit_type_0);
-        TZDOperator tzdOperator = auth();
+        JSONObject requestJson = getRequestJson();
+        TZDOperator tzdOperator = auth(requestJson);
 
         //业务处理
-        checkParam(Lists.newArrayList("year", "month", "areaCode", "grainCode", "grainValue"));
+        checkParam(requestJson,Lists.newArrayList("year", "month", "areaCode", "grainCode", "grainValue"));
         TRStatGrain trStatGrain = new TRStatGrain();
-        trStatGrain.setYear(Integer.parseInt(getParam("year")));
-        trStatGrain.setMonth(Integer.parseInt(getParam("month")));
+        setDomainProperty(requestJson,trStatGrain,Sets.<String>newHashSet());
         trStatGrain.setDt(DateTime.now().withYear(trStatGrain.getYear()).withMonthOfYear(trStatGrain.getMonth()).withDayOfMonth(1).withTimeAtStartOfDay().toDate());
-        TZDArea tzdArea = tzdAreaDao.findByCode(getParam("areaCode"));
+        TZDArea tzdArea = tzdAreaDao.findByCode(requestJson.optString("areaCode"));
         if (tzdArea == null) {
-            throw new BusinessException(EnumBusinessError.DATA_NOT_EXIST_ERROR, "区域不存在-" + getParam("areaCode"));
+            throw new BusinessException(EnumBusinessError.DATA_NOT_EXIST_ERROR, "区域不存在-" + requestJson.optString("areaCode"));
         } else {
             trStatGrain.setAreaCode(tzdArea.getCode());
         }
-        TZDGrain tzdGrain = tzdGrainDao.find(getParam("grainCode"));
+        TZDGrain tzdGrain = tzdGrainDao.find(requestJson.optString("grainCode"));
         if (tzdGrain == null) {
-            throw new BusinessException(EnumBusinessError.DATA_NOT_EXIST_ERROR, "作物不存在-" + getParam("grainCode"));
+            throw new BusinessException(EnumBusinessError.DATA_NOT_EXIST_ERROR, "作物不存在-" + requestJson.optString("grainCode"));
         } else {
             trStatGrain.setGrainCode(tzdGrain.getCode());
         }
-        trStatGrain.setGrainValue(Double.parseDouble(getParam("grainValue")));
+        trStatGrain.setGrainValue(Double.parseDouble(requestJson.optString("grainValue")));
         trStatGrainDao.save(trStatGrain);
         //返回结果
         CommonReturnType commonReturnType = CommonReturnType.create(trStatGrain);
@@ -99,25 +66,18 @@ public class TRStatGrainGateWay extends RootGateWay {
 
 
     @RequestMapping("/update")
-    public CommonReturnType update() throws BusinessException {
+    public CommonReturnType update() throws Exception {
         initLimit(TZDLimitType.limit_ifRoot_no, TZDLimitType.limit_type_0);
-        TZDOperator tzdOperator = auth();
+        JSONObject requestJson = getRequestJson();
+        TZDOperator tzdOperator = auth(requestJson);
 
         //业务处理
-        checkParam(Lists.newArrayList("code"));
-        TRStatGrain trStatGrain = trStatGrainDao.findByCode(getParam("code"));
+        checkParam(requestJson,Lists.newArrayList("code"));
+        TRStatGrain trStatGrain = trStatGrainDao.findByCode(requestJson.optString("code"));
         if (trStatGrain == null) {
             throw new BusinessException(EnumBusinessError.DATA_NOT_EXIST_ERROR, "代码不存在");
         }
-        if (!StringUtils.isEmpty(getParam("areaCode"))) {
-            trStatGrain.setAreaCode(getParam("areaCode"));
-        }
-        if (!StringUtils.isEmpty(getParam("grainCode"))) {
-            trStatGrain.setGrainCode(getParam("grainCode"));
-        }
-        if (!StringUtils.isEmpty(getParam("grainValue"))) {
-            trStatGrain.setGrainValue(Double.parseDouble(getParam("grainValue")));
-        }
+        setDomainProperty(requestJson,trStatGrain,Sets.<String>newHashSet());
         trStatGrainDao.save(trStatGrain);
         //返回结果
         CommonReturnType commonReturnType = CommonReturnType.create(trStatGrain);
@@ -126,13 +86,14 @@ public class TRStatGrainGateWay extends RootGateWay {
     }
 
     @RequestMapping("/delete")
-    public CommonReturnType delete() throws BusinessException {
+    public CommonReturnType delete() throws Exception {
         initLimit(TZDLimitType.limit_ifRoot_no, TZDLimitType.limit_type_0);
-        TZDOperator tzdOperator = auth();
+        JSONObject requestJson = getRequestJson();
+        TZDOperator tzdOperator = auth(requestJson);
 
         //业务处理
-        checkParam(Lists.<String>newArrayList("code"));
-        TRStatGrain trStatGrain = trStatGrainDao.findByCode(getParam("code"));
+        checkParam(requestJson,Lists.<String>newArrayList("code"));
+        TRStatGrain trStatGrain = trStatGrainDao.findByCode(requestJson.optString("code"));
         if (trStatGrain == null) {
             throw new BusinessException(EnumBusinessError.DATA_NOT_EXIST_ERROR, "代码不存在");
         }
@@ -147,11 +108,12 @@ public class TRStatGrainGateWay extends RootGateWay {
     @RequestMapping("/deleteBatch")
     public CommonReturnType deleteBatch() throws Exception {
         initLimit(TZDLimitType.limit_ifRoot_no, TZDLimitType.limit_type_0);
-        TZDOperator tzdOperator = auth();
+        JSONObject requestJson = getRequestJson();
+        TZDOperator tzdOperator = auth(requestJson);
 
         //业务处理
-        checkParam(Lists.newArrayList("trStatGrainList"));
-        List<TRStatGrain> trStatGrainList = JSON.parseObject(getParam("trStatGrainList"), new TypeReference<ArrayList<TRStatGrain>>() {
+        checkParam(requestJson,Lists.newArrayList("trStatGrainList"));
+        List<TRStatGrain> trStatGrainList = JSON.parseObject(requestJson.optString("trStatGrainList"), new TypeReference<ArrayList<TRStatGrain>>() {
         });
         for (TRStatGrain trStatGrain : trStatGrainList) {
             trStatGrain.setId(null);
@@ -171,12 +133,13 @@ public class TRStatGrainGateWay extends RootGateWay {
 
 
     @RequestMapping("/select")
-    public CommonReturnType select() throws BusinessException {
+    public CommonReturnType select() throws Exception {
         initLimit(TZDLimitType.limit_ifRoot_no, TZDLimitType.limit_type_0);
-        TZDOperator tzdOperator = auth();
+        JSONObject requestJson = getRequestJson();
+        TZDOperator tzdOperator = auth(requestJson);
 
         //业务处理
-        MapFilter mapFilter = MapFilter.newInstance(httpServletRequest,TRStatGrain.class, Sets.<String>newHashSet("id"));
+        MapFilter mapFilter = MapFilter.newInstance(requestJson,TRStatGrain.class, Sets.<String>newHashSet("id"));
         List<TRStatGrain> trStatGrainList = trStatGrainDao.findAll(mapFilter.getWhereClause());
         //返回结果
         CommonReturnType commonReturnType = CommonReturnType.create(trStatGrainList);
@@ -185,13 +148,14 @@ public class TRStatGrainGateWay extends RootGateWay {
     }
 
     @RequestMapping("/selectPage")
-    public CommonReturnType selectPage() throws BusinessException {
+    public CommonReturnType selectPage() throws Exception {
         initLimit(TZDLimitType.limit_ifRoot_no, TZDLimitType.limit_type_0);
-        TZDOperator tzdOperator = auth();
+        JSONObject requestJson = getRequestJson();
+        TZDOperator tzdOperator = auth(requestJson);
 
         //业务处理
-        MapFilter mapFilter = MapFilter.newInstance(httpServletRequest,TRStatGrain.class, Sets.<String>newHashSet("id"));
-        Page<TRStatGrain> trStatGrainPage = trStatGrainDao.findAll(mapFilter.getWhereClause(), getPageRequest());
+        MapFilter mapFilter = MapFilter.newInstance(requestJson,TRStatGrain.class, Sets.<String>newHashSet("id"));
+        Page<TRStatGrain> trStatGrainPage = trStatGrainDao.findAll(mapFilter.getWhereClause(), getPageRequest(requestJson));
         //返回结果
         CommonReturnType commonReturnType = CommonReturnType.create(trStatGrainPage);
         log(tzdOperator, commonReturnType);

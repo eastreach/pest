@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 /**
  *
  **/
-public interface TZDGrainDao extends JpaRepository<TZDGrain, Integer>,JpaSpecificationExecutor<TZDGrain> {
+public interface TZDGrainDao extends RootDao<TZDGrain, Integer>,JpaSpecificationExecutor<TZDGrain> {
 
     @Query("select u from TZDGrain u where u.code=:code")
     TZDGrain find(@Param("code") String code);

@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 /**
  *
  **/
-public interface TZDLogDao extends JpaRepository<TZDLog, Integer>, JpaSpecificationExecutor<TZDLog> {
+public interface TZDLogDao extends RootDao<TZDLog, Integer>, JpaSpecificationExecutor<TZDLog> {
 
     TZDLog findByCode(String code);
 }

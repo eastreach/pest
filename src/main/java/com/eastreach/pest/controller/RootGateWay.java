@@ -8,6 +8,7 @@ import com.eastreach.pest.model.*;
 import com.eastreach.pest.response.CommonReturnType;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import net.sf.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,12 @@ import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.charset.Charset;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -98,37 +104,53 @@ public class RootGateWay {
         return CommonReturnType.create(responseData, failKey);
     }
 
+    public String getBodyContent() throws IOException {
+        StringBuilder sb = new StringBuilder();
+        InputStream inputStream = httpServletRequest.getInputStream();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, Charset.forName("UTF-8")));
+        char[] bodyCharBuffer = new char[1024];
+        int len = 0;
+        while ((len = reader.read(bodyCharBuffer)) != -1) {
+            sb.append(new String(bodyCharBuffer, 0, len));
+        }
+        return sb.toString();
+    }
+
     /**
-     * 获取请求内容
+     * 获取请求参数, 请求参数的JSON封装
      */
-    public String requestBodyContent(HttpServletRequest request) {
-        StringBuffer stringBuffer = new StringBuffer();
-        String line = null;
-        try {
-            BufferedReader reader = request.getReader();
-            while ((line = reader.readLine()) != null)
-                stringBuffer.append(line);
-        } catch (Exception e) { /*report an error*/ }
-        return stringBuffer.toString();
+    public JSONObject getRequestJson() throws Exception {
+        JSONObject requestJson = new JSONObject();
+        //GET 参数返回
+        if (httpServletRequest.getMethod().equalsIgnoreCase("GET")) {
+            Enumeration enumeration = httpServletRequest.getParameterNames();
+            while (enumeration.hasMoreElements()) {
+                String key = enumeration.nextElement().toString();
+                requestJson.put(key, httpServletRequest.getParameter(key));
+            }
+            return requestJson;
+        }
+        //POST JSON参数返回
+        String content = getBodyContent();
+        if (!StringUtils.isEmpty(content) && content.startsWith("{") && content.endsWith("}")) {
+            requestJson = JSONObject.fromObject(content);
+            return requestJson;
+        }
+        //POST KV参数返回
+        Map<String, String[]> map = httpServletRequest.getParameterMap();
+        requestJson = JSONObject.fromObject(map);
+        return requestJson;
     }
 
     /**
      * 非空参数校验
      */
-    public void checkParam(List<String> paramList) throws BusinessException {
+    public void checkParam(JSONObject requestJson, List<String> paramList) throws BusinessException {
         for (String param : paramList) {
-            if (httpServletRequest.getParameter(param) == null) {
+            if (StringUtils.isEmpty(requestJson.optString(param))) {
                 throw new BusinessException(EnumBusinessError.PARAMETER_VALIDATION_ERROR, "参数不能为空-" + param);
             }
         }
-    }
-
-    /**
-     * 获取请求参数值
-     */
-    public String getParam(String param) {
-        String value = httpServletRequest.getParameter(param);
-        return value;
     }
 
     /**
@@ -182,13 +204,16 @@ public class RootGateWay {
     }
 
     /**
-     * 公共权限验证
+     * 操作员权限验证
      */
-    public TZDOperator auth() throws BusinessException {
-        checkParam(Lists.newArrayList(accountKey, passwordKey));
-        String account = httpServletRequest.getParameter("account");
-        String password = httpServletRequest.getParameter("password");
-        TZDOperator tzdOperator = tzdOperatorDao.find(account);
+    public TZDOperator auth(String account, String password) throws BusinessException {
+        if (StringUtils.isEmpty(account)) {
+            throw new BusinessException(EnumBusinessError.AUTH_ERROR, "参数错误-account");
+        }
+        if (StringUtils.isEmpty(password)) {
+            throw new BusinessException(EnumBusinessError.AUTH_ERROR, "参数错误-password");
+        }
+        TZDOperator tzdOperator = tzdOperatorDao.findFirstByAccount(account);
         if (tzdOperator == null) {
             throw new BusinessException(EnumBusinessError.AUTH_ERROR, "操作员不存在");
         }
@@ -227,26 +252,33 @@ public class RootGateWay {
         return tzdOperator;
     }
 
+
+    public TZDOperator auth(JSONObject requestJson) throws BusinessException {
+        return auth(requestJson.optString("account"), requestJson.optString("password"));
+    }
+
     /**
      * 获取分页查询信息
      */
-    PageRequest getPageRequest() throws BusinessException {
-        checkParam(Lists.newArrayList(pageSizeKey, currentPageKey));
-        return new PageRequest(Integer.parseInt(getParam(currentPageKey)), Integer.parseInt(getParam(pageSizeKey)));
+    PageRequest getPageRequest(JSONObject requestJson) throws BusinessException {
+        checkParam(requestJson, Lists.newArrayList(pageSizeKey, currentPageKey));
+        return new PageRequest(Integer.parseInt(requestJson.optString(currentPageKey)), Integer.parseInt(requestJson.optString(pageSizeKey)));
     }
 
     /**
      * 自动更新领域对象的属性
+     *
      * @param destination 领域对象
      * @param excludes    排除字段
      */
-    public void setDomainProperty(Object destination, Set<String> excludes) throws IntrospectionException, InvocationTargetException, IllegalAccessException {
+    public void setDomainProperty(JSONObject requestJson, Object destination, Set<String> excludes) throws IntrospectionException, InvocationTargetException, IllegalAccessException {
+        excludes.add("id");
         BeanInfo destinationBean = Introspector.getBeanInfo(destination.getClass(), Object.class);
         PropertyDescriptor[] destinationProperties = destinationBean.getPropertyDescriptors();
         for (int j = 0; j < destinationProperties.length; j++) {
             String fieldName = destinationProperties[j].getName();
-            if (!StringUtils.isEmpty(getParam(fieldName)) && !excludes.contains(fieldName)) {
-                destinationProperties[j].getWriteMethod().invoke(destination, getParam(fieldName));
+            if (!StringUtils.isEmpty(requestJson.optString(fieldName)) && !excludes.contains(fieldName)) {
+                destinationProperties[j].getWriteMethod().invoke(destination, requestJson.optString(fieldName));
             }
         }
     }

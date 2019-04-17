@@ -2,6 +2,7 @@ package com.eastreach.pest;
 
 import com.eastreach.pest.util.HttpUtil;
 import com.google.common.collect.Maps;
+import org.dom4j.DocumentException;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
@@ -13,7 +14,7 @@ import java.util.Map;
 public class TRStatPestGateWayTest extends RootTest {
 
     @Test
-    public void add() throws IOException {
+    public void add() throws IOException, DocumentException {
         Map<String,String> map = Maps.newConcurrentMap();
         map.put("account",account_root);
         map.put("password",password_root);
@@ -26,7 +27,7 @@ public class TRStatPestGateWayTest extends RootTest {
 
         String url = "/statPest/add";
 
-        String response = HttpUtil.post(hostUrl+url,map);
+        String response = HttpUtil.postKV(hostUrl+url,map);
         logger.info(url);
         logger.info(response);
 

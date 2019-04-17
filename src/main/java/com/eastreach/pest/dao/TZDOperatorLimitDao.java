@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 /**
  *
  **/
-public interface TZDOperatorLimitDao extends JpaRepository<TZDOperatorLimit, Integer>, JpaSpecificationExecutor<TZDOperatorLimit> {
+public interface TZDOperatorLimitDao extends RootDao<TZDOperatorLimit, Integer>, JpaSpecificationExecutor<TZDOperatorLimit> {
 
     TZDOperatorLimit findFirstByAccountAndUrl(String account, String url);
 }
