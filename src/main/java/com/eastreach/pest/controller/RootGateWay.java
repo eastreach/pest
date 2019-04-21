@@ -121,24 +121,17 @@ public class RootGateWay {
      */
     public JSONObject getRequestJson() throws Exception {
         JSONObject requestJson = new JSONObject();
-        //GET 参数返回
-        if (httpServletRequest.getMethod().equalsIgnoreCase("GET")) {
-            Enumeration enumeration = httpServletRequest.getParameterNames();
-            while (enumeration.hasMoreElements()) {
-                String key = enumeration.nextElement().toString();
-                requestJson.put(key, httpServletRequest.getParameter(key));
-            }
-            return requestJson;
-        }
         //POST JSON参数返回
         String content = getBodyContent();
         if (!StringUtils.isEmpty(content) && content.startsWith("{") && content.endsWith("}")) {
             requestJson = JSONObject.fromObject(content);
             return requestJson;
         }
-        //POST KV参数返回
-        Map<String, String[]> map = httpServletRequest.getParameterMap();
-        requestJson = JSONObject.fromObject(map);
+        Enumeration enumeration = httpServletRequest.getParameterNames();
+        while (enumeration.hasMoreElements()) {
+            String key = enumeration.nextElement().toString();
+            requestJson.put(key, httpServletRequest.getParameter(key));
+        }
         return requestJson;
     }
 

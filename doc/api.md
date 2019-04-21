@@ -46,6 +46,7 @@ public static final String suffixLessEqual = "LessEqual";   //<=
 1. [气候API](api_feature.md)
 1. [农作物API](api_grain.md)
 1. [害虫API](api_pest.md)
+1. [粮仓](api_depot.md)
 1. [农作物与区域对应关系API](api_grain_area.md)
 1. [农作物与害虫对应关系API](api_grain_pest.md)
 1. [专家信息发布API](api_publish.md)
