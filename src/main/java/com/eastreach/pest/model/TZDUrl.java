@@ -18,6 +18,14 @@ public class TZDUrl extends RootBean {
     private Integer limitType = 0;    //权限模式, 0黑名单限权, 1白名单授权
     private Integer logLevel = 0;   //日志模式, 0不记录日志, 1记录日志
 
+    public TZDUrl() {
+    }
+
+    public TZDUrl(String url, String memo) {
+        this.url = url;
+        this.memo = memo;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Integer getId() {

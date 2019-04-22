@@ -5,9 +5,9 @@ import com.alibaba.fastjson.TypeReference;
 import com.eastreach.pest.error.BusinessException;
 import com.eastreach.pest.error.EnumBusinessError;
 import com.eastreach.pest.metadata.TZDLimitType;
-import com.eastreach.pest.model.TRStatPest;
 import com.eastreach.pest.model.TZDOperator;
 import com.eastreach.pest.model.TZDOperatorLimit;
+import com.eastreach.pest.model.TZDUrl;
 import com.eastreach.pest.response.CommonReturnType;
 import com.eastreach.pest.util.MapFilter;
 import com.eastreach.pest.util.Utils;
@@ -37,7 +37,7 @@ public class TZDOperatorLimitGateWay extends RootGateWay {
         TZDOperator tzdOperator = auth(requestJson);
 
         //业务处理
-        checkParam(requestJson,Lists.newArrayList("tzdOperatorLimit"));
+        checkParam(requestJson, Lists.newArrayList("tzdOperatorLimit"));
         TZDOperatorLimit tzdOperatorLimit = JSON.parseObject(requestJson.optString("tzdOperatorLimit"), new TypeReference<TZDOperatorLimit>() {
         });
         tzdOperatorLimit.setId(null);
@@ -60,7 +60,7 @@ public class TZDOperatorLimitGateWay extends RootGateWay {
         TZDOperator tzdOperator = auth(requestJson);
 
         //业务处理
-        checkParam(requestJson,Lists.newArrayList("tzdOperatorLimitList"));
+        checkParam(requestJson, Lists.newArrayList("tzdOperatorLimitList"));
         List<TZDOperatorLimit> tzdOperatorLimitList = JSON.parseObject(requestJson.optString("tzdOperatorLimitList"), new TypeReference<ArrayList<TZDOperatorLimit>>() {
         });
         for (TZDOperatorLimit tzdOperatorLimit : tzdOperatorLimitList) {
@@ -90,7 +90,7 @@ public class TZDOperatorLimitGateWay extends RootGateWay {
         TZDOperator tzdOperator = auth(requestJson);
 
         //业务处理
-        checkParam(requestJson,Lists.newArrayList("tzdOperatorLimit"));
+        checkParam(requestJson, Lists.newArrayList("tzdOperatorLimit"));
         TZDOperatorLimit tzdOperatorLimit = JSON.parseObject(requestJson.optString("tzdOperatorLimit"), new TypeReference<TZDOperatorLimit>() {
         });
         tzdOperatorLimit.setId(null);
@@ -114,7 +114,7 @@ public class TZDOperatorLimitGateWay extends RootGateWay {
         TZDOperator tzdOperator = auth(requestJson);
 
         //业务处理
-        checkParam(requestJson,Lists.newArrayList("tzdOperatorLimitList"));
+        checkParam(requestJson, Lists.newArrayList("tzdOperatorLimitList"));
         List<TZDOperatorLimit> tzdOperatorLimitList = JSON.parseObject(requestJson.optString("tzdOperatorLimitList"), new TypeReference<ArrayList<TZDOperatorLimit>>() {
         });
         for (TZDOperatorLimit tzdOperatorLimit : tzdOperatorLimitList) {
@@ -147,7 +147,7 @@ public class TZDOperatorLimitGateWay extends RootGateWay {
         TZDOperator tzdOperator = auth(requestJson);
 
         //业务处理
-        checkParam(requestJson,Lists.newArrayList("tzdOperatorLimit"));
+        checkParam(requestJson, Lists.newArrayList("tzdOperatorLimit"));
         TZDOperatorLimit tzdOperatorLimit = JSON.parseObject(requestJson.optString("tzdOperatorLimit"), new TypeReference<TZDOperatorLimit>() {
         });
         tzdOperatorLimit.setId(null);
@@ -173,7 +173,7 @@ public class TZDOperatorLimitGateWay extends RootGateWay {
         TZDOperator tzdOperator = auth(requestJson);
 
         //业务处理
-        checkParam(requestJson,Lists.newArrayList("tzdOperatorLimitList"));
+        checkParam(requestJson, Lists.newArrayList("tzdOperatorLimitList"));
         List<TZDOperatorLimit> tzdOperatorLimitList = JSON.parseObject(requestJson.optString("tzdOperatorLimitList"), new TypeReference<ArrayList<TZDOperatorLimit>>() {
         });
         for (TZDOperatorLimit tzdOperatorLimit : tzdOperatorLimitList) {
@@ -204,7 +204,7 @@ public class TZDOperatorLimitGateWay extends RootGateWay {
         TZDOperator tzdOperator = auth(requestJson);
 
         //业务处理
-        MapFilter mapFilter = MapFilter.newInstance(requestJson,TZDOperatorLimit.class, Sets.<String>newHashSet("id","account","password"));
+        MapFilter mapFilter = MapFilter.newInstance(requestJson, TZDOperatorLimit.class, Sets.<String>newHashSet("id", "account", "password"));
         List<TZDOperatorLimit> tzdOperatorLimitList = tzdOperatorLimitDao.findAll(mapFilter.getWhereClause());
 
         //返回结果
@@ -220,12 +220,44 @@ public class TZDOperatorLimitGateWay extends RootGateWay {
         TZDOperator tzdOperator = auth(requestJson);
 
         //业务处理
-        MapFilter mapFilter = MapFilter.newInstance(requestJson,TZDOperatorLimit.class, Sets.<String>newHashSet("id","account","password"));
+        MapFilter mapFilter = MapFilter.newInstance(requestJson, TZDOperatorLimit.class, Sets.<String>newHashSet("id", "account", "password"));
         Page<TZDOperatorLimit> tzdOperatorLimitPage = tzdOperatorLimitDao.findAll(mapFilter.getWhereClause(), getPageRequest(requestJson));
         //返回结果
         CommonReturnType commonReturnType = CommonReturnType.create(tzdOperatorLimitPage);
         log(tzdOperator, commonReturnType);
         return commonReturnType;
     }
+
+    @RequestMapping("/init")
+    public CommonReturnType init() throws Exception {
+        initLimit(TZDLimitType.limit_ifRoot_yes, TZDLimitType.limit_type_0);
+        JSONObject requestJson = getRequestJson();
+        TZDOperator tzdOperator = auth(requestJson);
+
+        //业务处理
+        List<TZDUrl> tzdUrlList = tzdUrlDao.findAll();
+        checkParam(requestJson, Lists.newArrayList("tzdOperatorLimitList"));
+        List<TZDOperator> tzdOperatorList = JSON.parseObject(requestJson.optString("tzdOperatorList"), new TypeReference<ArrayList<TZDOperator>>() {
+        });
+        for (TZDOperator tzdOperator1 : tzdOperatorList) {
+            tzdOperator1.setId(null);
+            for (TZDUrl tzdUrl : tzdUrlList) {
+                TZDOperatorLimit tzdOperatorLimit = tzdOperatorLimitDao.findFirstByAccountAndUrl(tzdOperator1.getAccount(), tzdUrl.getUrl());
+                if (tzdOperatorLimit == null) {
+                    tzdOperatorLimit = new TZDOperatorLimit();
+                    tzdOperatorLimit.setAccount(tzdOperator1.getAccount());
+                    tzdOperatorLimit.setUrl(tzdUrl.getUrl());
+                    tzdOperatorLimit.setMemo(tzdUrl.getMemo());
+                    tzdOperatorLimit.setState(0);
+                    tzdOperatorLimitDao.save(tzdOperatorLimit);
+                }
+            }
+        }
+        //返回结果
+        CommonReturnType commonReturnType = CommonReturnType.create(null);
+        log(tzdOperator, commonReturnType);
+        return commonReturnType;
+    }
+
 
 }

@@ -5,6 +5,7 @@ import com.beust.jcommander.internal.Lists;
 import com.eastreach.pest.model.TZDArea;
 import com.eastreach.pest.util.HttpUtil;
 import com.google.common.collect.Maps;
+import net.sf.json.JSONObject;
 import org.dom4j.DocumentException;
 import org.testng.annotations.Test;
 
@@ -40,23 +41,24 @@ public class TZDAreaGateWayTest extends RootTest {
 
     @Test
     public void addBatch() throws IOException, DocumentException {
-        Map<String, String> map = Maps.newConcurrentMap();
-        map.put("account", account_root);
-        map.put("password", password_root);
+
+        JSONObject requestJson = new JSONObject();
+        requestJson.put("account", account_root);
+        requestJson.put("password", password_root);
 
         TZDArea tzdArea = new TZDArea();
         tzdArea.setCode("01");
         tzdArea.setName("01");
         List<TZDArea> tzdAreaList = Lists.newArrayList();
         tzdAreaList.add(tzdArea);
-        map.put("tzdAreaList", JSON.toJSONString(tzdAreaList));
-        logger.info(map.get("tzdAreaList"));
+        requestJson.put("tzdAreaList", JSON.toJSONString(tzdAreaList));
 
         String url = "/area/addBatch";
-
-        String response = HttpUtil.postKV(hostUrl + url, map);
         logger.info(url);
-        logger.info(response);
+        logger.info(requestJson.toString());
+        JSONObject responseJson = HttpUtil.postJSON(hostUrl + url, requestJson);
+
+        logger.info(responseJson.toString());
 
     }
 

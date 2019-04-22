@@ -18,6 +18,45 @@
     | 字段名称 | 字段描述 | 类型 | 允许为空 | 长度 | 说明 |
     | :--- | :--- | :--- | :--- | :--- | :--- |
     | tzdAreaList | 区域对象列表 | array | N |  |  |
+    1. /area/addBatch
+    ```
+    {
+      "account": "root",
+      "password": "root",
+      "tzdAreaList": [
+        {
+          "areaDesc": "",
+          "code": "01",
+          "featureDesc": "",
+          "grainDesc": "",
+          "memo": "",
+          "name": "01",
+          "pic": "",
+          "pics": "",
+          "state": 1
+        }
+      ]
+    }
+    ```
+    ```
+    {
+      "state": "success",
+      "data": [
+        {
+          "id": null,
+          "state": 1,
+          "code": "01",
+          "name": "01",
+          "memo": "",
+          "pic": "",
+          "pics": "",
+          "areaDesc": "",
+          "featureDesc": "",
+          "grainDesc": ""
+        }
+      ]
+    }
+    ```
 1. /area/update: 区域修改.
 
     | 字段名称 | 字段描述 | 类型 | 允许为空 | 长度 | 说明 |

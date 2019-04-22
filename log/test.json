@@ -1,0 +1,17 @@
+{
+  "state": "success",
+  "data": [
+    {
+      "id": null,
+      "state": 1,
+      "code": "01",
+      "name": "01",
+      "memo": "",
+      "pic": "",
+      "pics": "",
+      "areaDesc": "",
+      "featureDesc": "",
+      "grainDesc": ""
+    }
+  ]
+}
