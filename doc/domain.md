@@ -1,5 +1,9 @@
 ## 对象模型.
-### TZDParam: 系统运行参数.
+1. [TZDParam](#TZDParam)  系统参数.
+1. [TZDGrain](#TZDGrain)  农作物.
+
+
+### TZDParam
 ```
 private Integer id;
 private Integer state = 1;      //状态,-1禁用,0未审核,1可用,非1不可用.
@@ -78,7 +82,7 @@ private String memo = "";
 private String pic = "";
 private String pics = "";
 ```
-### TZDGrain: 农作物.
+### TZDGrain
 ```
 private Integer id;
 private Integer state=1;
