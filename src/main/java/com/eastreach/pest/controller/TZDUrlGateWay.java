@@ -8,10 +8,12 @@ import com.eastreach.pest.metadata.TZDLimitType;
 import com.eastreach.pest.model.TZDOperator;
 import com.eastreach.pest.model.TZDUrl;
 import com.eastreach.pest.response.CommonReturnType;
+import com.eastreach.pest.util.JSONUtil;
 import com.eastreach.pest.util.MapFilter;
 import com.eastreach.pest.util.Utils;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.google.common.reflect.TypeToken;
 import net.sf.json.JSONObject;
 import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,7 +45,9 @@ public class TZDUrlGateWay extends RootGateWay {
             throw new BusinessException(EnumBusinessError.DATA_EXIST_ERROR, "代码已经存在");
         }
         tzdUrl = new TZDUrl();
-        setDomainProperty(requestJson, tzdUrl, Sets.<String>newHashSet());
+        Utils.copy(JSONUtil.gson.fromJson(requestJson.toString(), new TypeToken<TZDUrl>() {
+                }.getType()),
+                tzdUrl, Lists.<String>newArrayList());
         tzdUrl.setUrl(url);
         tzdUrlDao.save(tzdUrl);
 
@@ -139,7 +143,9 @@ public class TZDUrlGateWay extends RootGateWay {
         if (tzdUrl == null) {
             throw new BusinessException(EnumBusinessError.DATA_EXIST_ERROR, "代码不存在");
         }
-        setDomainProperty(requestJson, tzdUrl, Sets.<String>newHashSet());
+        Utils.copy(JSONUtil.gson.fromJson(requestJson.toString(), new TypeToken<TZDUrl>() {
+                }.getType()),
+                tzdUrl, Lists.<String>newArrayList());
         tzdUrlDao.save(tzdUrl);
 
         CommonReturnType commonReturnType = CommonReturnType.create(tzdUrl);

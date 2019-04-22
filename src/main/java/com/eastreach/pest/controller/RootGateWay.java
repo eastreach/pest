@@ -1,6 +1,7 @@
 package com.eastreach.pest.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import com.eastreach.pest.dao.*;
 import com.eastreach.pest.error.BusinessException;
 import com.eastreach.pest.error.EnumBusinessError;
@@ -18,20 +19,14 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.beans.BeanInfo;
-import java.beans.IntrospectionException;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * 微服务网关
@@ -247,6 +242,11 @@ public class RootGateWay {
 
 
     public TZDOperator auth(JSONObject requestJson) throws BusinessException {
+        if (!StringUtils.isEmpty(requestJson.optString("tzdOperator"))) {
+            TZDOperator tzdOperator = JSON.parseObject(requestJson.optString("tzdOperator"), new TypeReference<TZDOperator>() {
+            });
+            return auth(tzdOperator.getAccount(), tzdOperator.getPassword());
+        }
         return auth(requestJson.optString("account"), requestJson.optString("password"));
     }
 
@@ -255,26 +255,26 @@ public class RootGateWay {
      */
     PageRequest getPageRequest(JSONObject requestJson) throws BusinessException {
         checkParam(requestJson, Lists.newArrayList(pageSizeKey, currentPageKey));
-        return new PageRequest(Integer.parseInt(requestJson.optString(currentPageKey)), Integer.parseInt(requestJson.optString(pageSizeKey)));
+        return new PageRequest(Integer.parseInt(requestJson.optString(currentPageKey)) - 1, Integer.parseInt(requestJson.optString(pageSizeKey)));
     }
 
-    /**
-     * 自动更新领域对象的属性
-     *
-     * @param destination 领域对象
-     * @param excludes    排除字段
-     */
-    public void setDomainProperty(JSONObject requestJson, Object destination, Set<String> excludes) throws IntrospectionException, InvocationTargetException, IllegalAccessException {
-        excludes.add("id");
-        BeanInfo destinationBean = Introspector.getBeanInfo(destination.getClass(), Object.class);
-        PropertyDescriptor[] destinationProperties = destinationBean.getPropertyDescriptors();
-        for (int j = 0; j < destinationProperties.length; j++) {
-            String fieldName = destinationProperties[j].getName();
-            if (!StringUtils.isEmpty(requestJson.optString(fieldName)) && !excludes.contains(fieldName)) {
-                destinationProperties[j].getWriteMethod().invoke(destination, requestJson.optString(fieldName));
-            }
-        }
-    }
+//    /**
+//     * 自动更新领域对象的属性
+//     *
+//     * @param destination 领域对象
+//     * @param excludes    排除字段
+//     */
+//    public void setDomainProperty(JSONObject requestJson, Object destination, Set<String> excludes) throws IntrospectionException, InvocationTargetException, IllegalAccessException {
+//        excludes.add("id");
+//        BeanInfo destinationBean = Introspector.getBeanInfo(destination.getClass(), Object.class);
+//        PropertyDescriptor[] destinationProperties = destinationBean.getPropertyDescriptors();
+//        for (int j = 0; j < destinationProperties.length; j++) {
+//            String fieldName = destinationProperties[j].getName();
+//            if (!StringUtils.isEmpty(requestJson.optString(fieldName)) && !excludes.contains(fieldName)) {
+//                destinationProperties[j].getWriteMethod().invoke(destination, requestJson.optString(fieldName));
+//            }
+//        }
+//    }
 
 
 }

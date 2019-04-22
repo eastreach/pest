@@ -8,10 +8,12 @@ import com.eastreach.pest.metadata.TZDLimitType;
 import com.eastreach.pest.metadata.TZDParamType;
 import com.eastreach.pest.model.*;
 import com.eastreach.pest.response.CommonReturnType;
+import com.eastreach.pest.util.JSONUtil;
 import com.eastreach.pest.util.MapFilter;
 import com.eastreach.pest.util.Utils;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.google.common.reflect.TypeToken;
 import net.sf.json.JSONObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.domain.Specification;
@@ -54,7 +56,8 @@ public class TZDOperatorGateWay extends RootGateWay {
             throw new BusinessException(EnumBusinessError.DATA_EXIST_ERROR, "账号已经存在");
         }
         tzdOperator = new TZDOperator();
-        setDomainProperty(requestJson,tzdOperator,Sets.<String>newHashSet("id","state","ifRoot"));
+        Utils.copy(JSONUtil.gson.fromJson(requestJson.toString(),new TypeToken<TZDOperator>(){}.getType()),
+                tzdOperator,Lists.<String>newArrayList("id","state","ifRoot"));
         tzdOperator.setState(Integer.parseInt(tzdParam.getValue()));
         tzdOperatorDao.save(tzdOperator);
         //返回结果
@@ -88,8 +91,8 @@ public class TZDOperatorGateWay extends RootGateWay {
         initLimit(TZDLimitType.limit_ifRoot_no, TZDLimitType.limit_type_0);
         JSONObject requestJson = getRequestJson();
         TZDOperator tzdOperator = auth(requestJson);
-        setDomainProperty(requestJson,tzdOperator,Sets.<String>newHashSet("id","state","ifRoot","password"));
-
+        Utils.copy(JSONUtil.gson.fromJson(requestJson.toString(),new TypeToken<TZDOperator>(){}.getType()),
+                tzdOperator,Lists.<String>newArrayList("id","state","ifRoot","password"));
         //业务处理
         String newPassword = requestJson.optString("newPassword");
         if (StringUtils.isEmpty(newPassword)) {

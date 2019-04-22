@@ -12,6 +12,8 @@
 1. [doc/api.md](doc/api.md): 接口调用文档.
 1. [doc/pest_init.xlsx](doc/pest_init.xlsx): 基础数据初始化excel模版.
 
+### 控制台
+1. http://crs.eastreach.com/pest/
 
 ### 更新记录
 #### 2019-04-17

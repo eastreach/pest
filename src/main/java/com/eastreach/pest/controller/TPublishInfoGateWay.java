@@ -4,11 +4,15 @@ import com.eastreach.pest.error.BusinessException;
 import com.eastreach.pest.error.EnumBusinessError;
 import com.eastreach.pest.metadata.TZDLimitType;
 import com.eastreach.pest.model.TPublishInfo;
+import com.eastreach.pest.model.TZDDepot;
 import com.eastreach.pest.model.TZDOperator;
 import com.eastreach.pest.response.CommonReturnType;
+import com.eastreach.pest.util.JSONUtil;
 import com.eastreach.pest.util.MapFilter;
+import com.eastreach.pest.util.Utils;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.google.common.reflect.TypeToken;
 import net.sf.json.JSONObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.domain.Specification;
@@ -42,7 +46,8 @@ public class TPublishInfoGateWay extends RootGateWay {
         //业务处理
         checkParam(requestJson,Lists.newArrayList("name", "content"));
         TPublishInfo tPublishInfo = new TPublishInfo();
-        setDomainProperty(requestJson,tPublishInfo,Sets.<String>newHashSet("id"));
+        Utils.copy(JSONUtil.gson.fromJson(requestJson.toString(),new TypeToken<TPublishInfo>(){}.getType()),
+                tPublishInfo,Lists.<String>newArrayList("id"));
         tPublishInfoDao.save(tPublishInfo);
         //返回结果
         CommonReturnType commonReturnType = CommonReturnType.create(tPublishInfo);
@@ -83,7 +88,8 @@ public class TPublishInfoGateWay extends RootGateWay {
         if (tPublishInfo == null) {
             throw new BusinessException(EnumBusinessError.DATA_NOT_EXIST_ERROR, "代码不存在");
         }
-        setDomainProperty(requestJson,tPublishInfo,Sets.<String>newHashSet("id"));
+        Utils.copy(JSONUtil.gson.fromJson(requestJson.toString(),new TypeToken<TPublishInfo>(){}.getType()),
+                tPublishInfo,Lists.<String>newArrayList("id"));
         tPublishInfoDao.save(tPublishInfo);
         //返回结果
         CommonReturnType commonReturnType = CommonReturnType.create(tPublishInfo);

@@ -7,9 +7,12 @@ import com.eastreach.pest.error.EnumBusinessError;
 import com.eastreach.pest.metadata.TZDLimitType;
 import com.eastreach.pest.model.*;
 import com.eastreach.pest.response.CommonReturnType;
+import com.eastreach.pest.util.JSONUtil;
 import com.eastreach.pest.util.MapFilter;
+import com.eastreach.pest.util.Utils;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.google.common.reflect.TypeToken;
 import net.sf.json.JSONObject;
 import org.joda.time.DateTime;
 import org.springframework.data.domain.Page;
@@ -42,7 +45,8 @@ public class TRStatGrainGateWay extends RootGateWay {
         //业务处理
         checkParam(requestJson,Lists.newArrayList("year", "month", "areaCode", "grainCode", "grainValue"));
         TRStatGrain trStatGrain = new TRStatGrain();
-        setDomainProperty(requestJson,trStatGrain,Sets.<String>newHashSet());
+        Utils.copy(JSONUtil.gson.fromJson(requestJson.toString(),new TypeToken<TRStatGrain>(){}.getType()),
+                trStatGrain,Lists.<String>newArrayList("id"));
         trStatGrain.setDt(DateTime.now().withYear(trStatGrain.getYear()).withMonthOfYear(trStatGrain.getMonth()).withDayOfMonth(1).withTimeAtStartOfDay().toDate());
         TZDArea tzdArea = tzdAreaDao.findByCode(requestJson.optString("areaCode"));
         if (tzdArea == null) {
@@ -77,7 +81,8 @@ public class TRStatGrainGateWay extends RootGateWay {
         if (trStatGrain == null) {
             throw new BusinessException(EnumBusinessError.DATA_NOT_EXIST_ERROR, "代码不存在");
         }
-        setDomainProperty(requestJson,trStatGrain,Sets.<String>newHashSet());
+        Utils.copy(JSONUtil.gson.fromJson(requestJson.toString(),new TypeToken<TRStatGrain>(){}.getType()),
+                trStatGrain,Lists.<String>newArrayList("id"));
         trStatGrainDao.save(trStatGrain);
         //返回结果
         CommonReturnType commonReturnType = CommonReturnType.create(trStatGrain);

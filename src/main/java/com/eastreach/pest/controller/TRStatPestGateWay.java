@@ -7,9 +7,12 @@ import com.eastreach.pest.error.EnumBusinessError;
 import com.eastreach.pest.metadata.TZDLimitType;
 import com.eastreach.pest.model.*;
 import com.eastreach.pest.response.CommonReturnType;
+import com.eastreach.pest.util.JSONUtil;
 import com.eastreach.pest.util.MapFilter;
+import com.eastreach.pest.util.Utils;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.google.common.reflect.TypeToken;
 import net.sf.json.JSONObject;
 import org.joda.time.DateTime;
 import org.springframework.data.domain.Page;
@@ -44,7 +47,8 @@ public class TRStatPestGateWay extends RootGateWay {
         //业务处理
         checkParam(requestJson,Lists.newArrayList("year", "month", "areaCode", "grainCode", "pestCode", "pestValue"));
         TRStatPest trStatPest = new TRStatPest();
-        setDomainProperty(requestJson,trStatPest,Sets.<String>newHashSet());
+        Utils.copy(JSONUtil.gson.fromJson(requestJson.toString(),new TypeToken<TRStatPest>(){}.getType()),
+                trStatPest,Lists.<String>newArrayList("id"));
         trStatPest.setYear(Integer.parseInt(requestJson.optString("year")));
         trStatPest.setMonth(Integer.parseInt(requestJson.optString("month")));
         trStatPest.setDt(DateTime.now().withYear(trStatPest.getYear()).withMonthOfYear(trStatPest.getMonth()).withDayOfMonth(1).withTimeAtStartOfDay().toDate());
@@ -86,7 +90,8 @@ public class TRStatPestGateWay extends RootGateWay {
         if (trStatPest == null) {
             throw new BusinessException(EnumBusinessError.DATA_NOT_EXIST_ERROR, "代码不存在");
         }
-        setDomainProperty(requestJson,trStatPest,Sets.<String>newHashSet());
+        Utils.copy(JSONUtil.gson.fromJson(requestJson.toString(),new TypeToken<TRStatPest>(){}.getType()),
+                trStatPest,Lists.<String>newArrayList("id"));
         trStatPestDao.save(trStatPest);
         //返回结果
         CommonReturnType commonReturnType = CommonReturnType.create(trStatPest);

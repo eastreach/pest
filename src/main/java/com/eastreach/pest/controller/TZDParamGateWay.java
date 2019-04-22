@@ -9,10 +9,12 @@ import com.eastreach.pest.model.TRStatPest;
 import com.eastreach.pest.model.TZDOperator;
 import com.eastreach.pest.model.TZDParam;
 import com.eastreach.pest.response.CommonReturnType;
+import com.eastreach.pest.util.JSONUtil;
 import com.eastreach.pest.util.MapFilter;
 import com.eastreach.pest.util.Utils;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.google.common.reflect.TypeToken;
 import net.sf.json.JSONObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.domain.Specification;
@@ -49,7 +51,8 @@ public class TZDParamGateWay extends RootGateWay {
             throw new BusinessException(EnumBusinessError.DATA_EXIST_ERROR, "代码已经存在");
         }
         tzdParam = new TZDParam();
-        setDomainProperty(requestJson,tzdParam,Sets.<String>newHashSet());
+        Utils.copy(JSONUtil.gson.fromJson(requestJson.toString(),new TypeToken<TZDParam>(){}.getType()),
+                tzdParam,Lists.<String>newArrayList());
         tzdParamDao.save(tzdParam);
 
         CommonReturnType commonReturnType = CommonReturnType.create(tzdParam);
@@ -146,7 +149,8 @@ public class TZDParamGateWay extends RootGateWay {
         if (tzdParam == null) {
             throw new BusinessException(EnumBusinessError.DATA_EXIST_ERROR, "代码不存在");
         }
-        setDomainProperty(requestJson,tzdParam,Sets.<String>newHashSet());
+        Utils.copy(JSONUtil.gson.fromJson(requestJson.toString(),new TypeToken<TZDParam>(){}.getType()),
+                tzdParam,Lists.<String>newArrayList());
         tzdParamDao.save(tzdParam);
 
         CommonReturnType commonReturnType = CommonReturnType.create(tzdParam);

@@ -6,13 +6,16 @@ import com.eastreach.pest.dao.TZDDepotDao;
 import com.eastreach.pest.error.BusinessException;
 import com.eastreach.pest.error.EnumBusinessError;
 import com.eastreach.pest.metadata.TZDLimitType;
+import com.eastreach.pest.model.TZDArea;
 import com.eastreach.pest.model.TZDDepot;
 import com.eastreach.pest.model.TZDOperator;
 import com.eastreach.pest.response.CommonReturnType;
+import com.eastreach.pest.util.JSONUtil;
 import com.eastreach.pest.util.MapFilter;
 import com.eastreach.pest.util.Utils;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.google.common.reflect.TypeToken;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -49,7 +52,9 @@ public class TZDDepotGateWay extends RootGateWay {
             throw new BusinessException(EnumBusinessError.DATA_EXIST_ERROR, "代码已经存在");
         }
         tzdDepot = new TZDDepot();
-        setDomainProperty(requestJson, tzdDepot, Sets.<String>newHashSet("id", "state"));
+        Utils.copy(JSONUtil.gson.fromJson(requestJson.toString(),new TypeToken<TZDDepot>(){}.getType()),
+                tzdDepot,Lists.<String>newArrayList("id"));
+//        setDomainProperty(requestJson, tzdDepot, Sets.<String>newHashSet("id", "state"));
         tzdDepotDao.save(tzdDepot);
         //返回结果
         CommonReturnType commonReturnType = CommonReturnType.create(tzdDepot);
@@ -151,7 +156,8 @@ public class TZDDepotGateWay extends RootGateWay {
         if (tzdDepot == null) {
             throw new BusinessException(EnumBusinessError.DATA_NOT_EXIST_ERROR, "代码不存在");
         }
-        setDomainProperty(requestJson, tzdDepot, Sets.<String>newHashSet("id", "state"));
+        Utils.copy(JSONUtil.gson.fromJson(requestJson.toString(),new TypeToken<TZDDepot>(){}.getType()),
+                tzdDepot,Lists.<String>newArrayList("id"));
         tzdDepotDao.save(tzdDepot);
         //返回结果
         CommonReturnType commonReturnType = CommonReturnType.create(tzdDepot);
