@@ -16,17 +16,11 @@ import com.google.common.reflect.TypeToken;
 import net.sf.json.JSONObject;
 import org.joda.time.DateTime;
 import org.springframework.data.domain.Page;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,10 +39,11 @@ public class TRStatPestGateWay extends RootGateWay {
         TZDOperator tzdOperator = auth(requestJson);
 
         //业务处理
-        checkParam(requestJson,Lists.newArrayList("year", "month", "areaCode", "grainCode", "pestCode", "pestValue"));
+        checkParam(requestJson, Lists.newArrayList("year", "month", "areaCode", "grainCode", "pestCode", "pestValue"));
         TRStatPest trStatPest = new TRStatPest();
-        Utils.copy(JSONUtil.gson.fromJson(requestJson.toString(),new TypeToken<TRStatPest>(){}.getType()),
-                trStatPest,Lists.<String>newArrayList("id"));
+        Utils.copy(JSONUtil.gson.fromJson(requestJson.toString(), new TypeToken<TRStatPest>() {
+                }.getType()),
+                trStatPest, Lists.<String>newArrayList("id"));
         trStatPest.setYear(Integer.parseInt(requestJson.optString("year")));
         trStatPest.setMonth(Integer.parseInt(requestJson.optString("month")));
         trStatPest.setDt(DateTime.now().withYear(trStatPest.getYear()).withMonthOfYear(trStatPest.getMonth()).withDayOfMonth(1).withTimeAtStartOfDay().toDate());
@@ -77,6 +72,37 @@ public class TRStatPestGateWay extends RootGateWay {
         return commonReturnType;
     }
 
+    @Transactional
+    @RequestMapping("/addBatch")
+    public CommonReturnType addBatch() throws Exception {
+        initLimit(TZDLimitType.limit_ifRoot_no, TZDLimitType.limit_type_0);
+        JSONObject requestJson = getRequestJson();
+        TZDOperator tzdOperator = auth(requestJson);
+
+        //业务处理
+        checkParam(requestJson, Lists.newArrayList("trStatPestList"));
+        List<TRStatPest> trStatPestList = JSON.parseObject(requestJson.optString("trStatPestList"), new TypeReference<ArrayList<TRStatPest>>() {
+        });
+        for (TRStatPest trStatPest : trStatPestList) {
+            trStatPest.setId(null);
+            if (StringUtils.isEmpty(trStatPest.getPestCode())) {
+                throw new BusinessException(EnumBusinessError.DATA_CONNENT_ERROR, "trStatPestList-pestCode");
+            }
+            if (StringUtils.isEmpty(trStatPest.getGrainCode())) {
+                throw new BusinessException(EnumBusinessError.DATA_CONNENT_ERROR, "trGrainPestList-grainCode");
+            }
+            TRStatPest trStatPest1 = trStatPestDao.findByCode(trStatPest.getCode());
+            if (trStatPest1 != null) {
+                continue;
+            }
+            trStatPestDao.delete(trStatPest);
+        }
+        //返回结果
+        CommonReturnType commonReturnType = CommonReturnType.create(trStatPestList);
+        log(tzdOperator, commonReturnType);
+        return commonReturnType;
+    }
+
 
     @RequestMapping("/update")
     public CommonReturnType update() throws Exception {
@@ -85,16 +111,45 @@ public class TRStatPestGateWay extends RootGateWay {
         TZDOperator tzdOperator = auth(requestJson);
 
         //业务处理
-        checkParam(requestJson,Lists.newArrayList("code"));
+        checkParam(requestJson, Lists.newArrayList("code"));
         TRStatPest trStatPest = trStatPestDao.findByCode(requestJson.optString("code"));
         if (trStatPest == null) {
             throw new BusinessException(EnumBusinessError.DATA_NOT_EXIST_ERROR, "代码不存在");
         }
-        Utils.copy(JSONUtil.gson.fromJson(requestJson.toString(),new TypeToken<TRStatPest>(){}.getType()),
-                trStatPest,Lists.<String>newArrayList("id"));
+        Utils.copy(JSONUtil.gson.fromJson(requestJson.toString(), new TypeToken<TRStatPest>() {
+                }.getType()),
+                trStatPest, Lists.<String>newArrayList("id"));
         trStatPestDao.save(trStatPest);
         //返回结果
         CommonReturnType commonReturnType = CommonReturnType.create(trStatPest);
+        log(tzdOperator, commonReturnType);
+        return commonReturnType;
+    }
+
+    @Transactional
+    @RequestMapping("/updateBatch")
+    public CommonReturnType updateBatch() throws Exception {
+        initLimit(TZDLimitType.limit_ifRoot_no, TZDLimitType.limit_type_0);
+        JSONObject requestJson = getRequestJson();
+        TZDOperator tzdOperator = auth(requestJson);
+
+        //业务处理
+        checkParam(requestJson, Lists.newArrayList("trStatPestList"));
+        List<TRStatPest> trStatPestList = JSON.parseObject(requestJson.optString("trStatPestList"), new TypeReference<ArrayList<TRStatPest>>() {
+        });
+        for (TRStatPest trStatPest : trStatPestList) {
+            trStatPest.setId(null);
+            if (StringUtils.isEmpty(trStatPest.getPestCode())) {
+                throw new BusinessException(EnumBusinessError.DATA_CONNENT_ERROR, "trStatPestList-pestCode");
+            }
+            TRStatPest trStatPest1 = trStatPestDao.findByCode(trStatPest.getGrainCode());
+            if (trStatPest1 != null) {
+                Utils.copy(trStatPest, trStatPest1);
+                trStatPestDao.save(trStatPest1);
+            }
+        }
+        //返回结果
+        CommonReturnType commonReturnType = CommonReturnType.create(trStatPestList);
         log(tzdOperator, commonReturnType);
         return commonReturnType;
     }
@@ -106,7 +161,7 @@ public class TRStatPestGateWay extends RootGateWay {
         TZDOperator tzdOperator = auth(requestJson);
 
         //业务处理
-        checkParam(requestJson,Lists.<String>newArrayList("code"));
+        checkParam(requestJson, Lists.<String>newArrayList("code"));
         TRStatPest trStatPest = trStatPestDao.findByCode(requestJson.optString("code"));
         if (trStatPest == null) {
             throw new BusinessException(EnumBusinessError.DATA_NOT_EXIST_ERROR, "代码不存在");
@@ -126,7 +181,7 @@ public class TRStatPestGateWay extends RootGateWay {
         TZDOperator tzdOperator = auth(requestJson);
 
         //业务处理
-        checkParam(requestJson,Lists.newArrayList("trStatPestList"));
+        checkParam(requestJson, Lists.newArrayList("trStatPestList"));
         List<TRStatPest> trStatPestList = JSON.parseObject(requestJson.optString("trStatPestList"), new TypeReference<ArrayList<TRStatPest>>() {
         });
         for (TRStatPest trStatPest : trStatPestList) {
@@ -153,7 +208,7 @@ public class TRStatPestGateWay extends RootGateWay {
         TZDOperator tzdOperator = auth(requestJson);
 
         //业务处理
-        MapFilter mapFilter = MapFilter.newInstance(requestJson,TRStatPest.class, Sets.<String>newHashSet("id"));
+        MapFilter mapFilter = MapFilter.newInstance(requestJson, TRStatPest.class, Sets.<String>newHashSet("id"));
         List<TRStatPest> trStatPestList = trStatPestDao.findAll(mapFilter.getWhereClause());
         //返回结果
         CommonReturnType commonReturnType = CommonReturnType.create(trStatPestList);
@@ -168,7 +223,7 @@ public class TRStatPestGateWay extends RootGateWay {
         TZDOperator tzdOperator = auth(requestJson);
 
         //业务处理
-        MapFilter mapFilter = MapFilter.newInstance(requestJson,TRStatPest.class, Sets.<String>newHashSet("id"));
+        MapFilter mapFilter = MapFilter.newInstance(requestJson, TRStatPest.class, Sets.<String>newHashSet("id"));
         Page<TRStatPest> trGrainAreaPage = trStatPestDao.findAll(mapFilter.getWhereClause(), getPageRequest(requestJson));
         //返回结果
         CommonReturnType commonReturnType = CommonReturnType.create(trGrainAreaPage);

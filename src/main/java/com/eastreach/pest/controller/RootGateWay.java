@@ -76,6 +76,8 @@ public class RootGateWay {
     TRStatGrainDao trStatGrainDao;
     @Autowired
     TRStatPestDao trStatPestDao;
+    @Autowired
+    TQuestionDao tQuestionDao;
 
 
     /**

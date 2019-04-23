@@ -22,7 +22,7 @@ public class TZDDepot extends RootBean {
     private String pics = "";   //多图.
 
     private String kind = "";   //类型
-    private String volumnName = "";     //容量名字
+    private String volumeName = "";     //容量名字
     private String grainName = "";      //作物名称
     private String storeKind = "";      //存储形式
     private Double mountValue = 0.0;     //当前储量
@@ -97,12 +97,12 @@ public class TZDDepot extends RootBean {
         this.kind = kind;
     }
 
-    public String getVolumnName() {
-        return volumnName;
+    public String getVolumeName() {
+        return volumeName;
     }
 
-    public void setVolumnName(String volumnName) {
-        this.volumnName = volumnName;
+    public void setVolumeName(String volumeName) {
+        this.volumeName = volumeName;
     }
 
     public String getGrainName() {
