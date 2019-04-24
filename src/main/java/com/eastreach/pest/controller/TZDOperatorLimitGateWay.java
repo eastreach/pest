@@ -260,4 +260,68 @@ public class TZDOperatorLimitGateWay extends RootGateWay {
     }
 
 
+    @Transactional
+    @RequestMapping("/open")
+    public CommonReturnType open() throws Exception {
+        initLimit(TZDLimitType.limit_ifRoot_yes, TZDLimitType.limit_type_0);
+        JSONObject requestJson = getRequestJson();
+        TZDOperator tzdOperator = auth(requestJson);
+
+        //业务处理
+        checkParam(requestJson, Lists.newArrayList("tzdOperatorLimitList"));
+        List<TZDOperatorLimit> tzdOperatorLimitList = JSON.parseObject(requestJson.optString("tzdOperatorLimitList"), new TypeReference<ArrayList<TZDOperatorLimit>>() {
+        });
+        for (TZDOperatorLimit tzdOperatorLimit : tzdOperatorLimitList) {
+            tzdOperatorLimit.setId(null);
+            if (StringUtils.isEmpty(tzdOperatorLimit.getAccount())) {
+                throw new BusinessException(EnumBusinessError.DATA_CONNENT_ERROR, "tzdOperatorLimitList-account");
+            }
+            if (StringUtils.isEmpty(tzdOperatorLimit.getUrl())) {
+                throw new BusinessException(EnumBusinessError.DATA_CONNENT_ERROR, "tzdOperatorLimitList-url");
+            }
+            TZDOperatorLimit tzdOperatorLimit1 = tzdOperatorLimitDao.findFirstByAccountAndUrl(tzdOperatorLimit.getAccount(), tzdOperatorLimit.getUrl());
+            if (tzdOperatorLimit1 != null) {
+                tzdOperatorLimit1.setIfLimit(1);
+                tzdOperatorLimitDao.save(tzdOperatorLimit1);
+            }
+        }
+
+        //返回结果
+        CommonReturnType commonReturnType = CommonReturnType.create(tzdOperatorLimitList);
+        log(tzdOperator, commonReturnType);
+        return commonReturnType;
+    }
+
+    @Transactional
+    @RequestMapping("/close")
+    public CommonReturnType close() throws Exception {
+        initLimit(TZDLimitType.limit_ifRoot_yes, TZDLimitType.limit_type_0);
+        JSONObject requestJson = getRequestJson();
+        TZDOperator tzdOperator = auth(requestJson);
+
+        //业务处理
+        checkParam(requestJson, Lists.newArrayList("tzdOperatorLimitList"));
+        List<TZDOperatorLimit> tzdOperatorLimitList = JSON.parseObject(requestJson.optString("tzdOperatorLimitList"), new TypeReference<ArrayList<TZDOperatorLimit>>() {
+        });
+        for (TZDOperatorLimit tzdOperatorLimit : tzdOperatorLimitList) {
+            tzdOperatorLimit.setId(null);
+            if (StringUtils.isEmpty(tzdOperatorLimit.getAccount())) {
+                throw new BusinessException(EnumBusinessError.DATA_CONNENT_ERROR, "tzdOperatorLimitList-account");
+            }
+            if (StringUtils.isEmpty(tzdOperatorLimit.getUrl())) {
+                throw new BusinessException(EnumBusinessError.DATA_CONNENT_ERROR, "tzdOperatorLimitList-url");
+            }
+            TZDOperatorLimit tzdOperatorLimit1 = tzdOperatorLimitDao.findFirstByAccountAndUrl(tzdOperatorLimit.getAccount(), tzdOperatorLimit.getUrl());
+            if (tzdOperatorLimit1 != null) {
+                tzdOperatorLimit1.setIfLimit(-1);
+                tzdOperatorLimitDao.save(tzdOperatorLimit1);
+            }
+        }
+
+        //返回结果
+        CommonReturnType commonReturnType = CommonReturnType.create(tzdOperatorLimitList);
+        log(tzdOperator, commonReturnType);
+        return commonReturnType;
+    }
+
 }

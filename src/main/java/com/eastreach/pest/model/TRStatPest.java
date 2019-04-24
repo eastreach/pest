@@ -34,6 +34,8 @@ public class TRStatPest extends RootBean {
     private String city;                //城市
     private String pic;
     private String pics;
+    private String role;            //角色
+    private String depotCode;       //仓库代码
 
 
     @Id
@@ -204,5 +206,21 @@ public class TRStatPest extends RootBean {
 
     public void setPics(String pics) {
         this.pics = pics;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public String getDepotCode() {
+        return depotCode;
+    }
+
+    public void setDepotCode(String depotCode) {
+        this.depotCode = depotCode;
     }
 }

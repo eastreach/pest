@@ -209,4 +209,61 @@ public class TZDUrlGateWay extends RootGateWay {
         log(tzdOperator, commonReturnType);
         return commonReturnType;
     }
+
+
+    @Transactional
+    @RequestMapping("/limitType0")
+    public CommonReturnType limitType0() throws Exception {
+        initLimit(TZDLimitType.limit_ifRoot_yes, TZDLimitType.limit_type_0);
+        JSONObject requestJson = getRequestJson();
+        TZDOperator tzdOperator = auth(requestJson);
+
+        //业务处理
+        checkParam(requestJson, Lists.newArrayList("tzdUrlList"));
+        List<TZDUrl> tzdUrlList = JSON.parseObject(requestJson.optString("tzdUrlList"), new TypeReference<ArrayList<TZDUrl>>() {
+        });
+        for (TZDUrl tzdUrl : tzdUrlList) {
+            tzdUrl.setId(null);
+            if (StringUtils.isEmpty(tzdUrl.getUrl())) {
+                throw new BusinessException(EnumBusinessError.DATA_CONNENT_ERROR, "tzdUrlList-url");
+            }
+            TZDUrl tzdUrl1 = tzdUrlDao.findByUrl(tzdUrl.getUrl());
+            if (tzdUrl1 != null) {
+                tzdUrl1.setLimitType(0);
+                tzdUrlDao.save(tzdUrl1);
+            }
+        }
+
+        CommonReturnType commonReturnType = CommonReturnType.create(tzdUrlList);
+        log(tzdOperator, commonReturnType);
+        return commonReturnType;
+    }
+
+    @Transactional
+    @RequestMapping("/limitType1")
+    public CommonReturnType limitType1() throws Exception {
+        initLimit(TZDLimitType.limit_ifRoot_yes, TZDLimitType.limit_type_0);
+        JSONObject requestJson = getRequestJson();
+        TZDOperator tzdOperator = auth(requestJson);
+
+        //业务处理
+        checkParam(requestJson, Lists.newArrayList("tzdUrlList"));
+        List<TZDUrl> tzdUrlList = JSON.parseObject(requestJson.optString("tzdUrlList"), new TypeReference<ArrayList<TZDUrl>>() {
+        });
+        for (TZDUrl tzdUrl : tzdUrlList) {
+            tzdUrl.setId(null);
+            if (StringUtils.isEmpty(tzdUrl.getUrl())) {
+                throw new BusinessException(EnumBusinessError.DATA_CONNENT_ERROR, "tzdUrlList-url");
+            }
+            TZDUrl tzdUrl1 = tzdUrlDao.findByUrl(tzdUrl.getUrl());
+            if (tzdUrl1 != null) {
+                tzdUrl1.setLimitType(1);
+                tzdUrlDao.save(tzdUrl1);
+            }
+        }
+
+        CommonReturnType commonReturnType = CommonReturnType.create(tzdUrlList);
+        log(tzdOperator, commonReturnType);
+        return commonReturnType;
+    }
 }

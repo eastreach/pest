@@ -14,7 +14,7 @@ public class TZDOperatorLimit extends RootBean {
 
     private String account = "";        //操作员账号
     private String url = "";            //权限代码
-    private Integer ifLimit = 1;        //是否有权限, 1授权, -1限权
+    private Integer ifLimit = 0;        //是否有权限, 1授权, -1限权
     private Integer limitLevel = 0;    //权限等级, 0系统, 1用户
     private String memo = "";          //备注
 

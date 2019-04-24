@@ -22,6 +22,8 @@ public class TQuestion extends RootBean {
     private String memo = "";            //备注
     private String pic;
     private String pics;
+    private String role;            //角色
+    private String areaCode = "";     //区域代码
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -103,5 +105,21 @@ public class TQuestion extends RootBean {
 
     public void setPics(String pics) {
         this.pics = pics;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public String getAreaCode() {
+        return areaCode;
+    }
+
+    public void setAreaCode(String areaCode) {
+        this.areaCode = areaCode;
     }
 }

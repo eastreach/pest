@@ -47,7 +47,7 @@ public class TZDOperatorGateWay extends RootGateWay {
         JSONObject requestJson = getRequestJson();
         TZDParam tzdParam = initParam(new TZDParam(TZDParamType.operator_register_state, "1", "新注册账号默认状态"));
         //业务处理
-        checkParam(requestJson,Lists.newArrayList("account", "password", "name"));
+        checkParam(requestJson, Lists.newArrayList("account", "password", "name"));
         String account = requestJson.optString("account");
         String password = requestJson.optString("password");
         String name = requestJson.optString("name");
@@ -56,8 +56,9 @@ public class TZDOperatorGateWay extends RootGateWay {
             throw new BusinessException(EnumBusinessError.DATA_EXIST_ERROR, "账号已经存在");
         }
         tzdOperator = new TZDOperator();
-        Utils.copy(JSONUtil.gson.fromJson(requestJson.toString(),new TypeToken<TZDOperator>(){}.getType()),
-                tzdOperator,Lists.<String>newArrayList("id","state","ifRoot"));
+        Utils.copy(JSONUtil.gson.fromJson(requestJson.toString(), new TypeToken<TZDOperator>() {
+                }.getType()),
+                tzdOperator, Lists.<String>newArrayList("id", "state", "ifRoot"));
         tzdOperator.setState(Integer.parseInt(tzdParam.getValue()));
         tzdOperatorDao.save(tzdOperator);
         //返回结果
@@ -91,8 +92,9 @@ public class TZDOperatorGateWay extends RootGateWay {
         initLimit(TZDLimitType.limit_ifRoot_no, TZDLimitType.limit_type_0);
         JSONObject requestJson = getRequestJson();
         TZDOperator tzdOperator = auth(requestJson);
-        Utils.copy(JSONUtil.gson.fromJson(requestJson.toString(),new TypeToken<TZDOperator>(){}.getType()),
-                tzdOperator,Lists.<String>newArrayList("id","state","ifRoot","password"));
+        Utils.copy(JSONUtil.gson.fromJson(requestJson.toString(), new TypeToken<TZDOperator>() {
+                }.getType()),
+                tzdOperator, Lists.<String>newArrayList("id", "state", "ifRoot", "password"));
         //业务处理
         String newPassword = requestJson.optString("newPassword");
         if (StringUtils.isEmpty(newPassword)) {
@@ -112,7 +114,7 @@ public class TZDOperatorGateWay extends RootGateWay {
         TZDOperator tzdOperator = auth(requestJson);
 
         //业务处理
-        checkParam(requestJson,Lists.newArrayList("operator"));
+        checkParam(requestJson, Lists.newArrayList("operator"));
         TZDOperator operator = JSON.parseObject(requestJson.optString("operator"), new TypeReference<TZDOperator>() {
         });
         operator.setId(null);
@@ -135,7 +137,7 @@ public class TZDOperatorGateWay extends RootGateWay {
         TZDOperator tzdOperator = auth(requestJson);
 
         //业务处理
-        checkParam(requestJson,Lists.newArrayList("tzdOperatorList"));
+        checkParam(requestJson, Lists.newArrayList("tzdOperatorList"));
         List<TZDOperator> tzdOperatorList = JSON.parseObject(requestJson.optString("tzdOperatorList"), new TypeReference<ArrayList<TZDOperator>>() {
         });
         for (TZDOperator tzdOperator1 : tzdOperatorList) {
@@ -162,7 +164,7 @@ public class TZDOperatorGateWay extends RootGateWay {
         TZDOperator tzdOperator = auth(requestJson);
 
         //业务处理
-        checkParam(requestJson,Lists.newArrayList("operator"));
+        checkParam(requestJson, Lists.newArrayList("operator"));
         TZDOperator operator = JSON.parseObject(requestJson.optString("operator"), new TypeReference<TZDOperator>() {
         });
         operator.setId(null);
@@ -186,7 +188,7 @@ public class TZDOperatorGateWay extends RootGateWay {
         TZDOperator tzdOperator = auth(requestJson);
 
         //业务处理
-        checkParam(requestJson,Lists.newArrayList("tzdOperatorList"));
+        checkParam(requestJson, Lists.newArrayList("tzdOperatorList"));
         List<TZDOperator> tzdOperatorList = JSON.parseObject(requestJson.optString("tzdOperatorList"), new TypeReference<ArrayList<TZDOperator>>() {
         });
         for (TZDOperator tzdOperator1 : tzdOperatorList) {
@@ -216,7 +218,7 @@ public class TZDOperatorGateWay extends RootGateWay {
         TZDOperator tzdOperator = auth(requestJson);
 
         //业务处理
-        checkParam(requestJson,Lists.newArrayList("operator"));
+        checkParam(requestJson, Lists.newArrayList("operator"));
         TZDOperator operator = JSON.parseObject(requestJson.optString("operator"), new TypeReference<TZDOperator>() {
         });
         operator.setId(null);
@@ -242,7 +244,7 @@ public class TZDOperatorGateWay extends RootGateWay {
         TZDOperator tzdOperator = auth(requestJson);
 
         //业务处理
-        checkParam(requestJson,Lists.newArrayList("tzdOperatorList"));
+        checkParam(requestJson, Lists.newArrayList("tzdOperatorList"));
         List<TZDOperator> tzdOperatorList = JSON.parseObject(requestJson.optString("tzdOperatorList"), new TypeReference<ArrayList<TZDOperator>>() {
         });
         for (TZDOperator tzdOperator1 : tzdOperatorList) {
@@ -293,5 +295,39 @@ public class TZDOperatorGateWay extends RootGateWay {
         log(tzdOperator, commonReturnType);
         return commonReturnType;
     }
+
+
+    @RequestMapping("/initLimit")
+    public CommonReturnType initLimit() throws Exception {
+        initLimit(TZDLimitType.limit_ifRoot_yes, TZDLimitType.limit_type_0);
+        JSONObject requestJson = getRequestJson();
+        TZDOperator tzdOperator = auth(requestJson);
+
+        //业务处理
+        checkParam(requestJson, Lists.newArrayList("tzdOperatorList"));
+        List<TZDUrl> tzdUrlList = tzdUrlDao.findAll();
+        List<TZDOperator> tzdOperatorList = JSON.parseObject(requestJson.optString("tzdOperatorList"), new TypeReference<ArrayList<TZDOperator>>() {
+        });
+        for (TZDOperator tzdOperator1 : tzdOperatorList) {
+            tzdOperator1.setId(null);
+            if (StringUtils.isEmpty(tzdOperator1.getAccount())) {
+                throw new BusinessException(EnumBusinessError.DATA_CONNENT_ERROR, "tzdOperatorList-account");
+            }
+            for (TZDUrl tzdUrl : tzdUrlList) {
+                TZDOperatorLimit tzdOperatorLimit = tzdOperatorLimitDao.findFirstByAccountAndUrl(tzdOperator1.getAccount(), tzdUrl.getUrl());
+                if (tzdOperatorLimit == null) {
+                    tzdOperatorLimit = new TZDOperatorLimit();
+                    tzdOperatorLimit.setAccount(tzdOperator1.getAccount());
+                    tzdOperatorLimit.setUrl(tzdUrl.getUrl());
+                    tzdOperatorLimitDao.save(tzdOperatorLimit);
+                }
+            }
+        }
+        //返回结果
+        CommonReturnType commonReturnType = CommonReturnType.create(null);
+        log(tzdOperator, commonReturnType);
+        return commonReturnType;
+    }
+
 
 }
