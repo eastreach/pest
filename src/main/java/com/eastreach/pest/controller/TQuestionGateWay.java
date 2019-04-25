@@ -16,6 +16,7 @@ import com.google.common.collect.Sets;
 import com.google.common.reflect.TypeToken;
 import net.sf.json.JSONObject;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -184,7 +185,8 @@ public class TQuestionGateWay extends RootGateWay {
 
         //业务处理
         MapFilter mapFilter = MapFilter.newInstance(requestJson, TQuestion.class, Sets.<String>newHashSet("id"));
-        List<TQuestion> tQuestionList = tQuestionDao.findAll(mapFilter.getWhereClause());
+        Sort sort = new Sort(Sort.Direction.DESC, "id");
+        List<TQuestion> tQuestionList = tQuestionDao.findAll(mapFilter.getWhereClause(),sort);
 
         CommonReturnType commonReturnType = CommonReturnType.create(tQuestionList);
         log(tzdOperator, commonReturnType);
@@ -199,7 +201,8 @@ public class TQuestionGateWay extends RootGateWay {
 
         //业务处理
         MapFilter mapFilter = MapFilter.newInstance(requestJson, TQuestion.class, Sets.<String>newHashSet("id"));
-        Page<TQuestion> page = tQuestionDao.findAll(mapFilter.getWhereClause(), getPageRequest(requestJson));
+        Sort sort = new Sort(Sort.Direction.DESC, "id");
+        Page<TQuestion> page = tQuestionDao.findAll(mapFilter.getWhereClause(), getPageRequest(requestJson,sort));
 
         CommonReturnType commonReturnType = CommonReturnType.create(page);
         log(tzdOperator, commonReturnType);

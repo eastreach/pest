@@ -1,7 +1,7 @@
 package com.eastreach.pest.util;
 
-
 import com.eastreach.pest.annotation.MapFilterIgnore;
+import com.eastreach.pest.metadata.APIDef;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -16,8 +16,8 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Field;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -63,7 +63,12 @@ public class MapFilter {
                 List<Predicate> predicateList = Lists.newArrayList();
                 if (mapMap.get(MapFilter.mapEqual) != null) {
                     for (Map.Entry<String, String> entry : mapMap.get(MapFilter.mapEqual).entrySet()) {
-                        predicateList.add(cb.equal(root.get(entry.getKey()), entry.getValue()));
+                        if (root.get(entry.getKey()).getJavaType().equals(Date.class)) {
+                            predicateList.add(cb.equal(root.get(entry.getKey()), DataFormatUtil.parseDateTime(entry.getValue()).toDate()));
+                        } else {
+                            predicateList.add(cb.equal(root.get(entry.getKey()), entry.getValue()));
+                        }
+
                     }
                 }
                 if (mapMap.get(MapFilter.mapIn) != null) {
@@ -80,25 +85,41 @@ public class MapFilter {
                 //mapGreat
                 if (mapMap.get(MapFilter.mapGreat) != null) {
                     for (Map.Entry<String, String> entry : mapMap.get(MapFilter.mapGreat).entrySet()) {
-                        predicateList.add(cb.greaterThan(root.get(entry.getKey()).as(String.class), entry.getValue()));
+                        if (root.get(entry.getKey()).getJavaType().equals(Date.class)) {
+                            predicateList.add(cb.greaterThan(root.get(entry.getKey()), DataFormatUtil.parseDateTime(entry.getValue()).toDate()));
+                        } else {
+                            predicateList.add(cb.greaterThan(root.get(entry.getKey()).as(String.class), entry.getValue()));
+                        }
                     }
                 }
                 //mapGreatEqual
                 if (mapMap.get(MapFilter.mapGreatEqual) != null) {
                     for (Map.Entry<String, String> entry : mapMap.get(MapFilter.mapGreatEqual).entrySet()) {
-                        predicateList.add(cb.greaterThanOrEqualTo(root.get(entry.getKey()).as(String.class), entry.getValue()));
+                        if (root.get(entry.getKey()).getJavaType().equals(Date.class)) {
+                            predicateList.add(cb.greaterThanOrEqualTo(root.get(entry.getKey()), DataFormatUtil.parseDateTime(entry.getValue()).toDate()));
+                        } else {
+                            predicateList.add(cb.greaterThanOrEqualTo(root.get(entry.getKey()).as(String.class), entry.getValue()));
+                        }
                     }
                 }
                 //mapLess
                 if (mapMap.get(MapFilter.mapLess) != null) {
                     for (Map.Entry<String, String> entry : mapMap.get(MapFilter.mapLess).entrySet()) {
-                        predicateList.add(cb.lessThan(root.get(entry.getKey()).as(String.class), entry.getValue()));
+                        if (root.get(entry.getKey()).getJavaType().equals(Date.class)) {
+                            predicateList.add(cb.lessThan(root.get(entry.getKey()), DataFormatUtil.parseDateTime(entry.getValue()).toDate()));
+                        } else {
+                            predicateList.add(cb.lessThan(root.get(entry.getKey()).as(String.class), entry.getValue()));
+                        }
                     }
                 }
                 //mapLessEqual
                 if (mapMap.get(MapFilter.mapLessEqual) != null) {
                     for (Map.Entry<String, String> entry : mapMap.get(MapFilter.mapLessEqual).entrySet()) {
-                        predicateList.add(cb.lessThanOrEqualTo(root.get(entry.getKey()).as(String.class), entry.getValue()));
+                        if (root.get(entry.getKey()).getJavaType().equals(Date.class)) {
+                            predicateList.add(cb.lessThanOrEqualTo(root.get(entry.getKey()), DataFormatUtil.parseDateTime(entry.getValue()).toDate()));
+                        } else {
+                            predicateList.add(cb.lessThanOrEqualTo(root.get(entry.getKey()).as(String.class), entry.getValue()));
+                        }
                     }
                 }
                 return query.where(predicateList.toArray(new Predicate[predicateList.size()])).getRestriction();
@@ -213,9 +234,13 @@ public class MapFilter {
     }
 
     public <T> MapFilter addFilter(JSONObject requestJson, Class<T> clazz, Set<String> ignoreSet) {
+        ignoreSet.add(APIDef.tzdOperatorKey);
+        ignoreSet.add(APIDef.serviceKey);
+        ignoreSet.add(APIDef.actionKey);
+        ignoreSet.add(APIDef.nodeKey);
         Field[] fields = clazz.getDeclaredFields();
         for (Field field : fields) {
-            if (field.getAnnotation(MapFilterIgnore.class)!=null){
+            if (field.getAnnotation(MapFilterIgnore.class) != null) {
                 continue;
             }
             String key = field.getName();
@@ -273,10 +298,14 @@ public class MapFilter {
      */
     public static <T> MapFilter newInstance(JSONObject requestJson, Class<T> clazz, Set<String> ignoreSet) {
         //过滤默认关键字
+        ignoreSet.add(APIDef.tzdOperatorKey);
+        ignoreSet.add(APIDef.serviceKey);
+        ignoreSet.add(APIDef.actionKey);
+        ignoreSet.add(APIDef.nodeKey);
         MapFilter mapFilter = newInstance();
         Field[] fields = clazz.getDeclaredFields();
         for (Field field : fields) {
-            if (field.getAnnotation(MapFilterIgnore.class)!=null){
+            if (field.getAnnotation(MapFilterIgnore.class) != null) {
                 continue;
             }
             String key = field.getName();

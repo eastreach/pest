@@ -17,6 +17,7 @@ import com.google.common.collect.Sets;
 import com.google.common.reflect.TypeToken;
 import net.sf.json.JSONObject;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -194,7 +195,8 @@ public class TZDParamGateWay extends RootGateWay {
 
         //业务处理
         MapFilter mapFilter = MapFilter.newInstance(requestJson,TZDParam.class, Sets.<String>newHashSet("id"));
-        List<TZDParam> tzdParamList = tzdParamDao.findAll(mapFilter.getWhereClause());
+        Sort sort = new Sort(Sort.Direction.DESC, "id");
+        List<TZDParam> tzdParamList = tzdParamDao.findAll(mapFilter.getWhereClause(),sort);
 
         CommonReturnType commonReturnType = CommonReturnType.create(tzdParamList);
         log(tzdOperator, commonReturnType);
@@ -209,7 +211,8 @@ public class TZDParamGateWay extends RootGateWay {
 
         //业务处理
         MapFilter mapFilter = MapFilter.newInstance(requestJson,TZDParam.class, Sets.<String>newHashSet("id"));
-        Page<TZDParam> tzdParamPage = tzdParamDao.findAll(mapFilter.getWhereClause(), getPageRequest(requestJson));
+        Sort sort = new Sort(Sort.Direction.DESC, "id");
+        Page<TZDParam> tzdParamPage = tzdParamDao.findAll(mapFilter.getWhereClause(), getPageRequest(requestJson,sort));
 
         CommonReturnType commonReturnType = CommonReturnType.create(tzdParamPage);
         log(tzdOperator, commonReturnType);

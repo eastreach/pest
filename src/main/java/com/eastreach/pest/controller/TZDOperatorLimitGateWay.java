@@ -15,6 +15,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import net.sf.json.JSONObject;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -205,7 +206,8 @@ public class TZDOperatorLimitGateWay extends RootGateWay {
 
         //业务处理
         MapFilter mapFilter = MapFilter.newInstance(requestJson, TZDOperatorLimit.class, Sets.<String>newHashSet("id", "account", "password"));
-        List<TZDOperatorLimit> tzdOperatorLimitList = tzdOperatorLimitDao.findAll(mapFilter.getWhereClause());
+        Sort sort = new Sort(Sort.Direction.DESC, "id");
+        List<TZDOperatorLimit> tzdOperatorLimitList = tzdOperatorLimitDao.findAll(mapFilter.getWhereClause(),sort);
 
         //返回结果
         CommonReturnType commonReturnType = CommonReturnType.create(tzdOperatorLimitList);
@@ -221,7 +223,8 @@ public class TZDOperatorLimitGateWay extends RootGateWay {
 
         //业务处理
         MapFilter mapFilter = MapFilter.newInstance(requestJson, TZDOperatorLimit.class, Sets.<String>newHashSet("id", "account", "password"));
-        Page<TZDOperatorLimit> tzdOperatorLimitPage = tzdOperatorLimitDao.findAll(mapFilter.getWhereClause(), getPageRequest(requestJson));
+        Sort sort = new Sort(Sort.Direction.DESC, "id");
+        Page<TZDOperatorLimit> tzdOperatorLimitPage = tzdOperatorLimitDao.findAll(mapFilter.getWhereClause(), getPageRequest(requestJson,sort));
         //返回结果
         CommonReturnType commonReturnType = CommonReturnType.create(tzdOperatorLimitPage);
         log(tzdOperator, commonReturnType);

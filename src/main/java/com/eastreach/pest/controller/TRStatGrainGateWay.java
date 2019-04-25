@@ -19,6 +19,7 @@ import com.google.common.reflect.TypeToken;
 import net.sf.json.JSONObject;
 import org.joda.time.DateTime;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -201,7 +202,8 @@ public class TRStatGrainGateWay extends RootGateWay {
 
         //业务处理
         MapFilter mapFilter = MapFilter.newInstance(requestJson, TRStatGrain.class, Sets.<String>newHashSet("id"));
-        List<TRStatGrain> trStatGrainList = trStatGrainDao.findAll(mapFilter.getWhereClause());
+        Sort sort = new Sort(Sort.Direction.DESC, "id");
+        List<TRStatGrain> trStatGrainList = trStatGrainDao.findAll(mapFilter.getWhereClause(),sort);
         //返回结果
         CommonReturnType commonReturnType = CommonReturnType.create(trStatGrainList);
         log(tzdOperator, commonReturnType);
@@ -216,7 +218,8 @@ public class TRStatGrainGateWay extends RootGateWay {
 
         //业务处理
         MapFilter mapFilter = MapFilter.newInstance(requestJson, TRStatGrain.class, Sets.<String>newHashSet("id"));
-        Page<TRStatGrain> trStatGrainPage = trStatGrainDao.findAll(mapFilter.getWhereClause(), getPageRequest(requestJson));
+        Sort sort = new Sort(Sort.Direction.DESC, "id");
+        Page<TRStatGrain> trStatGrainPage = trStatGrainDao.findAll(mapFilter.getWhereClause(), getPageRequest(requestJson,sort));
         //返回结果
         CommonReturnType commonReturnType = CommonReturnType.create(trStatGrainPage);
         log(tzdOperator, commonReturnType);

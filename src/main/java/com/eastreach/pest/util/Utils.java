@@ -7,6 +7,7 @@ import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 
 /**
  * 常用静态工具类
@@ -57,6 +58,13 @@ public class Utils {
                 }
             }
         }
+    }
+
+    /**
+     * 获取唯一流水号
+     */
+    public static String uuid() {
+        return UUID.randomUUID().toString().replace("-", "");
     }
 
     /**

@@ -5,6 +5,7 @@ import com.alibaba.fastjson.TypeReference;
 import com.eastreach.pest.dao.*;
 import com.eastreach.pest.error.BusinessException;
 import com.eastreach.pest.error.EnumBusinessError;
+import com.eastreach.pest.metadata.APIDef;
 import com.eastreach.pest.model.*;
 import com.eastreach.pest.response.CommonReturnType;
 import com.google.common.collect.Lists;
@@ -14,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -256,8 +258,12 @@ public class RootGateWay {
      * 获取分页查询信息
      */
     PageRequest getPageRequest(JSONObject requestJson) throws BusinessException {
-        checkParam(requestJson, Lists.newArrayList(pageSizeKey, currentPageKey));
-        return new PageRequest(Integer.parseInt(requestJson.optString(currentPageKey)) - 1, Integer.parseInt(requestJson.optString(pageSizeKey)));
+        return getPageRequest(requestJson, null);
+    }
+
+    public PageRequest getPageRequest(JSONObject requestJson, Sort sort) throws BusinessException {
+        checkParam(requestJson, Lists.newArrayList(currentPageKey, pageSizeKey));
+        return new PageRequest(Integer.parseInt(requestJson.optString(APIDef.currentPageKey)) - 1, Integer.parseInt(requestJson.optString(APIDef.pageSizeKey)), sort);
     }
 
 //    /**

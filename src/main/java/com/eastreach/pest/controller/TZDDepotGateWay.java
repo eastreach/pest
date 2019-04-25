@@ -19,6 +19,7 @@ import com.google.common.reflect.TypeToken;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -206,7 +207,8 @@ public class TZDDepotGateWay extends RootGateWay {
 
         //业务处理
         MapFilter mapFilter = MapFilter.newInstance(requestJson, TZDDepot.class, Sets.<String>newHashSet("id"));
-        List<TZDDepot> tzdDepotList = tzdDepotDao.findAll(mapFilter.getWhereClause());
+        Sort sort = new Sort(Sort.Direction.DESC, "id");
+        List<TZDDepot> tzdDepotList = tzdDepotDao.findAll(mapFilter.getWhereClause(),sort);
         //返回结果
         CommonReturnType commonReturnType = CommonReturnType.create(tzdDepotList);
         log(tzdOperator, commonReturnType);
@@ -221,7 +223,8 @@ public class TZDDepotGateWay extends RootGateWay {
 
         //业务处理
         MapFilter mapFilter = MapFilter.newInstance(requestJson, TZDDepot.class, Sets.<String>newHashSet("id"));
-        Page<TZDDepot> page = tzdDepotDao.findAll(mapFilter.getWhereClause(), getPageRequest(requestJson));
+        Sort sort = new Sort(Sort.Direction.DESC, "id");
+        Page<TZDDepot> page = tzdDepotDao.findAll(mapFilter.getWhereClause(), getPageRequest(requestJson,sort));
         //返回结果
         CommonReturnType commonReturnType = CommonReturnType.create(page);
         log(tzdOperator, commonReturnType);
