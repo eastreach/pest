@@ -53,6 +53,7 @@ public static final String suffixLessEqual = "LessEqual";   //<=
 1. [农作物产量统计API](api_stat_grain.md)
 1. [害虫数量统计API](api_stat_pest.md)
 1. [文件上传API](api_upload.md)
+1. [报表API](api_report.md)
 
 ![system](./system.png)
 ![domain](./domain.png)
