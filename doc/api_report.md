@@ -1,4 +1,7 @@
 ## 报表相关API.
+1. /report/sp_rep_stat_pest_by_year
+1. /report/sp_rep_stat_pest_temperature_by_year
+1. /report/sp_rep_stat_pest_humidity_by_year
 
 ### 害虫统计报表.
 1. 害虫数量统计,每个害虫一条记录,可选字段可以进行过滤.
