@@ -39,9 +39,13 @@
     | :--- | :--- | :--- | :--- | :--- | :--- |
     | pageSize | 分页大小 | int | N |  |  |
     | currentPage | 当前页面 | int | N |  |索引从0开始  |
-    | code | 代码 | string | Y |  |精确匹配  |
     | areaCode | 区域代码 | string | Y |  |精确匹配  |
+    | grainCode | 作物代码 | string | Y |  |精确匹配  |
     | pestCode | 害虫代码 | string | Y |  |精确匹配  |
+    | province | 省份 | string | Y |  |精确匹配  |
+    | city | 城市 | string | Y |  |精确匹配  |
+    | role | 角色 | string | Y |  |精确匹配  |
+    | depotCode | 仓库代码 | string | Y |  |精确匹配  |
     | dt | 生产日期 | datetime | Y |  |精确匹配  |
     | startDt | 开始时间 | string | Y |  |yyyy-MM-dd HH:mm:ss  |
     | endDt | 结束时间 | string | Y |  |yyyy-MM-dd HH:mm:ss  |
@@ -49,9 +53,13 @@
 
     | 字段名称 | 字段描述 | 类型 | 允许为空 | 长度 | 说明 |
     | :--- | :--- | :--- | :--- | :--- | :--- |
-    | code | 代码 | string | Y |  |精确匹配  |
     | areaCode | 区域代码 | string | Y |  |精确匹配  |
+    | grainCode | 作物代码 | string | Y |  |精确匹配  |
     | pestCode | 害虫代码 | string | Y |  |精确匹配  |
+    | province | 省份 | string | Y |  |精确匹配  |
+    | city | 城市 | string | Y |  |精确匹配  |
+    | role | 角色 | string | Y |  |精确匹配  |
+    | depotCode | 仓库代码 | string | Y |  |精确匹配  |
     | dt | 生产日期 | datetime | Y |  |精确匹配  |
     | startDt | 开始时间 | string | Y |  |yyyy-MM-dd HH:mm:ss  |
     | endDt | 结束时间 | string | Y |  |yyyy-MM-dd HH:mm:ss  |

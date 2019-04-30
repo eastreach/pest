@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.eastreach.pest.error.BusinessException;
 import com.eastreach.pest.error.EnumBusinessError;
+import com.eastreach.pest.metadata.APIDef;
 import com.eastreach.pest.metadata.TZDLimitType;
 import com.eastreach.pest.model.*;
 import com.eastreach.pest.response.CommonReturnType;
@@ -210,6 +211,8 @@ public class TRStatPestGateWay extends RootGateWay {
 
         //业务处理
         MapFilter mapFilter = MapFilter.newInstance(requestJson, TRStatPest.class, Sets.<String>newHashSet("id"));
+        mapFilter.mapGreatEqual("dt", APIDef.startDtKey);
+        mapFilter.mapLess("dt", APIDef.endDtKey);
         Sort sort = new Sort(Sort.Direction.DESC, "id");
         List<TRStatPest> trStatPestList = trStatPestDao.findAll(mapFilter.getWhereClause(),sort);
         //返回结果
@@ -226,6 +229,8 @@ public class TRStatPestGateWay extends RootGateWay {
 
         //业务处理
         MapFilter mapFilter = MapFilter.newInstance(requestJson, TRStatPest.class, Sets.<String>newHashSet("id"));
+        mapFilter.mapGreatEqual("dt", APIDef.startDtKey);
+        mapFilter.mapLess("dt", APIDef.endDtKey);
         Sort sort = new Sort(Sort.Direction.DESC, "id");
         Page<TRStatPest> page = trStatPestDao.findAll(mapFilter.getWhereClause(), getPageRequest(requestJson,sort));
         //返回结果
